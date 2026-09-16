@@ -1,0 +1,290 @@
+# ============================================================================
+# configs/bist30_universe.yaml
+# BIST30 konstitüant üniversi — TARİH DAMGASIYLA SABİTLENMİŞTİR (AŞAMA 1.5/1)
+#
+# Bu dosya bir ÖN-KAYITTIR. Backtest boyunca liste DEĞİŞMEZ. Liste
+# değiştirilecekse `version` artırılır ve YENİ bir bölüm eklenir; eski sürüm
+# SİLİNMEZ. Aksi hâlde geçmiş, bugünün kazananlarıyla test edilmiş olur
+# (look-ahead).
+# ============================================================================
+
+index_code: "XU030"
+index_name: "BIST 30"
+exchange: "Borsa Istanbul (BIST)"
+currency: "TRY"
+version: "2026-09-16.v1"
+frozen_at_utc: "2026-09-16T12:10:00Z"
+frozen_by: "quant4h Aşama 1.5 adım 1"
+review_cycle: "BIST30 üyeliği Borsa İstanbul tarafından 3 ayda bir yeniden belirlenir."
+
+# ---------------------------------------------------------------------------
+# KAYNAKLAR (hepsi 2026-09-16 tarihinde erişildi)
+# ---------------------------------------------------------------------------
+sources:
+  # NOT: dört kaynağın HİÇBİRİ tek başına yeterli değildi; 30. üye ancak
+  # Investing.com ile bulundu. Aşağıda her kaynağın NE VERDİĞİ ve neden
+  # eksik/bayat olduğu yazılıdır.
+  - name: "Investing.com (BİST 30 Bileşenler)"
+    url: "https://tr.investing.com/indices/ise-30-components"
+    accessed_utc: "2026-09-16"
+    members_reported: 30
+    agreement: "TAM LİSTE — 30 sembol, FROTO ve DSTKF'yi BİRLİKTE içeren TEK kaynak. KABUL EDİLDİ."
+  - name: "Midas (getmidas.com)"
+    url: "https://www.getmidas.com/canli-borsa/xu030-bist-30-hisseleri"
+    accessed_utc: "2026-09-16"
+    members_reported: 29
+    agreement: "EKSİK — DSTKF var ama FROTO YOK (29 sembol)"
+  - name: "HangiKredi"
+    url: "https://www.hangikredi.com/yatirim-araclari/hisse-senetleri/xu030-hisseleri"
+    accessed_utc: "2026-09-16"
+    members_reported: 29
+    agreement: "EKSİK — Midas ile birebir aynı 29 sembol, FROTO YOK"
+  - name: "TradingView (BIST:XU030 components)"
+    url: "https://tr.tradingview.com/symbols/BIST-XU030/components/"
+    accessed_utc: "2026-09-16"
+    members_reported: 10
+    agreement: "giriş duvarı: yalnızca piyasa değerine göre ilk 10 görünür; 10/10 Investing ile uyumlu"
+  - name: "Uzmanpara / Milliyet"
+    url: "https://uzmanpara.milliyet.com.tr/endeks-detay/XU030/hisseleri/"
+    accessed_utc: "2026-09-16"
+    members_reported: 29
+    agreement: "BAYAT — FROTO, CIMSA, HEKTS, ULKER var; DSTKF YOK"
+  - name: "Borsa İstanbul resmî API"
+    url: "https://api.borsaistanbul.com/MarketData/GetIndexMember?IndexCode=XU030"
+    accessed_utc: "2026-09-16"
+    members_reported: null
+    agreement: "ERİŞİLEMEYEDİ (DNS çözümlenemedi). Resmî doğrulama YAPILAMADI."
+
+# ---------------------------------------------------------------------------
+# ÜYELİK DEĞİŞİKLİKLERİ (web araştırmasıyla doğrulandı, 2026-09-16)
+# ---------------------------------------------------------------------------
+membership_history_evidence:
+  - date: "2025-12-31 dönemi"
+    change: "BIST30: Çimsa (CIMSA) ÇIKARILDI, yerine Destek Finans Faktoring (DSTKF) DAHİL EDİLDİ"
+    source: "dunyagazetesi / sosyal medya aktarımı (31 Aralık 2025 dönemsel değişiklikleri)"
+  - date: "2025-12-19"
+    change: "2026 ilk çeyrek dönemsel güncellemesinde BIST 30'da DEĞİŞİM OLMADI"
+    source: "BloombergHT"
+  - date: "2026-03-23"
+    change: "2026 ikinci çeyrek: Ülker (ULKER) BIST 30 ana listesi dışında bırakıldı, YEDEK paylar arasına alındı"
+    source: "Investing.com haber"
+  - date: "2026-05"
+    change: "MSCI Türkiye endeksinden FROTO çıkarıldı (BIST30 üyeliği AYRI bir konudur; BIST30'da KALDIĞI Investing bileşen listesiyle doğrulandı)"
+    source: "infoyatiram / HSBC ön izleme"
+  - date: "?"
+    change: "HEKTS'ın çıkarıldığı dönem bu araştırmada BELİRLENEMEDİ; yalnızca Uzmanpara'nın bayat listesinde görünüyor"
+    source: "belirlenemedi"
+
+consensus_rule: >
+  Kural: bir sembol, TAM LİSTE veren kaynakta (Investing.com, 30 sembol)
+  yer alıyorsa VE en az bir güncel kaynakla (Midas / HangiKredi / TradingView)
+  çelişmiyorsa üyeliğe kabul edildi. Dört kaynağın hiçbiri tek başına 30 üyeyi
+  veremediği için karar, üyelik değişikliği kanıtlarıyla ÇAPRAZ doğrulandı:
+  Investing'in listesi CIMSA'nın çıkışı (→DSTKF) ve ULKER'in yedeğe alınışı
+  ile birebir uyumludur; Midas/HangiKredi listeleri FROTO'yu atladığı için
+  29'da kalmaktadır.
+
+# ---------------------------------------------------------------------------
+# ÜNİVERS (30 sembol) — backtest boyunca SABİT
+# ---------------------------------------------------------------------------
+members:
+  - {code: "AEFES", yahoo: "AEFES.IS", name: "Anadolu Efes Biracılık ve Malt Sanayii A.Ş.", sector: "içecek"}
+  - {code: "AKBNK", yahoo: "AKBNK.IS", name: "Akbank T.A.Ş.", sector: "banka"}
+  - {code: "ASELS", yahoo: "ASELS.IS", name: "Aselsan Elektronik Sanayi ve Ticaret A.Ş.", sector: "elektronik/savunma"}
+  - {code: "ASTOR", yahoo: "ASTOR.IS", name: "Astor Enerji A.Ş.", sector: "elektrik ekipman"}
+  - {code: "BIMAS", yahoo: "BIMAS.IS", name: "Bim Birleşik Mağazalar A.Ş.", sector: "perakende"}
+  - {code: "DSTKF", yahoo: "DSTKF.IS", name: "Destek Finans Faktoring A.Ş.", sector: "faktoring"}
+  - {code: "EKGYO", yahoo: "EKGYO.IS", name: "Emlak Konut GYO A.Ş.", sector: "GYO"}
+  - {code: "ENKAI", yahoo: "ENKAI.IS", name: "Enka İnşaat ve Sanayi A.Ş.", sector: "inşaat"}
+  - {code: "EREGL", yahoo: "EREGL.IS", name: "Ereğli Demir ve Çelik Fabrikaları T.A.Ş.", sector: "demir-çelik"}
+  - {code: "FROTO", yahoo: "FROTO.IS", name: "Ford Otomotiv Sanayi A.Ş.", sector: "otomotiv"}
+  - {code: "GARAN", yahoo: "GARAN.IS", name: "Türkiye Garanti Bankası A.Ş.", sector: "banka"}
+  - {code: "GUBRF", yahoo: "GUBRF.IS", name: "Gübre Fabrikaları T.A.Ş.", sector: "kimya/gübre"}
+  - {code: "ISCTR", yahoo: "ISCTR.IS", name: "Türkiye İş Bankası A.Ş. (C)", sector: "banka"}
+  - {code: "KCHOL", yahoo: "KCHOL.IS", name: "Koç Holding A.Ş.", sector: "holding"}
+  - {code: "KRDMD", yahoo: "KRDMD.IS", name: "Kardemir Karabük Demir Çelik (D)", sector: "demir-çelik"}
+  - {code: "MGROS", yahoo: "MGROS.IS", name: "Migros Ticaret A.Ş.", sector: "perakende"}
+  - {code: "PETKM", yahoo: "PETKM.IS", name: "Petkim Petrokimya Holding A.Ş.", sector: "petrokimya"}
+  - {code: "PGSUS", yahoo: "PGSUS.IS", name: "Pegasus Hava Taşımacılığı A.Ş.", sector: "havacılık"}
+  - {code: "SAHOL", yahoo: "SAHOL.IS", name: "Hacı Ömer Sabancı Holding A.Ş.", sector: "holding"}
+  - {code: "SASA",  yahoo: "SASA.IS",  name: "Sasa Polyester Sanayi A.Ş.", sector: "tekstil/kimya"}
+  - {code: "SISE",  yahoo: "SISE.IS",  name: "Türkiye Şişe ve Cam Fabrikaları A.Ş.", sector: "cam"}
+  - {code: "TAVHL", yahoo: "TAVHL.IS", name: "TAV Havalimanları Holding A.Ş.", sector: "havacılık/havalimanı"}
+  - {code: "TCELL", yahoo: "TCELL.IS", name: "Turkcell İletişim Hizmetleri A.Ş.", sector: "telekom"}
+  - {code: "THYAO", yahoo: "THYAO.IS", name: "Türk Hava Yolları A.O.", sector: "havacılık"}
+  - {code: "TOASO", yahoo: "TOASO.IS", name: "Tofaş Türk Otomobil Fabrikası A.Ş.", sector: "otomotiv"}
+  - {code: "TRALT", yahoo: "TRALT.IS", name: "Türk Altın İşletmeleri A.Ş.", sector: "madencilik/altın"}
+  - {code: "TTKOM", yahoo: "TTKOM.IS", name: "Türk Telekomünikasyon A.Ş.", sector: "telekom"}
+  - {code: "TUPRS", yahoo: "TUPRS.IS", name: "Tüpraş-Türkiye Petrol Rafinerileri A.Ş.", sector: "enerji/rafineri"}
+  - {code: "VAKBN", yahoo: "VAKBN.IS", name: "Türkiye Vakıflar Bankası T.A.O.", sector: "banka"}
+  - {code: "YKBNK", yahoo: "YKBNK.IS", name: "Yapı ve Kredi Bankası A.Ş.", sector: "banka"}
+
+# ---------------------------------------------------------------------------
+# İHTİLAFLI / REDDEDİLEN semboller (şeffaflık için kaydedilir, KULLANILMAZ)
+# ---------------------------------------------------------------------------
+disputed_members:
+  - {code: "FROTO",  decision: "KABUL EDİLDİ", reason: "Investing.com tam listesinde + Uzmanpara + OYAK Yatırım'da var; Midas/HangiKredi atlamış. 30. üye BUDUR."}
+  - {code: "CIMSA",  decision: "REDDEDİLDİ", reason: "31 Aralık 2025 döneminde BIST30'dan ÇIKARILDI (yerine DSTKF). Yalnızca Uzmanpara'nın bayat listesinde."}
+  - {code: "ULKER",  decision: "REDDEDİLDİ", reason: "2026 ikinci çeyrekte ana listeden çıkarılıp YEDEK paylar arasına alındı. Yalnızca Uzmanpara'da."}
+  - {code: "HEKTS",  decision: "REDDEDİLDİ", reason: "Yalnızca Uzmanpara'nın bayat listesinde; hiçbir güncel kaynakta yok."}
+dispute_note: >
+  İLK DEĞERLENDİRME YANLIŞTI ve düzeltildi: başlangıçta üç kaynağın oybirliği
+  (Midas + HangiKredi + TradingView) esas alınmış ve FROTO reddedilmişti.
+  Ancak bu üç kaynak 29 sembol veriyordu ve BIST30 TANIM GEREĞİ 30 üyedir.
+  Investing.com'un tam bileşen listesi FROTO'yu içeriyor ve 30'a tamamlıyor;
+  üyelik değişikliği kanıtları da (CIMSA→DSTKF, ULKER→yedek) bu listeyi
+  doğruluyor. Sonuç: FROTO KABUL, CIMSA/ULKER/HEKTS RED.
+  Resmî BIST API'sine erişim sağlanırsa bu karar yeniden doğrulanmalıdır.
+
+# ---------------------------------------------------------------------------
+# ZORUNLU CAVEAT — tüm raporlarda AYNEN basılır
+# ---------------------------------------------------------------------------
+mandatory_caveats:
+  - id: "SURVIVORSHIP_BIAS"
+    severity: "KRİTİK"
+    text: >
+      SURVIVORSHIP BIAS: Serbest kaynaklardan yalnızca BUGÜN (2026-09-16)
+      BIST30'da olan hisseler indirilebilir. Geçmişte endekste olup sonradan
+      ÇIKAN hisseler (endeksten düşme, birleşme, delist) veri setinde YOKTUR.
+      Bu nedenle sepet backtest'i sistematik olarak YUKARI YÖNLÜ ÇARPITILMIŞTIR:
+      geçmiş, bugünün kazananlarıyla test edilmektedir. BIST30 sonuçları
+      BTC/GOLD/SILVER ile AYNI güven düzeyinde DEĞERLENDİRİLEMEZ.
+  - id: "POINT_IN_TIME_MISSING"
+    severity: "KRİTİK"
+    text: >
+      Point-in-time (tarihsel) üyelik verisi YOKTUR. Hangi hissenin hangi
+      tarihte endekste olduğu bilinmediği için "o günkü endeks" yeniden
+      KURULAMAZ. Uygulanan yaklaşım: sabit bugünkü liste + bu bias'ın açıkça
+      raporlanması. Doğru çözüm, tarihsel üyelik verisi olan bir sağlayıcıdır.
+  - id: "SOURCE_NOT_OFFICIAL"
+    severity: "YÜKSEK"
+    text: >
+      Liste resmî Borsa İstanbul API'sinden DOĞRULANAMADI (DNS erişilemedi).
+      Üç ticari kaynağın oybirliğine dayanır. Üyelik 3 ayda bir değişir;
+      bu sürüm 2026-09-16 anına aittir.
+  - id: "INTRADAY_LIMIT"
+    severity: "YÜKSEK"
+    text: >
+      Yahoo 1h limiti 730 gün: hisse başına intraday geçmiş EN FAZLA ~2.4 yıl.
+      BIST seansı 6.5 saat olduğu için günde yalnızca ~2 adet TAM 4H bar üretilir.
+  - id: "HALT_AND_PRICE_LIMITS"
+    severity: "ORTA"
+    text: >
+      BIST'te günlük fiyat marjı sınırlıdır ve devre kesici (halt) uygulanır.
+      Marja yapışan barlar sinyalde KULLANILABİLİR ama gerçekçi execution
+      VARSAYILAMAZ; bu barlar ayrıca işaretlenir.
+  - id: "COST_IS_APPROXIMATE"
+    severity: "ORTA"
+    text: >
+      Hisse maliyet modeli (10 bp komisyon + 30 bp spread + 20 bp slippage ≈
+      120 bp gidiş-dönüş) YAKLAŞIKLAMADIR ve kullanıcının gerçek aracılık
+      komisyonuyla değiştirilmelidir; sonuçları doğrudan etkiler.
+
+# ---------------------------------------------------------------------------
+# Veri indirme / likidite parametreleri (Aşama 1.5 adım 2 ve 4)
+# ---------------------------------------------------------------------------
+download:
+  venue: "yahoo"
+  interval: "1h"
+  period: "730d"          # Yahoo'nun intraday üst sınırı
+  batch_size: 3           # küçük batch: rate-limit dostu
+  sleep_between_symbols_s: 3.0
+  sleep_between_batches_s: 10.0
+  retries: 4
+  retry_backoff_s: 20.0
+  cache_dir: "data/raw/bist30"
+  cache_file_pattern: "{code}_1h_raw.parquet"
+  immutable_raw: true
+
+resample:
+  target_timeframe: "4h"
+  native_session_tz: "Europe/Istanbul"
+  bar_anchor_local: "10:00"
+  bar_anchor_mode: "local"          # Türkiye'de DST yok -> UTC saatleri yıl boyu sabit
+  session_anchor_local: "09:30"
+  session_day_start_local: "05:00"
+  trading_days: [0, 1, 2, 3, 4]
+  drop_partial_last_bar: true       # oluşmakta olan son bar DÜŞÜRÜLÜR
+  min_bars_fill: 3                  # >=%75 kapsama; 4 DEĞİL (bkz. thin_bar_policy)
+  expected_full_bars_per_session: 2 # 10-14 ve 14-18 lokal = 07/11 UTC
+  thin_bar_policy: >
+    06:00-10:00 lokal bin'i yalnızca Yahoo'nun 09:30 "açılış anı" printini
+    taşır (n_src=1) ve non_tradable olduğu için swing/Donchian anchor'ı
+    OLAMAZ. k=3 fraktalın 6 komşusu her zaman en az bir ince bara denk
+    geldiğinden, ince bar tutulursa HİÇBİR swing onaylanamaz (ölçüldü: 28
+    hissede swing=0, Donchian=0, stop=0 -> sepet hiç sinyal üretemiyordu).
+    Bu yüzden ince bar ÜRETİLMEZ. BEDELİ: 09:30-10:00 açılış hareketi 4H
+    barlarda temsil edilmez (zaten tek bir print olduğu için bilgi değeri
+    düşüktü).
+
+    Eşik 4 DEĞİL 3'tür: ölçüldü ki Yahoo BIST 1h feed'inde 17:30 printi
+    günlerin ~%45'inde YOK, yani 14:00-18:00 bin'i çoğu gün 3 kaynak bar
+    içerir. min=4 istenirse 323 seans tek bara düşer, "eksik bar" %26.5'e
+    çıkar ve TÜM SEPET yanlışlıkla elenir. 3 bar = seansın ≥%75'i ve bu,
+    projenin "ince bar" tanımıyla (<%75) birebir tutarlıdır.
+
+quality_gates:
+  min_4h_bars: 800                  # altında -> elenir (gerekçesiyle)
+  max_missing_fraction: 0.15        # beklenen seans barlarının eksik oranı
+  max_thin_fraction: 0.60           # n_src_bars < %75 beklenen olan bar oranı
+  max_zero_volume_fraction: 0.05
+  max_halt_fraction: 0.05           # marja yapışan / sıfır aralıklı bar oranı
+  min_history_days: 300
+  max_unexplained_gap_bars: 16      # seans-beklenen boşluk üstü
+
+liquidity:
+  metric: "avg_daily_turnover_try"  # ortalama günlük TL hacim (volume x fiyat)
+  window_days: 60                   # son 60 seans
+  min_avg_daily_turnover_try: 250000000   # 250 milyon TL/gün (2026-09 itibarıyla)
+  min_avg_daily_volume_lots: 250000       # yedek eşik: 250 bin lot/gün
+  note: >
+    Eşikler 2026-09 fiyat/hacim seviyelerine göre seçilmiştir ve MUTLAK
+    değildir; enflasyon ve hacim büyümesiyle birlikte gözden geçirilmelidir.
+    Eşiği geçemeyen hisse SİLİNMEZ, `excluded` olarak İŞARETLENİR ve gerekçesi
+    raporda yazılır.
+
+cost_model:
+  applies_to: "BIST30 hisse sepeti (XU030 endeksi DEĞİL)"
+  # CostModel birim sözleşmesi: commission ve slippage TEK TARAF;
+  # spread_bps TAM kotasyon spread'i (tek tarafa yarısı yazılır).
+  commission_bps_per_side: 10.0
+  spread_bps_full_quoted: 60.0
+  slippage_bps_per_side: 20.0
+  one_way_bps: 60.0
+  round_trip_bps: 120.0
+  user_decisions_notation: >
+    configs/user_decisions.yaml içinde "commission 10 + spread 30 + slippage 20"
+    biçiminde yazılmıştır; oradaki 30 = TEK TARAF yarım-spread maliyetidir
+    (tam spread 60 bp). İki dosya aynı ekonomik varsayımı ifade eder.
+  stamp_duty_note: >
+    Türkiye'de hisse satışında binde 2 (2 bp) damga vergisi/BSMV benzeri
+    yükümlülükler aracı kuruma göre değişir; burada komisyon içine
+    YAKLAŞIK olarak dahil edilmiştir, ayrı kalem olarak modellenmemiştir.
+
+corporate_actions_policy:
+  auto_adjust: false                # << adjust.py felsefesi: OTOMATİK DÜZELTME YOK
+  policy: "FLAG ONLY"
+  detection:
+    method: "close/adjclose oranındaki adım değişimi + aşırı bitişik getiri"
+    split_signal: "oran değişimi VE |log getiri| > 0.25 (ör. 2:1, 3:1, 1:2)"
+    dividend_signal: "oran değişimi VE |log getiri| <= 0.25"
+  action_on_event:
+    - "corporate_action_flag = True"
+    - "return_valid = False (oranın değiştiği bar ve sonraki bar)"
+    - "non_tradable = True"
+    - "close_raw ve adjclose AYRI kolonlarda korunur; hiçbir fiyat YAZILMAZ"
+  rationale: >
+    Yahoo'nun Adj Close serisi temettü ve bölünmeleri ZATEN düzeltir. Bu
+    proje ham fiyatı esas alır ve düzeltmeyi KULLANICIYA bırakır; çünkü
+    otomatik düzeltme, düzeltmenin kendisinden kaynaklanan look-ahead riski
+    taşır (geçmişe dönük yeniden hesaplama). Bu yüzden yalnızca İŞARETLERİZ.
+
+xu030_context:
+  tradable: false
+  role: "context_filter_for_longs"
+  data: "data/interim/bist30_4h.parquet (XU030.IS, watch_only)"
+  usage: >
+    XU030 endeksi yalnızca ÜST ZAMAN DİLİMİ / BAĞLAM filtresidir: örneğin
+    endeks EMA200 altındayken hisse LONG sinyalleri bastırılır. Endeks
+    üzerinde POZİSYON AÇILMAZ ve endeks getirisi portföy performansına
+    YAZILMAZ.

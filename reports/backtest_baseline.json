@@ -1,0 +1,2415 @@
+{
+  "generated_at_utc": "2026-09-16T15:14:20.669216+00:00",
+  "timeframe": "4h",
+  "primary_variant": "capped",
+  "risk_profile": {
+    "name": "balanced",
+    "risk_per_trade": 0.005,
+    "max_leverage": 2.0
+  },
+  "exit_config": {
+    "time_stop_bars": 90,
+    "take_profit_r": 3.0,
+    "same_bar_priority": "stop",
+    "candidates_time_stop": [
+      60,
+      90,
+      120
+    ],
+    "candidates_tp": [
+      2.0,
+      3.0,
+      4.0
+    ],
+    "tuned_now": false,
+    "tuning_stage": 9
+  },
+  "signal_variant_note": "Sinyaller CAPPED ak\u0131\u015ftan al\u0131n\u0131r (pozisyon vekili + 90 bar zorunlu time-stop). STRICT ak\u0131\u015f yaln\u0131z tan\u0131sal tabloda verilir; COOLDOWN_ONLY backtest ED\u0130LMEZ.",
+  "starting_equity": 100000.0,
+  "core_assets": {
+    "BTC": {
+      "metrics": {
+        "n_trades": 187,
+        "win_rate": 0.4011,
+        "n_wins": 75,
+        "n_losses": 112,
+        "profit_factor_gross": 1.4297,
+        "profit_factor_net": 1.3069,
+        "expectancy_r": 0.2064,
+        "expectancy_r_median": -0.3712,
+        "avg_win_r": 1.6391,
+        "avg_loss_r": -0.8188,
+        "avg_holding_bars": 59.58,
+        "max_holding_bars": 90,
+        "total_gross": 20373.838855700094,
+        "total_cost": 4903.894814233489,
+        "total_net": 15469.944041466604,
+        "final_equity": 115469.94,
+        "net_return_frac": 0.154699,
+        "exit_reason_mix": {
+          "time_stop": 80,
+          "stop": 80,
+          "take_profit": 27
+        },
+        "direction_mix": {
+          "long": 100,
+          "short": 87
+        },
+        "avg_stop_distance_atr": 4.786,
+        "cost_row": {
+          "total_cost": 4903.89,
+          "net_return_with_cost_frac": 0.154699,
+          "gross_return_without_cost_frac": 0.203738,
+          "round_trip_bps": 31.0
+        },
+        "statistically_weak": false,
+        "max_drawdown_frac": -0.070466,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 187,
+          "expectancy_r_ci95": [
+            0.0064,
+            0.4222
+          ],
+          "expectancy_r_p05": 0.0336,
+          "win_rate_ci95": [
+            0.3476,
+            0.492
+          ],
+          "prob_expectancy_positive": 0.977,
+          "mean_return_per_trade_ci95": [
+            -0.000167,
+            0.001848
+          ]
+        },
+        "warnings": [],
+        "equity_crosscheck": {
+          "from_trades": 115469.94,
+          "from_engine_long_only": 116686.32,
+          "comparable": false,
+          "exact_match": false,
+          "note": "long+short birle\u015fik: bar bazl\u0131 motor e\u011frisi YALNIZ long'u i\u00e7erir, bu y\u00fczden kar\u015f\u0131la\u015ft\u0131rma YAPILMAZ; i\u00e7 tutarl\u0131l\u0131k equity_before/after zinciriyle denetlenir (test_equity_recomputed_from_trades_matches_engine)"
+        }
+      },
+      "buy_hold": {
+        "gross_return_frac": 16.371254,
+        "cost_frac": 0.0031,
+        "net_return_frac": 16.368154,
+        "final_equity": 1736815.37,
+        "max_drawdown_frac": -0.83906,
+        "first": "2017-08-17 04:00:00+00:00",
+        "last": "2026-09-16 08:00:00+00:00"
+      },
+      "config": {
+        "time_stop_bars": 90,
+        "take_profit_r": 3.0,
+        "same_bar_priority": "stop",
+        "risk_per_trade": 0.005,
+        "max_leverage": 2.0,
+        "allow_short": false,
+        "one_way_cost_frac": 0.00155,
+        "round_trip_bps": 31.0,
+        "starting_equity": 100000.0,
+        "rejected_no_valid_stop": 0,
+        "rejected_not_tradable": 0
+      },
+      "warnings": [],
+      "cost_bps_round_trip": 31.0,
+      "long_trades": 100,
+      "short_trades": 87,
+      "equity_png": "reports/figures/equity_BTC_long.png",
+      "trades_csv": "reports/trades_BTC.csv"
+    },
+    "GOLD": {
+      "metrics": {
+        "n_trades": 30,
+        "win_rate": 0.5667,
+        "n_wins": 17,
+        "n_losses": 13,
+        "profit_factor_gross": 2.9844,
+        "profit_factor_net": 2.6727,
+        "expectancy_r": 0.6259,
+        "expectancy_r_median": 0.3373,
+        "avg_win_r": 1.6506,
+        "avg_loss_r": -0.714,
+        "avg_holding_bars": 67.8,
+        "max_holding_bars": 90,
+        "total_gross": 9554.646004152413,
+        "total_cost": 895.1516268010882,
+        "total_net": 8659.494377351326,
+        "final_equity": 108659.49,
+        "net_return_frac": 0.086595,
+        "exit_reason_mix": {
+          "time_stop": 16,
+          "stop": 7,
+          "take_profit": 6,
+          "end_of_data": 1
+        },
+        "direction_mix": {
+          "long": 23,
+          "short": 7
+        },
+        "avg_stop_distance_atr": 4.989,
+        "cost_row": {
+          "total_cost": 895.15,
+          "net_return_with_cost_frac": 0.086595,
+          "gross_return_without_cost_frac": 0.095546,
+          "round_trip_bps": 20.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.021226,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 30,
+          "expectancy_r_ci95": [
+            0.0927,
+            1.1945
+          ],
+          "expectancy_r_p05": 0.1817,
+          "win_rate_ci95": [
+            0.4,
+            0.7333
+          ],
+          "prob_expectancy_positive": 0.992,
+          "mean_return_per_trade_ci95": [
+            0.000163,
+            0.005591
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 30 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ],
+        "equity_crosscheck": {
+          "from_trades": 108659.49,
+          "from_engine_long_only": 106731.77,
+          "comparable": false,
+          "exact_match": false,
+          "note": "long+short birle\u015fik: bar bazl\u0131 motor e\u011frisi YALNIZ long'u i\u00e7erir, bu y\u00fczden kar\u015f\u0131la\u015ft\u0131rma YAPILMAZ; i\u00e7 tutarl\u0131l\u0131k equity_before/after zinciriyle denetlenir (test_equity_recomputed_from_trades_matches_engine)"
+        }
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.865232,
+        "cost_frac": 0.002,
+        "net_return_frac": 0.863232,
+        "final_equity": 186323.18,
+        "max_drawdown_frac": -0.28816,
+        "first": "2024-04-24 02:00:00+00:00",
+        "last": "2026-09-16 06:00:00+00:00"
+      },
+      "config": {
+        "time_stop_bars": 90,
+        "take_profit_r": 3.0,
+        "same_bar_priority": "stop",
+        "risk_per_trade": 0.005,
+        "max_leverage": 2.0,
+        "allow_short": false,
+        "one_way_cost_frac": 0.001,
+        "round_trip_bps": 20.0,
+        "starting_equity": 100000.0,
+        "rejected_no_valid_stop": 0,
+        "rejected_not_tradable": 0
+      },
+      "warnings": [
+        "Backtest sonunda pozisyon A\u00c7IKTI; son bar\u0131n kapan\u0131\u015f\u0131ndan 'end_of_data' sebebiyle kapat\u0131ld\u0131 (\u015feffafl\u0131k i\u00e7in ayr\u0131 reason).",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 23 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 30 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ],
+      "cost_bps_round_trip": 20.0,
+      "long_trades": 23,
+      "short_trades": 7,
+      "equity_png": "reports/figures/equity_GOLD_long.png",
+      "trades_csv": "reports/trades_GOLD.csv"
+    },
+    "SILVER": {
+      "metrics": {
+        "n_trades": 34,
+        "win_rate": 0.4118,
+        "n_wins": 14,
+        "n_losses": 20,
+        "profit_factor_gross": 0.9973,
+        "profit_factor_net": 0.9347,
+        "expectancy_r": 0.0022,
+        "expectancy_r_median": -0.8391,
+        "avg_win_r": 1.3538,
+        "avg_loss_r": -0.9438,
+        "avg_holding_bars": 60.38,
+        "max_holding_bars": 90,
+        "total_gross": -25.485418196341925,
+        "total_cost": 615.8105308360058,
+        "total_net": -641.2959490323467,
+        "final_equity": 99358.7,
+        "net_return_frac": -0.006413,
+        "exit_reason_mix": {
+          "stop": 17,
+          "time_stop": 16,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 26,
+          "short": 8
+        },
+        "avg_stop_distance_atr": 4.692,
+        "cost_row": {
+          "total_cost": 615.81,
+          "net_return_with_cost_frac": -0.006413,
+          "gross_return_without_cost_frac": -0.000255,
+          "round_trip_bps": 20.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.028819,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 34,
+          "expectancy_r_ci95": [
+            -0.419,
+            0.4285
+          ],
+          "expectancy_r_p05": -0.3479,
+          "win_rate_ci95": [
+            0.2353,
+            0.5882
+          ],
+          "prob_expectancy_positive": 0.488,
+          "mean_return_per_trade_ci95": [
+            -0.002331,
+            0.00199
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 34 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ],
+        "equity_crosscheck": {
+          "from_trades": 99358.7,
+          "from_engine_long_only": 100433.1,
+          "comparable": false,
+          "exact_match": false,
+          "note": "long+short birle\u015fik: bar bazl\u0131 motor e\u011frisi YALNIZ long'u i\u00e7erir, bu y\u00fczden kar\u015f\u0131la\u015ft\u0131rma YAPILMAZ; i\u00e7 tutarl\u0131l\u0131k equity_before/after zinciriyle denetlenir (test_equity_recomputed_from_trades_matches_engine)"
+        }
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.368124,
+        "cost_frac": 0.002,
+        "net_return_frac": 1.366124,
+        "final_equity": 236612.37,
+        "max_drawdown_frac": -0.534963,
+        "first": "2024-04-24 02:00:00+00:00",
+        "last": "2026-09-16 06:00:00+00:00"
+      },
+      "config": {
+        "time_stop_bars": 90,
+        "take_profit_r": 3.0,
+        "same_bar_priority": "stop",
+        "risk_per_trade": 0.005,
+        "max_leverage": 2.0,
+        "allow_short": false,
+        "one_way_cost_frac": 0.001,
+        "round_trip_bps": 20.0,
+        "starting_equity": 100000.0,
+        "rejected_no_valid_stop": 0,
+        "rejected_not_tradable": 0
+      },
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 26 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 34 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ],
+      "cost_bps_round_trip": 20.0,
+      "long_trades": 26,
+      "short_trades": 8,
+      "equity_png": "reports/figures/equity_SILVER_long.png",
+      "trades_csv": "reports/trades_SILVER.csv"
+    }
+  },
+  "basket": {
+    "n_stocks": 28,
+    "metrics": {
+      "n_trades": 172,
+      "win_rate": 0.3837,
+      "n_wins": 66,
+      "n_losses": 106,
+      "profit_factor_gross": 1.138,
+      "profit_factor_net": 0.9308,
+      "expectancy_r": 0.077,
+      "expectancy_r_median": -0.8803,
+      "avg_win_r": 1.6285,
+      "avg_loss_r": -0.913,
+      "avg_holding_bars": 55.97,
+      "max_holding_bars": 90,
+      "total_gross": 6622.4598177970565,
+      "total_cost": 10348.458709740922,
+      "total_net": -3725.9988919438656,
+      "final_equity": 98667.89,
+      "net_return_frac": -0.013321,
+      "exit_reason_mix": {
+        "stop": 85,
+        "time_stop": 61,
+        "take_profit": 20,
+        "end_of_data": 6
+      },
+      "direction_mix": {
+        "long": 172
+      },
+      "avg_stop_distance_atr": 5.564,
+      "cost_row": {
+        "total_cost": 10348.46,
+        "net_return_with_cost_frac": -0.013321,
+        "gross_return_without_cost_frac": 0.066225,
+        "round_trip_bps": 120.0
+      },
+      "statistically_weak": false,
+      "max_drawdown_frac": -0.081881,
+      "bootstrap": {
+        "resamples": 1000,
+        "n_trades": 172,
+        "expectancy_r_ci95": [
+          -0.1331,
+          0.2828
+        ],
+        "expectancy_r_p05": -0.0981,
+        "win_rate_ci95": [
+          0.3198,
+          0.4593
+        ],
+        "prob_expectancy_positive": 0.762,
+        "mean_return_per_trade_ci95": [
+          -0.001261,
+          0.000812
+        ]
+      },
+      "warnings": []
+    },
+    "aggregation": "e\u015fit-risk: her sinyal ayn\u0131 risk b\u00fct\u00e7esi; basket getirisi = hisse ba\u015f\u0131na % getirilerin ORTALAMASI",
+    "flag": "R\u0130SK MOD\u00dcL\u00dc \u00d6NCES\u0130 \u00d6N\u0130ZLEME",
+    "basket_equity": {
+      "rows": 1436,
+      "net_return_frac": -0.001384,
+      "max_drawdown_frac": -0.007776,
+      "first": "2023-10-27 07:00:00+00:00",
+      "last": "2026-09-16 07:00:00+00:00"
+    },
+    "basket_equity_png": "reports/figures/equity_bist30_basket.png",
+    "trades_csv": "reports/trades_bist30_basket.csv"
+  },
+  "stocks_appendix": {
+    "AEFES": {
+      "metrics": {
+        "n_trades": 4,
+        "win_rate": 0.5,
+        "n_wins": 2,
+        "n_losses": 2,
+        "profit_factor_gross": 1.3065,
+        "profit_factor_net": 1.1127,
+        "expectancy_r": 0.1943,
+        "expectancy_r_median": -0.3935,
+        "avg_win_r": 1.6065,
+        "avg_loss_r": -1.218,
+        "avg_holding_bars": 57.75,
+        "max_holding_bars": 90,
+        "total_gross": 374.4072604299346,
+        "total_cost": 226.47990328104254,
+        "total_net": 147.92735714889227,
+        "final_equity": 100147.93,
+        "net_return_frac": 0.001479,
+        "exit_reason_mix": {
+          "stop": 2,
+          "take_profit": 1,
+          "time_stop": 1
+        },
+        "direction_mix": {
+          "long": 4
+        },
+        "avg_stop_distance_atr": 5.26,
+        "cost_row": {
+          "total_cost": 226.48,
+          "net_return_with_cost_frac": 0.001479,
+          "gross_return_without_cost_frac": 0.003744,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.007527,
+        "max_drawdown_frac_bar_level_long_only": -0.012729,
+        "exposure_frac": 0.1636,
+        "bootstrap": {
+          "note": "bootstrap i\u00e7in yetersiz trade"
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.761079,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.749079,
+        "final_equity": 174907.9,
+        "max_drawdown_frac": -0.557737,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "AKBNK": {
+      "metrics": {
+        "n_trades": 8,
+        "win_rate": 0.25,
+        "n_wins": 2,
+        "n_losses": 6,
+        "profit_factor_gross": 0.3788,
+        "profit_factor_net": 0.3102,
+        "expectancy_r": -0.4464,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 1.0937,
+        "avg_loss_r": -0.9598,
+        "avg_holding_bars": 46.88,
+        "max_holding_bars": 90,
+        "total_gross": -1777.4869786600734,
+        "total_cost": 388.9042913300918,
+        "total_net": -2166.3912699901653,
+        "final_equity": 97833.61,
+        "net_return_frac": -0.021664,
+        "exit_reason_mix": {
+          "stop": 5,
+          "time_stop": 3
+        },
+        "direction_mix": {
+          "long": 8
+        },
+        "avg_stop_distance_atr": 5.793,
+        "cost_row": {
+          "total_cost": 388.9,
+          "net_return_with_cost_frac": -0.021664,
+          "gross_return_without_cost_frac": -0.017775,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.021848,
+        "max_drawdown_frac_bar_level_long_only": -0.026596,
+        "exposure_frac": 0.2667,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 8,
+          "expectancy_r_ci95": [
+            -0.9698,
+            0.3175
+          ],
+          "expectancy_r_p05": -0.9698,
+          "win_rate_ci95": [
+            0.0,
+            0.5
+          ],
+          "prob_expectancy_positive": 0.101,
+          "mean_return_per_trade_ci95": [
+            -0.005397,
+            0.001085
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.127694,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.115694,
+        "final_equity": 211569.43,
+        "max_drawdown_frac": -0.361011,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "ASELS": {
+      "metrics": {
+        "n_trades": 8,
+        "win_rate": 0.625,
+        "n_wins": 5,
+        "n_losses": 3,
+        "profit_factor_gross": 5.0945,
+        "profit_factor_net": 4.2711,
+        "expectancy_r": 1.2499,
+        "expectancy_r_median": 1.5051,
+        "avg_win_r": 2.4707,
+        "avg_loss_r": -0.7849,
+        "avg_holding_bars": 61.12,
+        "max_holding_bars": 90,
+        "total_gross": 5073.948870904305,
+        "total_cost": 476.05009242093,
+        "total_net": 4597.898778483375,
+        "final_equity": 104597.9,
+        "net_return_frac": 0.045979,
+        "exit_reason_mix": {
+          "time_stop": 3,
+          "take_profit": 3,
+          "stop": 2
+        },
+        "direction_mix": {
+          "long": 8
+        },
+        "avg_stop_distance_atr": 5.352,
+        "cost_row": {
+          "total_cost": 476.05,
+          "net_return_with_cost_frac": 0.045979,
+          "gross_return_without_cost_frac": 0.050739,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.011633,
+        "max_drawdown_frac_bar_level_long_only": -0.014248,
+        "exposure_frac": 0.3461,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 8,
+          "expectancy_r_ci95": [
+            0.084,
+            2.3814
+          ],
+          "expectancy_r_p05": 0.2882,
+          "win_rate_ci95": [
+            0.25,
+            0.8781
+          ],
+          "prob_expectancy_positive": 0.982,
+          "mean_return_per_trade_ci95": [
+            -0.00014,
+            0.011317
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 7.931177,
+        "cost_frac": 0.012,
+        "net_return_frac": 7.919177,
+        "final_equity": 891917.73,
+        "max_drawdown_frac": -0.2486,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "ASTOR": {
+      "metrics": {
+        "n_trades": 7,
+        "win_rate": 0.4286,
+        "n_wins": 3,
+        "n_losses": 4,
+        "profit_factor_gross": 2.667,
+        "profit_factor_net": 2.2712,
+        "expectancy_r": 0.8083,
+        "expectancy_r_median": -0.3417,
+        "avg_win_r": 3.0,
+        "avg_loss_r": -0.8354,
+        "avg_holding_bars": 54.71,
+        "max_holding_bars": 90,
+        "total_gross": 2826.1931814828836,
+        "total_cost": 385.91603721440777,
+        "total_net": 2440.2771442684757,
+        "final_equity": 102440.28,
+        "net_return_frac": 0.024403,
+        "exit_reason_mix": {
+          "take_profit": 3,
+          "stop": 3,
+          "time_stop": 1
+        },
+        "direction_mix": {
+          "long": 7
+        },
+        "avg_stop_distance_atr": 4.799,
+        "cost_row": {
+          "total_cost": 385.92,
+          "net_return_with_cost_frac": 0.024403,
+          "gross_return_without_cost_frac": 0.028262,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.011456,
+        "max_drawdown_frac_bar_level_long_only": -0.015534,
+        "exposure_frac": 0.2716,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 7,
+          "expectancy_r_ci95": [
+            -0.4286,
+            2.4286
+          ],
+          "expectancy_r_p05": -0.3345,
+          "win_rate_ci95": [
+            0.1429,
+            0.8571
+          ],
+          "prob_expectancy_positive": 0.893,
+          "mean_return_per_trade_ci95": [
+            -0.00283,
+            0.011544
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.090571,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.078571,
+        "final_equity": 207857.07,
+        "max_drawdown_frac": -0.507143,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "BIMAS": {
+      "metrics": {
+        "n_trades": 8,
+        "win_rate": 0.625,
+        "n_wins": 5,
+        "n_losses": 3,
+        "profit_factor_gross": 1.9112,
+        "profit_factor_net": 1.5033,
+        "expectancy_r": 0.3581,
+        "expectancy_r_median": 0.4687,
+        "avg_win_r": 1.1938,
+        "avg_loss_r": -1.0349,
+        "avg_holding_bars": 71.12,
+        "max_holding_bars": 90,
+        "total_gross": 1418.1225016346639,
+        "total_cost": 528.0294128164168,
+        "total_net": 890.093088818247,
+        "final_equity": 100890.09,
+        "net_return_frac": 0.008901,
+        "exit_reason_mix": {
+          "time_stop": 4,
+          "stop": 3,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 8
+        },
+        "avg_stop_distance_atr": 5.347,
+        "cost_row": {
+          "total_cost": 528.03,
+          "net_return_with_cost_frac": 0.008901,
+          "gross_return_without_cost_frac": 0.014181,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.010293,
+        "max_drawdown_frac_bar_level_long_only": -0.012659,
+        "exposure_frac": 0.4018,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 8,
+          "expectancy_r_ci95": [
+            -0.4847,
+            1.3624
+          ],
+          "expectancy_r_p05": -0.4138,
+          "win_rate_ci95": [
+            0.25,
+            0.875
+          ],
+          "prob_expectancy_positive": 0.762,
+          "mean_return_per_trade_ci95": [
+            -0.003178,
+            0.006103
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.946043,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.934043,
+        "final_equity": 293404.32,
+        "max_drawdown_frac": -0.357882,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "EKGYO": {
+      "metrics": {
+        "n_trades": 8,
+        "win_rate": 0.375,
+        "n_wins": 3,
+        "n_losses": 5,
+        "profit_factor_gross": 0.8997,
+        "profit_factor_net": 0.754,
+        "expectancy_r": -0.0611,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 1.5561,
+        "avg_loss_r": -1.0315,
+        "avg_holding_bars": 56.25,
+        "max_holding_bars": 90,
+        "total_gross": -260.4659172952315,
+        "total_cost": 444.2803036924312,
+        "total_net": -704.7462209876627,
+        "final_equity": 99295.25,
+        "net_return_frac": -0.007047,
+        "exit_reason_mix": {
+          "stop": 5,
+          "time_stop": 2,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 8
+        },
+        "avg_stop_distance_atr": 5.426,
+        "cost_row": {
+          "total_cost": 444.28,
+          "net_return_with_cost_frac": -0.007047,
+          "gross_return_without_cost_frac": -0.002605,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.020796,
+        "max_drawdown_frac_bar_level_long_only": -0.024594,
+        "exposure_frac": 0.3189,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 8,
+          "expectancy_r_ci95": [
+            -1.0002,
+            0.9874
+          ],
+          "expectancy_r_p05": -0.8716,
+          "win_rate_ci95": [
+            0.0,
+            0.75
+          ],
+          "prob_expectancy_positive": 0.415,
+          "mean_return_per_trade_ci95": [
+            -0.005565,
+            0.0042
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.76506,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.75306,
+        "final_equity": 275306.04,
+        "max_drawdown_frac": -0.34021,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "ENKAI": {
+      "metrics": {
+        "n_trades": 7,
+        "win_rate": 0.4286,
+        "n_wins": 3,
+        "n_losses": 4,
+        "profit_factor_gross": 1.0782,
+        "profit_factor_net": 0.7941,
+        "expectancy_r": 0.0261,
+        "expectancy_r_median": 0.0597,
+        "avg_win_r": 0.6062,
+        "avg_loss_r": -0.7474,
+        "avg_holding_bars": 70.86,
+        "max_holding_bars": 90,
+        "total_gross": 85.512021463861,
+        "total_cost": 350.22726857810585,
+        "total_net": -264.7152471142451,
+        "final_equity": 99735.28,
+        "net_return_frac": -0.002647,
+        "exit_reason_mix": {
+          "time_stop": 5,
+          "stop": 2
+        },
+        "direction_mix": {
+          "long": 7
+        },
+        "avg_stop_distance_atr": 6.429,
+        "cost_row": {
+          "total_cost": 350.23,
+          "net_return_with_cost_frac": -0.002647,
+          "gross_return_without_cost_frac": 0.000855,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.006009,
+        "max_drawdown_frac_bar_level_long_only": -0.009439,
+        "exposure_frac": 0.3503,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 7,
+          "expectancy_r_ci95": [
+            -0.5866,
+            0.6413
+          ],
+          "expectancy_r_p05": -0.474,
+          "win_rate_ci95": [
+            0.2857,
+            0.8571
+          ],
+          "prob_expectancy_positive": 0.541,
+          "mean_return_per_trade_ci95": [
+            -0.003409,
+            0.002646
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.691062,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.679062,
+        "final_equity": 267906.22,
+        "max_drawdown_frac": -0.287556,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "EREGL": {
+      "metrics": {
+        "n_trades": 9,
+        "win_rate": 0.4444,
+        "n_wins": 4,
+        "n_losses": 5,
+        "profit_factor_gross": 1.9514,
+        "profit_factor_net": 1.5433,
+        "expectancy_r": 0.5301,
+        "expectancy_r_median": -0.8928,
+        "avg_win_r": 2.416,
+        "avg_loss_r": -0.9786,
+        "avg_holding_bars": 44.33,
+        "max_holding_bars": 90,
+        "total_gross": 2369.453624160336,
+        "total_cost": 802.5417437567078,
+        "total_net": 1566.9118804036282,
+        "final_equity": 101566.91,
+        "net_return_frac": 0.015669,
+        "exit_reason_mix": {
+          "stop": 4,
+          "take_profit": 3,
+          "time_stop": 1,
+          "end_of_data": 1
+        },
+        "direction_mix": {
+          "long": 9
+        },
+        "avg_stop_distance_atr": 4.562,
+        "cost_row": {
+          "total_cost": 802.54,
+          "net_return_with_cost_frac": 0.015669,
+          "gross_return_without_cost_frac": 0.023695,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.016965,
+        "max_drawdown_frac_bar_level_long_only": -0.025134,
+        "exposure_frac": 0.2834,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 9,
+          "expectancy_r_ci95": [
+            -0.5436,
+            1.7788
+          ],
+          "expectancy_r_p05": -0.3707,
+          "win_rate_ci95": [
+            0.1111,
+            0.7778
+          ],
+          "prob_expectancy_positive": 0.835,
+          "mean_return_per_trade_ci95": [
+            -0.003603,
+            0.007933
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 9 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.887664,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.875664,
+        "final_equity": 187566.41,
+        "max_drawdown_frac": -0.311503,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "Backtest sonunda pozisyon A\u00c7IKTI; son bar\u0131n kapan\u0131\u015f\u0131ndan 'end_of_data' sebebiyle kapat\u0131ld\u0131 (\u015feffafl\u0131k i\u00e7in ayr\u0131 reason).",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 9 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 9 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "FROTO": {
+      "metrics": {
+        "n_trades": 3,
+        "win_rate": 0.6667,
+        "n_wins": 2,
+        "n_losses": 1,
+        "profit_factor_gross": 4.4039,
+        "profit_factor_net": 3.8315,
+        "expectancy_r": 1.1371,
+        "expectancy_r_median": 1.1478,
+        "avg_win_r": 2.2057,
+        "avg_loss_r": -1.0,
+        "avg_holding_bars": 67.67,
+        "max_holding_bars": 90,
+        "total_gross": 1701.9527776374734,
+        "total_cost": 192.40997182527437,
+        "total_net": 1509.542805812199,
+        "final_equity": 101509.54,
+        "net_return_frac": 0.015095,
+        "exit_reason_mix": {
+          "stop": 1,
+          "time_stop": 1,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 3
+        },
+        "avg_stop_distance_atr": 6.703,
+        "cost_row": {
+          "total_cost": 192.41,
+          "net_return_with_cost_frac": 0.015095,
+          "gross_return_without_cost_frac": 0.01702,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.005331,
+        "max_drawdown_frac_bar_level_long_only": -0.010162,
+        "exposure_frac": 0.1435,
+        "bootstrap": {
+          "note": "bootstrap i\u00e7in yetersiz trade"
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 3 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": -0.112426,
+        "cost_frac": 0.012,
+        "net_return_frac": -0.124426,
+        "final_equity": 87557.4,
+        "max_drawdown_frac": -0.442379,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 3 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 3 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "GARAN": {
+      "metrics": {
+        "n_trades": 5,
+        "win_rate": 0.4,
+        "n_wins": 2,
+        "n_losses": 3,
+        "profit_factor_gross": 1.2298,
+        "profit_factor_net": 0.9841,
+        "expectancy_r": 0.1084,
+        "expectancy_r_median": -0.1159,
+        "avg_win_r": 1.4123,
+        "avg_loss_r": -0.7608,
+        "avg_holding_bars": 62.0,
+        "max_holding_bars": 90,
+        "total_gross": 262.53718704664516,
+        "total_cost": 283.21050706816357,
+        "total_net": -20.673320021518407,
+        "final_equity": 99979.33,
+        "net_return_frac": -0.000207,
+        "exit_reason_mix": {
+          "time_stop": 3,
+          "stop": 2
+        },
+        "direction_mix": {
+          "long": 5
+        },
+        "avg_stop_distance_atr": 5.174,
+        "cost_row": {
+          "total_cost": 283.21,
+          "net_return_with_cost_frac": -0.000207,
+          "gross_return_without_cost_frac": 0.002625,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.012935,
+        "max_drawdown_frac_bar_level_long_only": -0.015648,
+        "exposure_frac": 0.2194,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 5,
+          "expectancy_r_ci95": [
+            -0.8906,
+            1.1066
+          ],
+          "expectancy_r_p05": -0.713,
+          "win_rate_ci95": [
+            0.0,
+            0.8
+          ],
+          "prob_expectancy_positive": 0.581,
+          "mean_return_per_trade_ci95": [
+            -0.005004,
+            0.004948
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.538622,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.526622,
+        "final_equity": 252662.2,
+        "max_drawdown_frac": -0.30681,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "GUBRF": {
+      "metrics": {
+        "n_trades": 7,
+        "win_rate": 0.4286,
+        "n_wins": 3,
+        "n_losses": 4,
+        "profit_factor_gross": 0.9505,
+        "profit_factor_net": 0.807,
+        "expectancy_r": -0.0271,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 1.4575,
+        "avg_loss_r": -1.1406,
+        "avg_holding_bars": 53.29,
+        "max_holding_bars": 90,
+        "total_gross": -113.2683651627733,
+        "total_cost": 374.8051390758746,
+        "total_net": -488.07350423864773,
+        "final_equity": 99511.93,
+        "net_return_frac": -0.004881,
+        "exit_reason_mix": {
+          "stop": 4,
+          "time_stop": 2,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 7
+        },
+        "avg_stop_distance_atr": 5.143,
+        "cost_row": {
+          "total_cost": 374.81,
+          "net_return_with_cost_frac": -0.004881,
+          "gross_return_without_cost_frac": -0.001133,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.013801,
+        "max_drawdown_frac_bar_level_long_only": -0.023955,
+        "exposure_frac": 0.2646,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 7,
+          "expectancy_r_ci95": [
+            -1.0,
+            1.1436
+          ],
+          "expectancy_r_p05": -0.9094,
+          "win_rate_ci95": [
+            0.1429,
+            0.8571
+          ],
+          "prob_expectancy_positive": 0.409,
+          "mean_return_per_trade_ci95": [
+            -0.005571,
+            0.005198
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.242143,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.230143,
+        "final_equity": 123014.3,
+        "max_drawdown_frac": -0.671133,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "ISCTR": {
+      "metrics": {
+        "n_trades": 6,
+        "win_rate": 0.3333,
+        "n_wins": 2,
+        "n_losses": 4,
+        "profit_factor_gross": 0.9071,
+        "profit_factor_net": 0.7453,
+        "expectancy_r": -0.0474,
+        "expectancy_r_median": -0.6298,
+        "avg_win_r": 1.4875,
+        "avg_loss_r": -0.8149,
+        "avg_holding_bars": 56.17,
+        "max_holding_bars": 90,
+        "total_gross": -151.38587440449027,
+        "total_cost": 316.64755643472023,
+        "total_net": -468.0334308392104,
+        "final_equity": 99531.97,
+        "net_return_frac": -0.00468,
+        "exit_reason_mix": {
+          "stop": 3,
+          "time_stop": 3
+        },
+        "direction_mix": {
+          "long": 6
+        },
+        "avg_stop_distance_atr": 6.889,
+        "cost_row": {
+          "total_cost": 316.65,
+          "net_return_with_cost_frac": -0.00468,
+          "gross_return_without_cost_frac": -0.001514,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.006876,
+        "max_drawdown_frac_bar_level_long_only": -0.009746,
+        "exposure_frac": 0.239,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 6,
+          "expectancy_r_ci95": [
+            -0.8766,
+            0.9224
+          ],
+          "expectancy_r_p05": -0.7532,
+          "win_rate_ci95": [
+            0.0,
+            0.6667
+          ],
+          "prob_expectancy_positive": 0.405,
+          "mean_return_per_trade_ci95": [
+            -0.004939,
+            0.00413
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.393038,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.381038,
+        "final_equity": 138103.8,
+        "max_drawdown_frac": -0.429542,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "KCHOL": {
+      "metrics": {
+        "n_trades": 6,
+        "win_rate": 0.3333,
+        "n_wins": 2,
+        "n_losses": 4,
+        "profit_factor_gross": 1.1707,
+        "profit_factor_net": 0.9337,
+        "expectancy_r": 0.0981,
+        "expectancy_r_median": -0.6323,
+        "avg_win_r": 1.9267,
+        "avg_loss_r": -0.8162,
+        "avg_holding_bars": 53.33,
+        "max_holding_bars": 90,
+        "total_gross": 280.5558974755262,
+        "total_cost": 404.6832802766108,
+        "total_net": -124.12738280108479,
+        "final_equity": 99875.87,
+        "net_return_frac": -0.001241,
+        "exit_reason_mix": {
+          "stop": 3,
+          "time_stop": 1,
+          "take_profit": 1,
+          "end_of_data": 1
+        },
+        "direction_mix": {
+          "long": 6
+        },
+        "avg_stop_distance_atr": 5.046,
+        "cost_row": {
+          "total_cost": 404.68,
+          "net_return_with_cost_frac": -0.001241,
+          "gross_return_without_cost_frac": 0.002806,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.013139,
+        "max_drawdown_frac_bar_level_long_only": -0.01585,
+        "exposure_frac": 0.2263,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 6,
+          "expectancy_r_ci95": [
+            -0.8774,
+            1.3089
+          ],
+          "expectancy_r_p05": -0.8774,
+          "win_rate_ci95": [
+            0.0,
+            0.6667
+          ],
+          "prob_expectancy_positive": 0.536,
+          "mean_return_per_trade_ci95": [
+            -0.005025,
+            0.005727
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.50218,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.49018,
+        "final_equity": 149018.01,
+        "max_drawdown_frac": -0.500463,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "Backtest sonunda pozisyon A\u00c7IKTI; son bar\u0131n kapan\u0131\u015f\u0131ndan 'end_of_data' sebebiyle kapat\u0131ld\u0131 (\u015feffafl\u0131k i\u00e7in ayr\u0131 reason).",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "KRDMD": {
+      "metrics": {
+        "n_trades": 7,
+        "win_rate": 0.4286,
+        "n_wins": 3,
+        "n_losses": 4,
+        "profit_factor_gross": 2.1969,
+        "profit_factor_net": 1.7717,
+        "expectancy_r": 0.4007,
+        "expectancy_r_median": -0.1034,
+        "avg_win_r": 1.7101,
+        "avg_loss_r": -0.5814,
+        "avg_holding_bars": 73.57,
+        "max_holding_bars": 90,
+        "total_gross": 1390.8155504599088,
+        "total_cost": 366.678582649492,
+        "total_net": 1024.1369678104165,
+        "final_equity": 101024.14,
+        "net_return_frac": 0.010241,
+        "exit_reason_mix": {
+          "time_stop": 3,
+          "stop": 2,
+          "take_profit": 1,
+          "end_of_data": 1
+        },
+        "direction_mix": {
+          "long": 7
+        },
+        "avg_stop_distance_atr": 5.368,
+        "cost_row": {
+          "total_cost": 366.68,
+          "net_return_with_cost_frac": 0.010241,
+          "gross_return_without_cost_frac": 0.013908,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.007147,
+        "max_drawdown_frac_bar_level_long_only": -0.016179,
+        "exposure_frac": 0.3628,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 7,
+          "expectancy_r_ci95": [
+            -0.5595,
+            1.4864
+          ],
+          "expectancy_r_p05": -0.4027,
+          "win_rate_ci95": [
+            0.0,
+            0.8571
+          ],
+          "prob_expectancy_positive": 0.765,
+          "mean_return_per_trade_ci95": [
+            -0.00323,
+            0.006879
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.651406,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.639406,
+        "final_equity": 163940.56,
+        "max_drawdown_frac": -0.368857,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "Backtest sonunda pozisyon A\u00c7IKTI; son bar\u0131n kapan\u0131\u015f\u0131ndan 'end_of_data' sebebiyle kapat\u0131ld\u0131 (\u015feffafl\u0131k i\u00e7in ayr\u0131 reason).",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "MGROS": {
+      "metrics": {
+        "n_trades": 6,
+        "win_rate": 0.5,
+        "n_wins": 3,
+        "n_losses": 3,
+        "profit_factor_gross": 1.9103,
+        "profit_factor_net": 1.5613,
+        "expectancy_r": 0.5117,
+        "expectancy_r_median": -0.0177,
+        "avg_win_r": 2.1305,
+        "avg_loss_r": -1.1071,
+        "avg_holding_bars": 50.67,
+        "max_holding_bars": 90,
+        "total_gross": 1518.9185283639706,
+        "total_cost": 468.9382468970993,
+        "total_net": 1049.980281466871,
+        "final_equity": 101049.98,
+        "net_return_frac": 0.0105,
+        "exit_reason_mix": {
+          "stop": 3,
+          "time_stop": 2,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 6
+        },
+        "avg_stop_distance_atr": 4.713,
+        "cost_row": {
+          "total_cost": 468.94,
+          "net_return_with_cost_frac": 0.0105,
+          "gross_return_without_cost_frac": 0.015189,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.0185,
+        "max_drawdown_frac_bar_level_long_only": -0.024776,
+        "exposure_frac": 0.2159,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 6,
+          "expectancy_r_ci95": [
+            -0.8571,
+            1.9941
+          ],
+          "expectancy_r_p05": -0.6126,
+          "win_rate_ci95": [
+            0.1625,
+            0.8333
+          ],
+          "prob_expectancy_positive": 0.757,
+          "mean_return_per_trade_ci95": [
+            -0.004994,
+            0.00911
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.456465,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.444465,
+        "final_equity": 144446.51,
+        "max_drawdown_frac": -0.314273,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "PETKM": {
+      "metrics": {
+        "n_trades": 4,
+        "win_rate": 0.5,
+        "n_wins": 2,
+        "n_losses": 2,
+        "profit_factor_gross": 1.0668,
+        "profit_factor_net": 0.7982,
+        "expectancy_r": 0.0268,
+        "expectancy_r_median": -0.2496,
+        "avg_win_r": 0.8055,
+        "avg_loss_r": -0.7519,
+        "avg_holding_bars": 70.0,
+        "max_holding_bars": 90,
+        "total_gross": 50.47760616762679,
+        "total_cost": 215.62026179765877,
+        "total_net": -165.14265563003198,
+        "final_equity": 99834.86,
+        "net_return_frac": -0.001651,
+        "exit_reason_mix": {
+          "time_stop": 3,
+          "end_of_data": 1
+        },
+        "direction_mix": {
+          "long": 4
+        },
+        "avg_stop_distance_atr": 5.807,
+        "cost_row": {
+          "total_cost": 215.62,
+          "net_return_with_cost_frac": -0.001651,
+          "gross_return_without_cost_frac": 0.000505,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.008131,
+        "max_drawdown_frac_bar_level_long_only": -0.015944,
+        "exposure_frac": 0.1971,
+        "bootstrap": {
+          "note": "bootstrap i\u00e7in yetersiz trade"
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.04173,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.02973,
+        "final_equity": 102972.95,
+        "max_drawdown_frac": -0.408077,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "Backtest sonunda pozisyon A\u00c7IKTI; son bar\u0131n kapan\u0131\u015f\u0131ndan 'end_of_data' sebebiyle kapat\u0131ld\u0131 (\u015feffafl\u0131k i\u00e7in ayr\u0131 reason).",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "PGSUS": {
+      "metrics": {
+        "n_trades": 4,
+        "win_rate": 0.25,
+        "n_wins": 1,
+        "n_losses": 3,
+        "profit_factor_gross": 0.1139,
+        "profit_factor_net": 0.0542,
+        "expectancy_r": -0.704,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 0.36,
+        "avg_loss_r": -1.0587,
+        "avg_holding_bars": 39.75,
+        "max_holding_bars": 90,
+        "total_gross": -1400.2101065873753,
+        "total_cost": 297.56327066034856,
+        "total_net": -1697.773377247724,
+        "final_equity": 98302.23,
+        "net_return_frac": -0.016978,
+        "exit_reason_mix": {
+          "stop": 3,
+          "time_stop": 1
+        },
+        "direction_mix": {
+          "long": 4
+        },
+        "avg_stop_distance_atr": 4.717,
+        "cost_row": {
+          "total_cost": 297.56,
+          "net_return_with_cost_frac": -0.016978,
+          "gross_return_without_cost_frac": -0.014002,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.017933,
+        "max_drawdown_frac_bar_level_long_only": -0.027884,
+        "exposure_frac": 0.1135,
+        "bootstrap": {
+          "note": "bootstrap i\u00e7in yetersiz trade"
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.014923,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.002923,
+        "final_equity": 100292.28,
+        "max_drawdown_frac": -0.489789,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 4 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "SAHOL": {
+      "metrics": {
+        "n_trades": 6,
+        "win_rate": 0.1667,
+        "n_wins": 1,
+        "n_losses": 5,
+        "profit_factor_gross": 0.0891,
+        "profit_factor_net": 0.0536,
+        "expectancy_r": -0.5854,
+        "expectancy_r_median": -0.7114,
+        "avg_win_r": 0.3455,
+        "avg_loss_r": -0.7715,
+        "avg_holding_bars": 57.17,
+        "max_holding_bars": 90,
+        "total_gross": -1743.0727523082492,
+        "total_cost": 335.3211177709559,
+        "total_net": -2078.393870079205,
+        "final_equity": 97921.61,
+        "net_return_frac": -0.020784,
+        "exit_reason_mix": {
+          "time_stop": 3,
+          "stop": 3
+        },
+        "direction_mix": {
+          "long": 6
+        },
+        "avg_stop_distance_atr": 5.818,
+        "cost_row": {
+          "total_cost": 335.32,
+          "net_return_with_cost_frac": -0.020784,
+          "gross_return_without_cost_frac": -0.017431,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.020784,
+        "max_drawdown_frac_bar_level_long_only": -0.023475,
+        "exposure_frac": 0.243,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 6,
+          "expectancy_r_ci95": [
+            -0.9889,
+            -0.1348
+          ],
+          "expectancy_r_p05": -0.9461,
+          "win_rate_ci95": [
+            0.0,
+            0.5
+          ],
+          "prob_expectancy_positive": 0.015,
+          "mean_return_per_trade_ci95": [
+            -0.005604,
+            -0.001138
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.584644,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.572644,
+        "final_equity": 157264.39,
+        "max_drawdown_frac": -0.345875,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "SASA": {
+      "metrics": {
+        "n_trades": 3,
+        "win_rate": 0.0,
+        "n_wins": 0,
+        "n_losses": 3,
+        "profit_factor_gross": 0.0,
+        "profit_factor_net": 0.0,
+        "expectancy_r": -0.8575,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": null,
+        "avg_loss_r": -0.8575,
+        "avg_holding_bars": 51.0,
+        "max_holding_bars": 78,
+        "total_gross": -1280.669055289988,
+        "total_cost": 51.44003516888429,
+        "total_net": -1332.109090458872,
+        "final_equity": 98667.89,
+        "net_return_frac": -0.013321,
+        "exit_reason_mix": {
+          "stop": 2,
+          "end_of_data": 1
+        },
+        "direction_mix": {
+          "long": 3
+        },
+        "avg_stop_distance_atr": 8.925,
+        "cost_row": {
+          "total_cost": 51.44,
+          "net_return_with_cost_frac": -0.013321,
+          "gross_return_without_cost_frac": -0.012807,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.013321,
+        "max_drawdown_frac_bar_level_long_only": -0.017048,
+        "exposure_frac": 0.1079,
+        "bootstrap": {
+          "note": "bootstrap i\u00e7in yetersiz trade"
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 3 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": -0.523629,
+        "cost_frac": 0.012,
+        "net_return_frac": -0.535629,
+        "final_equity": 46437.05,
+        "max_drawdown_frac": -0.677623,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "Backtest sonunda pozisyon A\u00c7IKTI; son bar\u0131n kapan\u0131\u015f\u0131ndan 'end_of_data' sebebiyle kapat\u0131ld\u0131 (\u015feffafl\u0131k i\u00e7in ayr\u0131 reason).",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 3 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 3 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "SISE": {
+      "metrics": {
+        "n_trades": 6,
+        "win_rate": 0.1667,
+        "n_wins": 1,
+        "n_losses": 5,
+        "profit_factor_gross": 0.2375,
+        "profit_factor_net": 0.1973,
+        "expectancy_r": -0.5383,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 1.0122,
+        "avg_loss_r": -0.8484,
+        "avg_holding_bars": 55.17,
+        "max_holding_bars": 90,
+        "total_gross": -1606.3932632700803,
+        "total_cost": 276.70395489276325,
+        "total_net": -1883.0972181628433,
+        "final_equity": 98116.9,
+        "net_return_frac": -0.018831,
+        "exit_reason_mix": {
+          "stop": 4,
+          "time_stop": 2
+        },
+        "direction_mix": {
+          "long": 6
+        },
+        "avg_stop_distance_atr": 7.286,
+        "cost_row": {
+          "total_cost": 276.7,
+          "net_return_with_cost_frac": -0.018831,
+          "gross_return_without_cost_frac": -0.016064,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.018831,
+        "max_drawdown_frac_bar_level_long_only": -0.018938,
+        "exposure_frac": 0.2348,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 6,
+          "expectancy_r_ci95": [
+            -1.0,
+            0.1324
+          ],
+          "expectancy_r_p05": -1.0,
+          "win_rate_ci95": [
+            0.0,
+            0.5
+          ],
+          "prob_expectancy_positive": 0.06,
+          "mean_return_per_trade_ci95": [
+            -0.005556,
+            0.000244
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": -0.200245,
+        "cost_frac": 0.012,
+        "net_return_frac": -0.212245,
+        "final_equity": 78775.53,
+        "max_drawdown_frac": -0.422182,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "TAVHL": {
+      "metrics": {
+        "n_trades": 5,
+        "win_rate": 0.4,
+        "n_wins": 2,
+        "n_losses": 3,
+        "profit_factor_gross": 0.3025,
+        "profit_factor_net": 0.2102,
+        "expectancy_r": -0.4367,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 0.4746,
+        "avg_loss_r": -1.0443,
+        "avg_holding_bars": 60.4,
+        "max_holding_bars": 90,
+        "total_gross": -1088.4562975852164,
+        "total_cost": 313.84645490379313,
+        "total_net": -1402.3027524890097,
+        "final_equity": 98597.7,
+        "net_return_frac": -0.014023,
+        "exit_reason_mix": {
+          "stop": 3,
+          "time_stop": 2
+        },
+        "direction_mix": {
+          "long": 5
+        },
+        "avg_stop_distance_atr": 6.115,
+        "cost_row": {
+          "total_cost": 313.85,
+          "net_return_with_cost_frac": -0.014023,
+          "gross_return_without_cost_frac": -0.010885,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.014158,
+        "max_drawdown_frac_bar_level_long_only": -0.01779,
+        "exposure_frac": 0.2138,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 5,
+          "expectancy_r_ci95": [
+            -1.0532,
+            0.3023
+          ],
+          "expectancy_r_p05": -1.0298,
+          "win_rate_ci95": [
+            0.0,
+            0.8
+          ],
+          "prob_expectancy_positive": 0.124,
+          "mean_return_per_trade_ci95": [
+            -0.006013,
+            0.000974
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.125318,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.113318,
+        "final_equity": 211331.76,
+        "max_drawdown_frac": -0.333878,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "TCELL": {
+      "metrics": {
+        "n_trades": 7,
+        "win_rate": 0.2857,
+        "n_wins": 2,
+        "n_losses": 5,
+        "profit_factor_gross": 0.5859,
+        "profit_factor_net": 0.4715,
+        "expectancy_r": -0.2961,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 1.4883,
+        "avg_loss_r": -1.0098,
+        "avg_holding_bars": 41.71,
+        "max_holding_bars": 90,
+        "total_gross": -1040.9278515791943,
+        "total_cost": 458.080419581042,
+        "total_net": -1499.0082711602363,
+        "final_equity": 98500.99,
+        "net_return_frac": -0.01499,
+        "exit_reason_mix": {
+          "stop": 5,
+          "time_stop": 2
+        },
+        "direction_mix": {
+          "long": 7
+        },
+        "avg_stop_distance_atr": 5.545,
+        "cost_row": {
+          "total_cost": 458.08,
+          "net_return_with_cost_frac": -0.01499,
+          "gross_return_without_cost_frac": -0.010409,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.018293,
+        "max_drawdown_frac_bar_level_long_only": -0.024235,
+        "exposure_frac": 0.2082,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 7,
+          "expectancy_r_ci95": [
+            -1.014,
+            0.6149
+          ],
+          "expectancy_r_p05": -1.014,
+          "win_rate_ci95": [
+            0.0,
+            0.7143
+          ],
+          "prob_expectancy_positive": 0.197,
+          "mean_return_per_trade_ci95": [
+            -0.005777,
+            0.002504
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.90297,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.89097,
+        "final_equity": 189097.03,
+        "max_drawdown_frac": -0.28821,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "THYAO": {
+      "metrics": {
+        "n_trades": 7,
+        "win_rate": 0.1429,
+        "n_wins": 1,
+        "n_losses": 6,
+        "profit_factor_gross": 0.1387,
+        "profit_factor_net": 0.0924,
+        "expectancy_r": -0.664,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 0.7396,
+        "avg_loss_r": -0.898,
+        "avg_holding_bars": 48.57,
+        "max_holding_bars": 90,
+        "total_gross": -2297.3527973599253,
+        "total_cost": 538.9844766298215,
+        "total_net": -2836.337273989747,
+        "final_equity": 97163.66,
+        "net_return_frac": -0.028363,
+        "exit_reason_mix": {
+          "stop": 5,
+          "time_stop": 2
+        },
+        "direction_mix": {
+          "long": 7
+        },
+        "avg_stop_distance_atr": 5.455,
+        "cost_row": {
+          "total_cost": 538.98,
+          "net_return_with_cost_frac": -0.028363,
+          "gross_return_without_cost_frac": -0.022974,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.031162,
+        "max_drawdown_frac_bar_level_long_only": -0.032415,
+        "exposure_frac": 0.2416,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 7,
+          "expectancy_r_ci95": [
+            -1.0865,
+            -0.1104
+          ],
+          "expectancy_r_p05": -1.0433,
+          "win_rate_ci95": [
+            0.0,
+            0.4286
+          ],
+          "prob_expectancy_positive": 0.013,
+          "mean_return_per_trade_ci95": [
+            -0.006232,
+            -0.001263
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.31167,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.29967,
+        "final_equity": 129966.98,
+        "max_drawdown_frac": -0.255556,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "TOASO": {
+      "metrics": {
+        "n_trades": 7,
+        "win_rate": 0.2857,
+        "n_wins": 2,
+        "n_losses": 5,
+        "profit_factor_gross": 1.2466,
+        "profit_factor_net": 1.0413,
+        "expectancy_r": 0.1572,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 2.6859,
+        "avg_loss_r": -0.8543,
+        "avg_holding_bars": 37.14,
+        "max_holding_bars": 90,
+        "total_gross": 527.0536537234904,
+        "total_cost": 428.5790248229714,
+        "total_net": 98.47462890051912,
+        "final_equity": 100098.47,
+        "net_return_frac": 0.000985,
+        "exit_reason_mix": {
+          "stop": 4,
+          "time_stop": 2,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 7
+        },
+        "avg_stop_distance_atr": 5.0,
+        "cost_row": {
+          "total_cost": 428.58,
+          "net_return_with_cost_frac": 0.000985,
+          "gross_return_without_cost_frac": 0.005271,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.010906,
+        "max_drawdown_frac_bar_level_long_only": -0.012459,
+        "exposure_frac": 0.1859,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 7,
+          "expectancy_r_ci95": [
+            -0.8959,
+            1.3147
+          ],
+          "expectancy_r_p05": -0.8959,
+          "win_rate_ci95": [
+            0.0,
+            0.5714
+          ],
+          "prob_expectancy_positive": 0.583,
+          "mean_return_per_trade_ci95": [
+            -0.005048,
+            0.005843
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.086221,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.074221,
+        "final_equity": 107422.06,
+        "max_drawdown_frac": -0.569886,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 7 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "TTKOM": {
+      "metrics": {
+        "n_trades": 5,
+        "win_rate": 0.2,
+        "n_wins": 1,
+        "n_losses": 4,
+        "profit_factor_gross": 0.7368,
+        "profit_factor_net": 0.6156,
+        "expectancy_r": -0.2065,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 3.0,
+        "avg_loss_r": -1.0082,
+        "avg_holding_bars": 62.0,
+        "max_holding_bars": 89,
+        "total_gross": -530.0131679300891,
+        "total_cost": 326.5313093347422,
+        "total_net": -856.5444772648314,
+        "final_equity": 99143.46,
+        "net_return_frac": -0.008565,
+        "exit_reason_mix": {
+          "stop": 4,
+          "take_profit": 1
+        },
+        "direction_mix": {
+          "long": 5
+        },
+        "avg_stop_distance_atr": 5.451,
+        "cost_row": {
+          "total_cost": 326.53,
+          "net_return_with_cost_frac": -0.008565,
+          "gross_return_without_cost_frac": -0.0053,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.011277,
+        "max_drawdown_frac_bar_level_long_only": -0.021022,
+        "exposure_frac": 0.2194,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 5,
+          "expectancy_r_ci95": [
+            -1.0196,
+            1.4
+          ],
+          "expectancy_r_p05": -1.0131,
+          "win_rate_ci95": [
+            0.0,
+            0.6
+          ],
+          "prob_expectancy_positive": 0.276,
+          "mean_return_per_trade_ci95": [
+            -0.005633,
+            0.0061
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.567298,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.555298,
+        "final_equity": 255529.82,
+        "max_drawdown_frac": -0.333778,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "TUPRS": {
+      "metrics": {
+        "n_trades": 5,
+        "win_rate": 0.8,
+        "n_wins": 4,
+        "n_losses": 1,
+        "profit_factor_gross": 8.153,
+        "profit_factor_net": 7.0056,
+        "expectancy_r": 1.4921,
+        "expectancy_r_median": 1.6457,
+        "avg_win_r": 2.1218,
+        "avg_loss_r": -1.0267,
+        "avg_holding_bars": 66.8,
+        "max_holding_bars": 90,
+        "total_gross": 3767.914042641249,
+        "total_cost": 330.0781723206207,
+        "total_net": 3437.8358703206286,
+        "final_equity": 103437.84,
+        "net_return_frac": 0.034378,
+        "exit_reason_mix": {
+          "time_stop": 3,
+          "take_profit": 1,
+          "stop": 1
+        },
+        "direction_mix": {
+          "long": 5
+        },
+        "avg_stop_distance_atr": 6.035,
+        "cost_row": {
+          "total_cost": 330.08,
+          "net_return_with_cost_frac": 0.034378,
+          "gross_return_without_cost_frac": 0.037679,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.005579,
+        "max_drawdown_frac_bar_level_long_only": -0.006494,
+        "exposure_frac": 0.2361,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 5,
+          "expectancy_r_ci95": [
+            0.1523,
+            2.5881
+          ],
+          "expectancy_r_p05": 0.3113,
+          "win_rate_ci95": [
+            0.4,
+            1.0
+          ],
+          "prob_expectancy_positive": 0.984,
+          "mean_return_per_trade_ci95": [
+            0.0003,
+            0.012467
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 1.931985,
+        "cost_frac": 0.012,
+        "net_return_frac": 1.919985,
+        "final_equity": 291998.53,
+        "max_drawdown_frac": -0.422964,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 5 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "VAKBN": {
+      "metrics": {
+        "n_trades": 6,
+        "win_rate": 0.5,
+        "n_wins": 3,
+        "n_losses": 3,
+        "profit_factor_gross": 1.3376,
+        "profit_factor_net": 1.1001,
+        "expectancy_r": 0.1667,
+        "expectancy_r_median": -0.3711,
+        "avg_win_r": 1.2893,
+        "avg_loss_r": -0.9559,
+        "avg_holding_bars": 59.33,
+        "max_holding_bars": 90,
+        "total_gross": 487.8290741980508,
+        "total_cost": 329.35666120415294,
+        "total_net": 158.47241299389805,
+        "final_equity": 100158.47,
+        "net_return_frac": 0.001585,
+        "exit_reason_mix": {
+          "time_stop": 3,
+          "stop": 2,
+          "end_of_data": 1
+        },
+        "direction_mix": {
+          "long": 6
+        },
+        "avg_stop_distance_atr": 5.08,
+        "cost_row": {
+          "total_cost": 329.36,
+          "net_return_with_cost_frac": 0.001585,
+          "gross_return_without_cost_frac": 0.004878,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.009971,
+        "max_drawdown_frac_bar_level_long_only": -0.014039,
+        "exposure_frac": 0.2514,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 6,
+          "expectancy_r_ci95": [
+            -0.7909,
+            1.2872
+          ],
+          "expectancy_r_p05": -0.6298,
+          "win_rate_ci95": [
+            0.1667,
+            0.8333
+          ],
+          "prob_expectancy_positive": 0.613,
+          "mean_return_per_trade_ci95": [
+            -0.004469,
+            0.005776
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.866428,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.854428,
+        "final_equity": 185442.8,
+        "max_drawdown_frac": -0.327414,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "Backtest sonunda pozisyon A\u00c7IKTI; son bar\u0131n kapan\u0131\u015f\u0131ndan 'end_of_data' sebebiyle kapat\u0131ld\u0131 (\u015feffafl\u0131k i\u00e7in ayr\u0131 reason).",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 6 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    },
+    "YKBNK": {
+      "metrics": {
+        "n_trades": 8,
+        "win_rate": 0.25,
+        "n_wins": 2,
+        "n_losses": 6,
+        "profit_factor_gross": 0.1739,
+        "profit_factor_net": 0.1212,
+        "expectancy_r": -0.5617,
+        "expectancy_r_median": -1.0,
+        "avg_win_r": 0.4737,
+        "avg_loss_r": -0.9068,
+        "avg_holding_bars": 51.5,
+        "max_holding_bars": 90,
+        "total_gross": -2223.529532560182,
+        "total_cost": 436.5512133357993,
+        "total_net": -2660.0807458959807,
+        "final_equity": 97339.92,
+        "net_return_frac": -0.026601,
+        "exit_reason_mix": {
+          "stop": 5,
+          "time_stop": 3
+        },
+        "direction_mix": {
+          "long": 8
+        },
+        "avg_stop_distance_atr": 5.436,
+        "cost_row": {
+          "total_cost": 436.55,
+          "net_return_with_cost_frac": -0.026601,
+          "gross_return_without_cost_frac": -0.022235,
+          "round_trip_bps": 120.0
+        },
+        "statistically_weak": true,
+        "max_drawdown_frac": -0.026797,
+        "max_drawdown_frac_bar_level_long_only": -0.029571,
+        "exposure_frac": 0.2925,
+        "bootstrap": {
+          "resamples": 1000,
+          "n_trades": 8,
+          "expectancy_r_ci95": [
+            -0.9374,
+            -0.0814
+          ],
+          "expectancy_r_p05": -0.8905,
+          "win_rate_ci95": [
+            0.0,
+            0.625
+          ],
+          "prob_expectancy_positive": 0.012,
+          "mean_return_per_trade_ci95": [
+            -0.0053,
+            -0.000898
+          ]
+        },
+        "warnings": [
+          "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+        ]
+      },
+      "buy_hold": {
+        "gross_return_frac": 0.837777,
+        "cost_frac": 0.012,
+        "net_return_frac": 0.825777,
+        "final_equity": 182577.67,
+        "max_drawdown_frac": -0.41412,
+        "first": "2023-10-27 07:00:00+00:00",
+        "last": "2026-09-16 07:00:00+00:00"
+      },
+      "cost_bps_round_trip": 120.0,
+      "warnings": [
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100 e\u015fik. T\u00fcm metrikler bootstrap CI ile birlikte OKUNMALI; tek ba\u015f\u0131na nokta tahminine dayanarak karar VER\u0130LMEZ.",
+        "\u0130STAT\u0130ST\u0130KSEL ZAYIF: 8 trade < 100. Nokta tahminine dayanarak karar VER\u0130LMEZ; bootstrap CI ile birlikte okunmal\u0131."
+      ]
+    }
+  },
+  "portfolio_preview_flag": "R\u0130SK MOD\u00dcL\u00dc \u00d6NCES\u0130 \u00d6N\u0130ZLEME \u2014 portf\u00f6y agregasyonu ve risk limitleri A\u015fama 8'de. Buradaki toplam e\u015fit-risk varsay\u0131m\u0131yla basit toplamd\u0131r; korelasyon/\u0131s\u0131/sekt\u00f6r tavan\u0131 UYGULANMAMI\u015eTIR."
+}

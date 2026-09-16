@@ -1,0 +1,400 @@
+# ============================================================================
+# configs/user_decisions.yaml
+# Kullanıcı kararlarının KAYNAĞI. Bu dosya insan tarafından onaylanmış
+# kararları içerir; kod bu kararları config.py üzerinden uygular.
+# Bir karar değişirse ÖNCE bu dosya, SONRA config.py güncellenir.
+#
+# Onay tarihi : 2026-09-16
+# Durum       : Aşama 1 kapanışı (roll/kesinti düzeltmesi bekliyor)
+# Kapsam      : Araştırma / backtest / sinyal üretimi. CANLI EMİR YOK.
+# ============================================================================
+
+meta:
+  decided_on: "2026-09-16"
+  purpose: "research_backtest_signal_only"
+  live_trading: false
+  advisory: false            # sistem yatırım tavsiyesi ÜRETMEZ
+  probabilistic_only: true   # tüm çıktılar olasılıksaldır; garanti YOKTUR
+
+# ---------------------------------------------------------------------------
+# KARAR 1 — BIST30  (2026-09-16 GÜNCELLENDİ: NETLEŞTİRME)
+# ---------------------------------------------------------------------------
+# ÖNCEKİ YANLIŞ ANLAMA: "BIST30" = XU030 endeksi sanılmış, watch_only +
+# VİOP maliyet proxy'si ile modellenmişti.
+# DOĞRUSU (kullanıcı netleştirmesi): BIST30 = **BIST30 KONSTİTUANT HİSSELERİ**.
+# XU030 endeksi TRADE VARLIĞI DEĞİLDİR; long'lar için BAĞLAM FİLTRESİ olarak kalır.
+bist30:
+  decision: "BIST30 = KONSTİTUANT HİSSE SEPETİ (endeks değil)"
+  decided_on: "2026-09-16"
+  supersedes: "XU030.IS endeksini sinyal motoru sayan önceki karar"
+  tradable_unit: "hisse (equity)"
+  instrument_type: "stock_basket"
+  universe:
+    frozen_in: "configs/bist30_universe.yaml"     # AŞAMA 1.5'te oluşturulacak
+    freeze_rule: >
+      Konstitüant listesi TARİH DAMGASIYLA sabitlenir. Backtest boyunca liste
+      DEĞİŞMEZ; aksi hâlde survivorship bias oluşur (bugünün kazananlarıyla
+      geçmiş test edilmiş olur). Liste değiştirilirse yeni bir tarih damgalı
+      sürüm eklenir, eskisi silinmez.
+    survivorship_bias_note: >
+      Yahoo'dan yalnızca BUGÜN BIST30'da olan hisseler indirilebilir. Endeksten
+      ÇIKAN hisseler (delist/birleşme/endeks düşüşü) serbest veride yoktur.
+      Bu nedenle sepet backtest'i SURVIVORSHIP BIAS taşır ve bu bias
+      SONUÇLARI YUKARI ÇEKER. Bu, tüm raporlarda zorunlu caveat'tir;
+      BIST30 sonuçları BTC/metallerle aynı güven düzeyinde DEĞERLENDİRİLEMEZ.
+  xu030_index_role:
+    is_tradable: false
+    role: "context_filter_for_longs"
+    usage: >
+      XU030 endeksi yalnızca ÜST ZAMAN DİLİMİ / BAĞLAM filtresi olarak kullanılır
+      (ör. endeks EMA200 altında iken hisse long sinyalleri bastırılır).
+      Endeks üzerinde POZİSYON AÇILMAZ, endeks getirisi portföy performansına
+      YAZILMAZ.
+    data_already_downloaded: "data/raw/bist30_1h_raw.parquet + data/interim/bist30_4h.parquet"
+    keep_as: "BIST30_CONTEXT (yeniden adlandırılacak, Aşama 1.5)"
+  volume_leg_enabled: "BEKLİYOR — hisse verisinde hacim VAR; Aşama 1.5 QC'si hacim kalitesini doğrularsa hacim/onay bacağı hisse bazında AÇILABİLİR"
+  execution_assumption:
+    model: "BIST_hisse_maliyet_modeli"
+    commission_bps: 10.0        # TEK TARAF, tipik aracı kurum (kullanıcı onayına açık)
+    spread_bps: 30.0            # TEK TARAF yarım-spread maliyeti (TAM spread 60 bp)
+    slippage_bps: 20.0          # TEK TARAF
+    one_way_bps: 60.0
+    round_trip_bps: 120.0       # << kullanıcının onayladığı hedef; config.py'de assert ile kilitli
+    note: >
+      Bunlar YAKLAŞIKLAMADIR ve Aşama 1.5'te hisse bazlı likidite ölçümüyle
+      kalibre edilecektir. Gerçek aracılık komisyonunuzu biliyorsanız
+      configs/user_decisions.yaml içinde güncelleyin — sonuçları doğrudan etkiler.
+    previous_viop_proxy: "GEÇERSİZ (endeks için kurulmuştu); hisse sepeti için kullanılmaz"
+  mandatory_caveats:
+    - "SURVIVORSHIP BIAS: yalnızca bugün endekste olan hisseler indirilebilir; endeksten çıkanlar yok. Sonuçlar yukarı yönlü çarpık olur."
+    - "Konstitüant listesi tarih damgasıyla sabitlenmeli; aksi hâlde look-ahead oluşur."
+    - "BIST hisse seans 09:30-18:00 Europe/Istanbul (6.5 saat) → 4H'ye tam bölünmez; ince/kısmi barlar kaçınılmazdır."
+    - "Yahoo 1h limiti 730 gün → hisse bazlı intraday geçmiş en fazla ~2.4 yıl."
+    - "Hisse bazlı kurumsal aksiyonlar (temettü/split/bedelli) Yahoo 'Adj Close' ile düzeltilir; ham fiyat ile adjusted fiyat AYRI tutulmalı, düzeltme asla sessiz uygulanmamalı."
+    - "Halt/limit-up/limit-down günleri: BIST'te günlük fiyat marjı sınırlıdır; bu barlar sinyalde kullanılabilir ama gerçekçi execution varsayılamaz."
+  stage_1_5_task:
+    name: "AŞAMA 1.5 — BIST30 hisse üniversali"
+    status: "TAMAMLANDI (2026-09-16)"
+    result:
+      universe_version: "2026-09-16.v1"
+      members: 30
+      downloaded: 30
+      included_in_basket: 28
+      excluded: 2
+      excluded_detail:
+        DSTKF: "halt/marj bayrağı %10.0 > %5 eşik; 68 sıfır-aralık bar (%5.68) -> 1 QC ERROR"
+        TRALT: "605 bar < 800 eşiği; 296 gün < 300 gün eşiği (halka arz yeni, veri 2025-11-24'te başlıyor)"
+      median_4h_bars: 2158
+      median_missing_pct: 4.60
+      median_thin_pct: 33.5
+      corporate_action_events: 482
+      corporate_action_marked_bars: 298
+      split_candidates: 0
+      halt_or_limit_bars: 228
+      median_avg_daily_turnover_try: 2388000000
+      round_trip_cost_bps: 120
+      report: "reports/bist30_universe_qc.md"
+    key_finding: >
+      Yahoo'nun 1h BIST serisinde adjclose == close (%100 ölçüldü): intraday seri
+      kurumsal aksiyon düzeltmesi İÇERMİYOR. Tespit bu yüzden GÜNLÜK seriden
+      yapılıp ex-date'ler session_date üzerinden 4H barlara taşındı. Politika
+      adjust.py felsefesiyle birebir: OTOMATİK DÜZELTME YOK, FLAG ONLY.
+    steps:
+      - "1. Konstitüant listesini TARİH DAMGASIYLA sabitle -> configs/bist30_universe.yaml (kaynak + erişim tarihi + sürüm no; eski sürümler silinmez)"
+      - "2. Hisse başına Yahoo 1h indir (730 gün limiti; rate-limit için retry + sleep; ham katman immutable)"
+      - "3. İstanbul lokal grid'inde 4H'ye resample (mevcut seans-takvimi duyarlı resampler; bar_anchor_mode=local)"
+      - "4. Hisse bazlı QC tablosu üret: bar sayısı, eksik %, halt/gap bayrağı, kurumsal aksiyon bayrağı (adj/raw sapması), likidite eşiği (ort. günlük TL hacim + ortalama spread proxy)"
+      - "5. Likidite eşiğini GEÇEMEYEN hisseleri 'excluded' olarak işaretle (silme), sepeti likit alt kümeyle kur"
+      - "6. XU030'u BIST30_CONTEXT olarak yeniden adlandır; bağlam filtresi rolünü kodla"
+    acceptance:
+      - "Üniversal dosyası tarih damgalı ve sürümlü"
+      - "Her hisse için QC satırı var; eşik altındakiler gerekçesiyle işaretli"
+      - "Survivorship bias caveat'i raporda AYNEN geçiyor"
+      - "XU030 trade varlığı DEĞİL, yalnızca bağlam"
+
+# ---------------------------------------------------------------------------
+# KARAR 2 — Altın
+# ---------------------------------------------------------------------------
+gold:
+  decision: "GC=F KALIR + basit roll-gap tespiti/düzeltmesi EKLENİR"
+  instrument: "GC=F"                # COMEX ön-ay altın vadeli (Yahoo)
+  proxy_for: "XAUUSD"
+  mode: "core"
+  requires_adjustment: true         # düzeltme uygulanmadan modelleme YASAK (QC RED)
+  intraday_history_years: 2.4
+  roll_adjustment:
+    rule: "gap > eşik × ATR ise ROLL olarak işaretle"
+    atr_period: 14
+    atr_multiple: 3.0
+    action: "getiri serisinde düzelt (backward-adjust), fiyatları SİLME"
+    exclude_if_data_outage: true    # boşluğu atlayan getiri ROLL sayılmaz
+    preserve_raw: true              # orijinal değerler *_raw kolonlarında kalır
+    log_every_mutation: true
+  known_issues:
+    - "2026-01-30 15:00 → 2026-02-02 18:00 UTC: 75 saatlik veri kesintisi."
+    - "2026-01-26..2026-02-06: fiyat 5.626→4.653 (≈ −%17), günlük hacim öncekinin %38'i → feed kalitesi DÜŞÜK."
+  grid:
+    anchor_local: "18:00"
+    anchor_mode: "local"
+    session_day_start_local: "17:30"   # 17:00-18:00 NY bakım molası biten seansa ait
+    bars_per_session: 6
+
+# ---------------------------------------------------------------------------
+# KARAR 3 — Gümüş
+# ---------------------------------------------------------------------------
+silver:
+  decision: "SI=F KALIR + aynı roll düzeltmesi"
+  instrument: "SI=F"                # COMEX ön-ay gümüş vadeli (Yahoo)
+  proxy_for: "XAGUSD"
+  mode: "core"
+  requires_adjustment: true
+  intraday_history_years: 2.4
+  roll_adjustment:
+    rule: "gap > eşik × ATR ise ROLL olarak işaretle"
+    atr_period: 14
+    atr_multiple: 3.0
+    action: "getiri serisinde düzelt, fiyatları SİLME"
+    exclude_if_data_outage: true
+    preserve_raw: true
+    log_every_mutation: true
+  event_2026_02_02:
+    reported_as: "tek bar −%22"
+    investigated: true
+    verdict: "NE ROLL NE BAD PRINT"
+    root_cause: >
+      2026-01-30 15:00 UTC → 2026-02-02 18:00 UTC arasında 75 saatlik VERİ
+      KESİNTİSİ var (normal hafta sonu 80 bar; burada Pazartesi 00:00-15:00 UTC
+      de kayıp) ve 2026-02-02 günü yalnızca 5 bar gelmiş (normal ~23). −%22,
+      bu boşluğu ATLAYAN sahte bir getiridir.
+    action_taken: "BAR SILINMADI. 'boşluğu atlayan getiri' olarak işaretlendi; getiri/roll/label hesaplarından hariç tutuluyor."
+    enforcement: "qc.continuity kontrolü + test_gap_crossing_return_is_not_treated_as_real_return"
+  known_issues:
+    - "2026-01-26..2026-02-06: fiyat 121.79→66.88 (≈ −%45), günlük hacim öncekinin %42'si → feed kalitesi ÇOK DÜŞÜK."
+    - "Aynı kesinti GOLD'da da birebir aynı tarihlerde var → Yahoo kaynaklı ortak sorun."
+  grid:
+    anchor_local: "18:00"
+    anchor_mode: "local"
+    session_day_start_local: "17:30"
+    bars_per_session: 6
+
+# ---------------------------------------------------------------------------
+# KARAR 4 — BTC
+# ---------------------------------------------------------------------------
+btc:
+  decision: "BTCUSDT SPOT sinyal verisi olarak KALIR"
+  instrument: "BTCUSDT"
+  venue: "binance_spot"
+  mode: "core"
+  timeframe: "4h"
+  history_years: 9.1
+  bars: 19888
+  funding_rate:
+    role: "cost_and_context_only"   # yalnızca maliyet/bağlam katmanı
+    generates_signals: false        # << PERP SİNYALİ ÜRETİLMEZ
+    perp_signals_allowed: false
+    open_interest_used: false
+  requires_adjustment: false        # spot → roll yok
+  grid:
+    anchor_local: "00:00"
+    anchor_mode: "utc"
+    bars_per_session: 6
+  data_quality: "EN İYİ veri: %99.9 eksiksizlik, gerçek hacim + quote volume + trade sayısı + taker buy"
+
+# ---------------------------------------------------------------------------
+# KARAR 5 — Risk profili
+# ---------------------------------------------------------------------------
+risk:
+  default_profile: "balanced"
+  profiles_stored_in_config: ["conservative", "balanced", "aggressive"]
+  active:
+    name: "balanced"
+    risk_per_trade: 0.005          # %0.5
+    max_daily_loss: 0.02
+    max_weekly_loss: 0.05
+    max_open_positions: 3
+    max_correlation: 0.70          # << GOLD|SILVER = 0.768 BU LİMİTİ AŞIYOR
+    max_leverage: 2.0
+    max_portfolio_heat: 0.015
+    max_consecutive_losses: 4
+    loss_streak_risk_multiplier: 0.5
+    model_threshold: 0.58          # ML opsiyonel filtreye geçilirse
+    min_signal_score: 0.60
+    max_gross_exposure: 1.00
+    max_exposure_per_asset: 0.40
+  presets:
+    conservative: {risk_per_trade: 0.0025, max_daily_loss: 0.01,  max_weekly_loss: 0.025, max_open_positions: 2, max_correlation: 0.55, max_leverage: 1.0, model_threshold: 0.62}
+    balanced:     {risk_per_trade: 0.005,  max_daily_loss: 0.02,  max_weekly_loss: 0.05,  max_open_positions: 3, max_correlation: 0.70, max_leverage: 2.0, model_threshold: 0.58}
+    aggressive:   {risk_per_trade: 0.01,   max_daily_loss: 0.035, max_weekly_loss: 0.08,  max_open_positions: 4, max_correlation: 0.80, max_leverage: 3.0, model_threshold: 0.55}
+  correlation_buckets:
+    # ONAY: 2026-09-16 — kullanıcı öneriyi kabul etti.
+    status: "ONAYLANDI (2026-09-16) — Aşama 8'de uygulanacak"
+    rationale: >
+      GOLD|SILVER günlük log-getiri korelasyonu +0.768, balanced profilin
+      max_correlation=0.70 limitini aşıyor. İkisi bağımsız risk değil, tek bir
+      makro riskin (kıymetli maden / reel faiz / USD) iki ifadesidir.
+    buckets:
+      precious_metals:
+        members: ["GOLD", "SILVER"]
+        observed_daily_corr: 0.768
+        rule: >
+          Kova TEK risk birimi sayılır. Kova içi toplam ısı (sum of open risks)
+          TEK bir işlemin ısısını aşamaz: bucket_heat <= risk_per_trade.
+          Yani GOLD ve SILVER aynı anda, ayrı ayrı %0.5 riskle AÇIK TUTULAMAZ;
+          birleşik en fazla %0.5 (balanced) risk taşıyabilir.
+        enforcement_point: "risk modülü (Aşama 8) — bucket_heat limiti"
+      crypto:
+        members: ["BTC"]
+        observed_daily_corr: null
+        rule: "tek üyeli kova; ısı limiti = risk_per_trade"
+      turkey_equity:
+        members: ["BIST30"]
+        observed_daily_corr: null
+        rule: "tek üyeli kova; watch_only olduğu sürece portföy ısısına YAZILMAZ, yalnızca raporlanır"
+    cross_bucket_limit:
+      rule: "Kovalar ARASI toplam ısı max_portfolio_heat'i aşamaz (balanced: 0.015)"
+      note: "Korelasyon limiti kova İÇİNDE aranmaz (kova zaten tek risk); kovalar arası diversifikasyon varsayılır ama max_portfolio_heat ile sınırlanır."
+    rejected_alternatives:
+      - "İkili arasında yön bazlı netleştirme (cross-hedge) — uygulanmadı: maliyet ve rolü belirsiz"
+      - "max_correlation'ı 0.80'e çıkarmak — REDDEDİLDİ: limiti veriye uydurmak overfitting'in bir biçimidir"
+
+# ---------------------------------------------------------------------------
+# KARAR 6 — Sepet ağırlıklandırma, sinyal seviyesi, XU030 filtresi (2026-09-16)
+# ---------------------------------------------------------------------------
+basket_policy:
+  weighting:
+    decision: "EŞİT-RİSK (equal risk)"
+    meaning: >
+      Her sinyal AYNI risk bütçesini alır. Sermaye ağırlıklandırması YOKTUR:
+      pozisyon büyüklüğü = (risk_per_trade x equity) / stop_mesafesi. Yani
+      hisse fiyatı, piyasa değeri veya hacmi pozisyon büyüklüğünü DOĞRUDAN
+      belirlemez; yalnızca stop mesafesi üzerinden belirler.
+    capital_weighting: false
+    liquidity_role: "eligibility_only"   # likidite yalnızca UYGUNLUK şartıdır, ağırlık değil
+    liquidity_note: >
+      Likidite eşiği Aşama 1.5'te uygulandı (250 mn TL/gün + 250 bin lot/gün).
+      Eşiği geçemeyen hisse sepete ALINMAZ ama eşit-risk politikası içinde
+      ağırlıklandırma faktörü olarak KULLANILMAZ.
+  signal_level:
+    decision: "HİSSE BAŞINA (per stock)"
+    meaning: >
+      Her hisse KENDİ EMA200 + momentum + yapısal kurulumunu bağımsız
+      çalıştırır. Sepet düzeyinde TEK bir sinyal ÜRETİLMEZ.
+    portfolio_caps_enforced_in: "Aşama 8 (risk modülü)"
+    caps: ["maks eşzamanlı pozisyon", "sektör tavanı", "basket ısısı (bucket heat)"]
+  split_preregistration:
+    decision: "TEK ORTAK TAKVİM PENCERESİ — hisse başına ayrı split YOK"
+    file: "configs/splits_preregistered.yaml -> bist30_basket"
+    common_window: "2023-10-27 → 2026-09-16"
+    grid_bars: 2158
+    stocks: 28
+    frozen_snapshot: "data/frozen/bist30_basket_4h_frozen.parquet (H17 kuralı: sha256 ile kilitli)"
+    purge_embargo: "core varlıklarla AYNI (30 + 12 bar)"
+    blocks:
+      train: {grid_bars: 678, median_tradable_per_stock: 449, window: "2023-10-27 → 2024-09-24"}
+      valid: {grid_bars: 635, median_tradable_per_stock: 421, window: "2024-11-04 → 2025-09-09"}
+      test:  {grid_bars: 677, median_tradable_per_stock: 448, window: "2025-10-17 → 2026-09-16", calendar_days: 333}
+
+xu030_context_filter:
+  decision: "Aşama 2 içinde KODLANACAK"
+  module: "src/quant4h/features/context.py -> longs_allowed()"
+  rule: >
+    BIST30 hisseleri LONG-ONLY'dir. YENİ bir long sinyali YALNIZCA
+    XU030 4H KAPANIŞ > XU030 EMA200 iken açılabilir. XU030 EMA200 altındayken
+    sepete YENİ SİNYAL AÇILMAZ; MEVCUT pozisyonlar kendi stoplarıyla yönetilir
+    (zorla kapatma YOKTUR).
+  directionality:
+    bist30_stocks: "LONG-ONLY"
+    core_assets: "long + short (BTC / GOLD / SILVER filtresiz)"
+  anti_lookahead: >
+    Filtre, hisse barının AÇILIŞ anında KAPANMIŞ olan son XU030 barını kullanır
+    (bar_open - 4h). Henüz oluşmakta olan XU030 barı ASLA kullanılmaz.
+    XU030 EMA200 ısınma döneminde (ilk 200 bar) veya veri yoksa filtre
+    FAIL-CLOSED davranır: long'a İZİN VERİLMEZ.
+  fail_closed: true
+  records: "longs_allowed kolonu + reasons (context_below_ema200 / context_warmup / context_missing)"
+
+# ---------------------------------------------------------------------------
+# Sadelik kuralları (kullanıcı kararı, bağlayıcı)
+# ---------------------------------------------------------------------------
+simplicity_rules:
+  max_chart_elements: 3
+  allowed_chart_elements: ["candles", "EMA200", "structural_stop_and_target_lines"]
+  forbidden_indicators:
+    - "ADX"
+    - "Hurst exponent"
+    - "HMM"
+    - "Choppiness Index"
+    - "Bollinger Band width"
+    - "Ichimoku"
+    - "Supertrend"
+    - "Keltner Channel"
+    - "Order block / supply-demand"
+    - "Volume Profile / POC / HVN / LVN"
+    - "Anchored VWAP"
+    - "Fractal levels"
+    - "Stochastic RSI"
+    - "MFI"
+    - "OBV"
+    - "RSI+MACD+BB+Stoch yığını"
+  core_logic:
+    must_be: "kural tabanlı, kesin ve okunabilir"
+    legs:
+      trend_filter: "EMA200 yönü (4H) + Daily yön filtresi"
+      momentum_confirmation: "ATR-normalize ROC (tek ölçüm)"
+      stop: "yapısal seviye (son swing high/low veya Donchian20 kırılımı) + ATR buffer"
+      take_profit: "esnek: partial + runner / trailing / time stop"
+    regime:
+      trend: "EMA200 yönü + EMA20/EMA50 hizası"
+      volatility: "ATR yüzdelik dilimi (tek pencere)"
+  ml_policy:
+    mandatory: false               # << ML ZORUNLU KATMAN DEĞİL
+    role: "optional_second_confirmation_filter"
+    enabled_by_default: false
+    gate: "yalnızca kural tabanlı çekirdeği OUT-OF-SAMPLE'da geçerse devreye girer"
+    implementation: "sklearn HistGradientBoosting (LightGBM/XGBoost bu ortamda libgomp eksikliğinden çalışmıyor)"
+    validation: "purged K-fold + embargo + walk-forward; test seti yalnızca 1 kez"
+
+# ---------------------------------------------------------------------------
+# Çalışma kuralları (kullanıcı kararı, bağlayıcı)
+# ---------------------------------------------------------------------------
+process_rules:
+  - "Her aşamada önce PLAN, sonra UYGULAMA, sonra TEST, sonra DOĞRULAMA."
+  - "Tek mesajda devasa kod üretme; dosyaları parça parça yaz, her parça sonrası kısa doğrula."
+  - "Her aşama bitince PROGRESS.md'ye 'TAMAMLANDI: <aşama> + 3 satır özet' yaz."
+  - "Hata alırsan durma; hatayı 2 satırda özetle, düzelt, devam et."
+  - "Bir scripti grep/tail ile filtreleyerek çalıştırma; önce tam çıktı + exit code al (H10 dersi)."
+  - "Emin olmadığın yerde varsayım yapma; sor veya alternatifleri listele."
+  - "'garantili kazanç', 'risksiz işlem', 'kesin kazandıran sistem' ASLA denmez."
+  - "Veri asla sessizce değiştirilmez/silinmez; her mutasyon loglanır."
+
+# ---------------------------------------------------------------------------
+# Aşama kapısı
+# ---------------------------------------------------------------------------
+stage_gate:
+  current_stage: "1 (veri kalitesi)"
+  queue:
+    - id: "1a"
+      task: "adjust.py — roll + veri-kesintisi düzeltmesi (KARAR 2 & 3)"
+      status: "KOMUT VERİLDİ (2026-09-16)"
+    - id: "1b"
+      task: "cleaning.py testleri"
+      status: "KOMUT VERİLDİ (2026-09-16)"
+    - id: "1c"
+      task: "split tarihlerini configs/'e ön-kaydet (purge/embargo, varlık bazlı)"
+      status: "KOMUT VERİLDİ (2026-09-16)"
+    - id: "1.5"
+      task: "BIST30 HİSSE üniverseli (konstitüant sabitleme + indirme + 4H + hisse bazlı QC)"
+      status: "TAMAMLANDI (2026-09-16) — 30 üye, 28 hisse sepete girdi"
+    - id: "2"
+      task: "Piyasa rejimi (EMA200 yönü + ATR yüzdeliği) + XU030 bağlam filtresi"
+      status: "KOMUT VERİLDİ (2026-09-16 'geç')"
+    - id: "3"
+      task: "Yapısal seviyeler (swing + Donchian20 + ATR buffer stop)"
+      status: "KUYRUKTA — YETKİ BEKLİYOR"
+  next_stage: "3 (yapısal seviyeler: swing + Donchian20 + ATR buffer stop)"
+  next_stage_authorization: "BEKLİYOR — kullanıcı 'geç' demeden Aşama 2'ye BAŞLANMAZ"
+  resolved_2026_09_16:
+    - "28 hisse için split ön-kaydı -> ÇÖZÜLDÜ: bist30_basket (tek ortak takvim penceresi)"
+    - "Sepet ağırlıklandırma -> ÇÖZÜLDÜ: EŞİT-RİSK, sermaye ağırlıklandırması YOK"
+    - "Sinyal seviyesi -> ÇÖZÜLDÜ: HİSSE BAŞINA; portföy tavanları Aşama 8"
+    - "XU030 bağlam filtresi -> ÇÖZÜLDÜ: Aşama 2'de kodlandı (LONG-ONLY, fail-closed)"

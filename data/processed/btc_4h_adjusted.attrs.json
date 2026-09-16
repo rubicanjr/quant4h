@@ -1,0 +1,32 @@
+{
+  "thin_bars": 0,
+  "roll_adjusted": true,
+  "roll_adjustment_method": "outage = gap > modal_gap(weekday,local_hour) + 4.0 bars -> non_tradable; gap-jumping returns -> return_valid=False; roll candidate = contiguous AND |log ret| > 3.0 x ATR%(14) AND persistent over 6 bars; apply_roll_correction=False (FLAGGED ONLY, prices untouched); raw prices always preserved in close_raw",
+  "roll_correction_applied": false,
+  "roll_flagged_bars": 0,
+  "bad_print_flagged_bars": 0,
+  "roll_detectable": false,
+  "outage_windows": [
+    {
+      "prev_bar_utc": "2018-02-08 00:00:00+00:00",
+      "resumed_bar_utc": "2018-02-09 08:00:00+00:00",
+      "missing_from_utc": "2018-02-08 04:00:00+00:00",
+      "missing_to_utc": "2018-02-09 04:00:00+00:00",
+      "missing_hours": 32.0,
+      "gap_bars": 8.0,
+      "modal_gap_bars": 1.0,
+      "bars_inside_window_marked": 0,
+      "note": "eksik saatlerin bari ZATEN YOK; bu pencere takvimde bosluk olarak raporlanir, satir olarak degil",
+      "return_across_gap_pct": 6.178333907960174
+    }
+  ],
+  "non_tradable_bars": 1,
+  "outage_marked": true,
+  "outage_window_bars": 0,
+  "outage_resumption_bars": 1,
+  "return_invalid_bars": 2,
+  "rows_in": 19888,
+  "rows_out": 19888,
+  "bars_deleted": 0,
+  "bars_added": 0
+}

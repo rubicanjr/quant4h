@@ -1,0 +1,3604 @@
+{
+  "generated_at_utc": "2026-09-16T13:57:15.261135+00:00",
+  "timeframe": "4h",
+  "levels_policy": {
+    "swing_k": 3,
+    "swing_confirmation_delay_bars": 4,
+    "swing_lookback": 120,
+    "donchian_period": 20,
+    "donchian_uses_closed_bars_only": true,
+    "stop_buffer_atr": 1.0,
+    "stop_buffer_candidates_stage": 9,
+    "stop_buffer_candidates": [
+      0.5,
+      1.0,
+      1.5
+    ],
+    "selection_now": false,
+    "min_valid_frac_in_window": 0.9,
+    "anchor_excludes": [
+      "return_valid==False",
+      "non_tradable==True",
+      "halt_or_limit_flag==True",
+      "OHLC NaN veya <=0"
+    ],
+    "stop_frozen": true,
+    "per_asset_in_sample_tuning_allowed": false,
+    "param_tuning_universe": [
+      "BTC",
+      "GOLD",
+      "SILVER"
+    ],
+    "stock_allow_short": false,
+    "new_indicators_added": [],
+    "chart_elements": [
+      "candles",
+      "EMA200",
+      "structural_stop/target"
+    ]
+  },
+  "core_assets": {
+    "BTC": {
+      "bars": 19888,
+      "anchor_ok_bars": 19886,
+      "anchor_ok_frac": 0.9999,
+      "swing_high_confirmed": 2014,
+      "swing_low_confirmed": 2014,
+      "swing_high_candidates": 2014,
+      "swing_low_candidates": 2014,
+      "bars_with_last_swing_high": 19877,
+      "bars_with_last_swing_low": 19879,
+      "donchian_available_frac": 0.999,
+      "donchian_thin_window_bars": 18,
+      "breakout_up": 1449,
+      "breakout_down": 1216,
+      "touch_donchian_high": 2123,
+      "touch_donchian_low": 1663,
+      "touch_last_swing_high": 5314,
+      "touch_last_swing_low": 4440,
+      "close_beyond_swing_high": 4123,
+      "close_below_swing_low": 3243,
+      "stop_valid_long": 18319,
+      "stop_valid_short": 17767,
+      "stop_distance": {
+        "long": {
+          "n": 19875,
+          "median_atr_mult": 2.581,
+          "p25_atr_mult": 1.598,
+          "p75_atr_mult": 3.84,
+          "median_pct_price": 4.106
+        },
+        "short": {
+          "n": 19875,
+          "median_atr_mult": 2.294,
+          "p25_atr_mult": 1.319,
+          "p75_atr_mult": 3.454,
+          "median_pct_price": 3.601
+        }
+      },
+      "median_swing_age_bars_high": 5.0,
+      "median_swing_age_bars_low": 5.0,
+      "regime": {
+        "bars": 19888,
+        "labelled_bars": 19388,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.0251,
+        "regime_counts": {
+          "trend_up|vol_normal": 3749,
+          "trend_down|vol_normal": 3422,
+          "trend_up|vol_low": 3007,
+          "trend_down|vol_low": 2625,
+          "trend_down|vol_high": 2311,
+          "trend_up|vol_high": 2268,
+          "range|vol_normal": 853,
+          "range|vol_low": 809,
+          "range|vol_high": 344
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 19.34,
+          "trend_down|vol_normal": 17.65,
+          "trend_up|vol_low": 15.51,
+          "trend_down|vol_low": 13.54,
+          "trend_down|vol_high": 11.92,
+          "trend_up|vol_high": 11.7,
+          "range|vol_normal": 4.4,
+          "range|vol_low": 4.17,
+          "range|vol_high": 1.77
+        },
+        "trend_counts": {
+          "trend_up": 9024,
+          "trend_down": 8358,
+          "range": 2006
+        },
+        "vol_counts": {
+          "vol_normal": 8024,
+          "vol_low": 6441,
+          "vol_high": 4923
+        },
+        "atr_percentile_p50": 0.448,
+        "atr_percentile_p05": 0.016,
+        "atr_percentile_p95": 0.964,
+        "ema_slope_atr_p50": 0.06835,
+        "ema_slope_atr_p05": -1.39665,
+        "ema_slope_atr_p95": 1.55593,
+        "long_regime_ok_bars": 8489,
+        "long_regime_ok_frac": 0.4268,
+        "short_regime_ok_bars": 7759,
+        "short_regime_ok_frac": 0.3901
+      },
+      "plan_long": {
+        "plannable_bars": 18319,
+        "plannable_frac": 0.9211,
+        "median_planned_atr_mult": 2.734
+      },
+      "plan_short": {
+        "plannable_bars": 17767,
+        "plannable_frac": 0.8934,
+        "median_planned_atr_mult": 2.498
+      },
+      "role": "core_tradable"
+    },
+    "GOLD": {
+      "bars": 3606,
+      "anchor_ok_bars": 3574,
+      "anchor_ok_frac": 0.9911,
+      "swing_high_confirmed": 313,
+      "swing_low_confirmed": 338,
+      "swing_high_candidates": 313,
+      "swing_low_candidates": 338,
+      "bars_with_last_swing_high": 3593,
+      "bars_with_last_swing_low": 3596,
+      "donchian_available_frac": 0.9947,
+      "donchian_thin_window_bars": 18,
+      "breakout_up": 347,
+      "breakout_down": 192,
+      "touch_donchian_high": 598,
+      "touch_donchian_low": 277,
+      "touch_last_swing_high": 1203,
+      "touch_last_swing_low": 752,
+      "close_beyond_swing_high": 1000,
+      "close_below_swing_low": 533,
+      "stop_valid_long": 3326,
+      "stop_valid_short": 2968,
+      "stop_distance": {
+        "long": {
+          "n": 3593,
+          "median_atr_mult": 2.911,
+          "p25_atr_mult": 1.709,
+          "p75_atr_mult": 4.303,
+          "median_pct_price": 2.011
+        },
+        "short": {
+          "n": 3593,
+          "median_atr_mult": 2.187,
+          "p25_atr_mult": 0.737,
+          "p75_atr_mult": 3.442,
+          "median_pct_price": 1.49
+        }
+      },
+      "median_swing_age_bars_high": 5.0,
+      "median_swing_age_bars_low": 5.0,
+      "regime": {
+        "bars": 3606,
+        "labelled_bars": 3106,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.1387,
+        "regime_counts": {
+          "trend_up|vol_normal": 1072,
+          "trend_up|vol_high": 565,
+          "trend_up|vol_low": 455,
+          "trend_down|vol_normal": 303,
+          "trend_down|vol_low": 246,
+          "trend_down|vol_high": 143,
+          "range|vol_normal": 115,
+          "range|vol_high": 104,
+          "range|vol_low": 103
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 34.51,
+          "trend_up|vol_high": 18.19,
+          "trend_up|vol_low": 14.65,
+          "trend_down|vol_normal": 9.76,
+          "trend_down|vol_low": 7.92,
+          "trend_down|vol_high": 4.6,
+          "range|vol_normal": 3.7,
+          "range|vol_high": 3.35,
+          "range|vol_low": 3.32
+        },
+        "trend_counts": {
+          "trend_up": 2092,
+          "trend_down": 692,
+          "range": 322
+        },
+        "vol_counts": {
+          "vol_normal": 1490,
+          "vol_high": 812,
+          "vol_low": 804
+        },
+        "atr_percentile_p50": 0.494,
+        "atr_percentile_p05": 0.034,
+        "atr_percentile_p95": 0.974,
+        "ema_slope_atr_p50": 0.5607,
+        "ema_slope_atr_p05": -0.95153,
+        "ema_slope_atr_p95": 1.79289,
+        "long_regime_ok_bars": 1932,
+        "long_regime_ok_frac": 0.5358,
+        "short_regime_ok_bars": 678,
+        "short_regime_ok_frac": 0.188
+      },
+      "plan_long": {
+        "plannable_bars": 3326,
+        "plannable_frac": 0.9224,
+        "median_planned_atr_mult": 3.108
+      },
+      "plan_short": {
+        "plannable_bars": 2968,
+        "plannable_frac": 0.8231,
+        "median_planned_atr_mult": 2.545
+      },
+      "role": "core_tradable"
+    },
+    "SILVER": {
+      "bars": 3606,
+      "anchor_ok_bars": 3574,
+      "anchor_ok_frac": 0.9911,
+      "swing_high_confirmed": 316,
+      "swing_low_confirmed": 331,
+      "swing_high_candidates": 316,
+      "swing_low_candidates": 331,
+      "bars_with_last_swing_high": 3589,
+      "bars_with_last_swing_low": 3596,
+      "donchian_available_frac": 0.9947,
+      "donchian_thin_window_bars": 18,
+      "breakout_up": 336,
+      "breakout_down": 233,
+      "touch_donchian_high": 535,
+      "touch_donchian_low": 316,
+      "touch_last_swing_high": 1167,
+      "touch_last_swing_low": 800,
+      "close_beyond_swing_high": 963,
+      "close_below_swing_low": 573,
+      "stop_valid_long": 3297,
+      "stop_valid_short": 3043,
+      "stop_distance": {
+        "long": {
+          "n": 3593,
+          "median_atr_mult": 2.846,
+          "p25_atr_mult": 1.683,
+          "p75_atr_mult": 4.168,
+          "median_pct_price": 3.653
+        },
+        "short": {
+          "n": 3589,
+          "median_atr_mult": 2.138,
+          "p25_atr_mult": 0.851,
+          "p75_atr_mult": 3.476,
+          "median_pct_price": 2.72
+        }
+      },
+      "median_swing_age_bars_high": 5.0,
+      "median_swing_age_bars_low": 5.0,
+      "regime": {
+        "bars": 3606,
+        "labelled_bars": 3106,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.1387,
+        "regime_counts": {
+          "trend_up|vol_normal": 687,
+          "trend_up|vol_low": 590,
+          "trend_up|vol_high": 569,
+          "trend_down|vol_low": 353,
+          "trend_down|vol_normal": 308,
+          "trend_down|vol_high": 190,
+          "range|vol_normal": 152,
+          "range|vol_high": 142,
+          "range|vol_low": 115
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 22.12,
+          "trend_up|vol_low": 19.0,
+          "trend_up|vol_high": 18.32,
+          "trend_down|vol_low": 11.37,
+          "trend_down|vol_normal": 9.92,
+          "trend_down|vol_high": 6.12,
+          "range|vol_normal": 4.89,
+          "range|vol_high": 4.57,
+          "range|vol_low": 3.7
+        },
+        "trend_counts": {
+          "trend_up": 1846,
+          "trend_down": 851,
+          "range": 409
+        },
+        "vol_counts": {
+          "vol_normal": 1147,
+          "vol_low": 1058,
+          "vol_high": 901
+        },
+        "atr_percentile_p50": 0.46303,
+        "atr_percentile_p05": 0.02,
+        "atr_percentile_p95": 0.984,
+        "ema_slope_atr_p50": 0.3022,
+        "ema_slope_atr_p05": -1.02371,
+        "ema_slope_atr_p95": 1.58239,
+        "long_regime_ok_bars": 1615,
+        "long_regime_ok_frac": 0.4479,
+        "short_regime_ok_bars": 803,
+        "short_regime_ok_frac": 0.2227
+      },
+      "plan_long": {
+        "plannable_bars": 3297,
+        "plannable_frac": 0.9143,
+        "median_planned_atr_mult": 3.015
+      },
+      "plan_short": {
+        "plannable_bars": 3043,
+        "plannable_frac": 0.8439,
+        "median_planned_atr_mult": 2.504
+      },
+      "role": "core_tradable"
+    }
+  },
+  "context_source": {
+    "BIST30": {
+      "bars": 1435,
+      "anchor_ok_bars": 1409,
+      "anchor_ok_frac": 0.9819,
+      "swing_high_confirmed": 109,
+      "swing_low_confirmed": 111,
+      "swing_high_candidates": 109,
+      "swing_low_candidates": 111,
+      "bars_with_last_swing_high": 1415,
+      "bars_with_last_swing_low": 1424,
+      "donchian_available_frac": 0.9868,
+      "donchian_thin_window_bars": 18,
+      "breakout_up": 141,
+      "breakout_down": 97,
+      "touch_donchian_high": 241,
+      "touch_donchian_low": 159,
+      "touch_last_swing_high": 489,
+      "touch_last_swing_low": 354,
+      "close_beyond_swing_high": 420,
+      "close_below_swing_low": 300,
+      "stop_valid_long": 1242,
+      "stop_valid_short": 1148,
+      "stop_distance": {
+        "long": {
+          "n": 1422,
+          "median_atr_mult": 3.244,
+          "p25_atr_mult": 1.391,
+          "p75_atr_mult": 5.236,
+          "median_pct_price": 4.334
+        },
+        "short": {
+          "n": 1415,
+          "median_atr_mult": 2.318,
+          "p25_atr_mult": 0.639,
+          "p75_atr_mult": 3.825,
+          "median_pct_price": 2.959
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1435,
+        "labelled_bars": 935,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3484,
+        "regime_counts": {
+          "trend_up|vol_normal": 300,
+          "trend_up|vol_low": 233,
+          "trend_down|vol_normal": 119,
+          "trend_up|vol_high": 119,
+          "range|vol_normal": 67,
+          "trend_down|vol_high": 42,
+          "range|vol_high": 36,
+          "range|vol_low": 19
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 32.09,
+          "trend_up|vol_low": 24.92,
+          "trend_down|vol_normal": 12.73,
+          "trend_up|vol_high": 12.73,
+          "range|vol_normal": 7.17,
+          "trend_down|vol_high": 4.49,
+          "range|vol_high": 3.85,
+          "range|vol_low": 2.03
+        },
+        "trend_counts": {
+          "trend_up": 652,
+          "trend_down": 161,
+          "range": 122
+        },
+        "vol_counts": {
+          "vol_normal": 486,
+          "vol_low": 252,
+          "vol_high": 197
+        },
+        "atr_percentile_p50": 0.48,
+        "atr_percentile_p05": 0.02,
+        "atr_percentile_p95": 0.95542,
+        "ema_slope_atr_p50": 0.65883,
+        "ema_slope_atr_p05": -0.83558,
+        "ema_slope_atr_p95": 2.13606,
+        "long_regime_ok_bars": 640,
+        "long_regime_ok_frac": 0.446,
+        "short_regime_ok_bars": 146,
+        "short_regime_ok_frac": 0.1017
+      },
+      "plan_long": {
+        "plannable_bars": 1242,
+        "plannable_frac": 0.8655,
+        "median_planned_atr_mult": 3.748
+      },
+      "plan_short": {
+        "plannable_bars": 1148,
+        "plannable_frac": 0.8,
+        "median_planned_atr_mult": 2.895
+      },
+      "role": "context_filter_source"
+    }
+  },
+  "stocks": {
+    "AEFES": {
+      "bars": 1436,
+      "anchor_ok_bars": 1396,
+      "anchor_ok_frac": 0.9721,
+      "swing_high_confirmed": 114,
+      "swing_low_confirmed": 110,
+      "swing_high_candidates": 114,
+      "swing_low_candidates": 110,
+      "bars_with_last_swing_high": 1428,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9269,
+      "donchian_thin_window_bars": 104,
+      "breakout_up": 141,
+      "breakout_down": 81,
+      "touch_donchian_high": 205,
+      "touch_donchian_low": 137,
+      "touch_last_swing_high": 476,
+      "touch_last_swing_low": 315,
+      "close_beyond_swing_high": 391,
+      "close_below_swing_low": 253,
+      "stop_valid_long": 1272,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 3.012,
+          "p25_atr_mult": 1.528,
+          "p75_atr_mult": 4.664,
+          "median_pct_price": 6.841
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_down|vol_normal": 205,
+          "trend_up|vol_normal": 185,
+          "trend_down|vol_low": 183,
+          "trend_up|vol_low": 102,
+          "trend_down|vol_high": 73,
+          "trend_up|vol_high": 73,
+          "range|vol_high": 64,
+          "range|vol_normal": 32,
+          "range|vol_low": 19
+        },
+        "regime_pct": {
+          "trend_down|vol_normal": 21.9,
+          "trend_up|vol_normal": 19.76,
+          "trend_down|vol_low": 19.55,
+          "trend_up|vol_low": 10.9,
+          "trend_down|vol_high": 7.8,
+          "trend_up|vol_high": 7.8,
+          "range|vol_high": 6.84,
+          "range|vol_normal": 3.42,
+          "range|vol_low": 2.03
+        },
+        "trend_counts": {
+          "trend_down": 461,
+          "trend_up": 360,
+          "range": 115
+        },
+        "vol_counts": {
+          "vol_normal": 422,
+          "vol_low": 304,
+          "vol_high": 210
+        },
+        "atr_percentile_p50": 0.47899,
+        "atr_percentile_p05": 0.0313,
+        "atr_percentile_p95": 0.9507,
+        "ema_slope_atr_p50": 0.04155,
+        "ema_slope_atr_p05": -1.7897,
+        "ema_slope_atr_p95": 1.86508,
+        "long_regime_ok_bars": 356,
+        "long_regime_ok_frac": 0.2479,
+        "short_regime_ok_bars": 450,
+        "short_regime_ok_frac": 0.3134
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1272,
+        "plannable_frac": 0.8858,
+        "median_planned_atr_mult": 3.411
+      },
+      "long_final_ok_bars": 316,
+      "long_final_ok_frac": 0.2201,
+      "sector": "i\u00e7ecek",
+      "short_produced": false
+    },
+    "AKBNK": {
+      "bars": 1436,
+      "anchor_ok_bars": 1397,
+      "anchor_ok_frac": 0.9728,
+      "swing_high_confirmed": 113,
+      "swing_low_confirmed": 107,
+      "swing_high_candidates": 113,
+      "swing_low_candidates": 107,
+      "bars_with_last_swing_high": 1420,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9366,
+      "donchian_thin_window_bars": 90,
+      "breakout_up": 141,
+      "breakout_down": 76,
+      "touch_donchian_high": 206,
+      "touch_donchian_low": 143,
+      "touch_last_swing_high": 519,
+      "touch_last_swing_low": 341,
+      "close_beyond_swing_high": 414,
+      "close_below_swing_low": 293,
+      "stop_valid_long": 1240,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 3.209,
+          "p25_atr_mult": 1.39,
+          "p75_atr_mult": 5.09,
+          "median_pct_price": 6.998
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_low": 301,
+          "trend_down|vol_normal": 184,
+          "trend_up|vol_normal": 154,
+          "trend_down|vol_high": 84,
+          "range|vol_normal": 72,
+          "range|vol_high": 59,
+          "trend_down|vol_low": 39,
+          "trend_up|vol_high": 27,
+          "range|vol_low": 16
+        },
+        "regime_pct": {
+          "trend_up|vol_low": 32.16,
+          "trend_down|vol_normal": 19.66,
+          "trend_up|vol_normal": 16.45,
+          "trend_down|vol_high": 8.97,
+          "range|vol_normal": 7.69,
+          "range|vol_high": 6.3,
+          "trend_down|vol_low": 4.17,
+          "trend_up|vol_high": 2.88,
+          "range|vol_low": 1.71
+        },
+        "trend_counts": {
+          "trend_up": 482,
+          "trend_down": 307,
+          "range": 147
+        },
+        "vol_counts": {
+          "vol_normal": 410,
+          "vol_low": 356,
+          "vol_high": 170
+        },
+        "atr_percentile_p50": 0.485,
+        "atr_percentile_p05": 0.022,
+        "atr_percentile_p95": 0.972,
+        "ema_slope_atr_p50": 0.32433,
+        "ema_slope_atr_p05": -1.25124,
+        "ema_slope_atr_p95": 1.67348,
+        "long_regime_ok_bars": 478,
+        "long_regime_ok_frac": 0.3329,
+        "short_regime_ok_bars": 293,
+        "short_regime_ok_frac": 0.204
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1240,
+        "plannable_frac": 0.8635,
+        "median_planned_atr_mult": 3.608
+      },
+      "long_final_ok_bars": 431,
+      "long_final_ok_frac": 0.3001,
+      "sector": "banka",
+      "short_produced": false
+    },
+    "ASELS": {
+      "bars": 1436,
+      "anchor_ok_bars": 1401,
+      "anchor_ok_frac": 0.9756,
+      "swing_high_confirmed": 115,
+      "swing_low_confirmed": 101,
+      "swing_high_candidates": 115,
+      "swing_low_candidates": 101,
+      "bars_with_last_swing_high": 1428,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9492,
+      "donchian_thin_window_bars": 72,
+      "breakout_up": 139,
+      "breakout_down": 75,
+      "touch_donchian_high": 229,
+      "touch_donchian_low": 109,
+      "touch_last_swing_high": 512,
+      "touch_last_swing_low": 268,
+      "close_beyond_swing_high": 429,
+      "close_below_swing_low": 211,
+      "stop_valid_long": 1315,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 3.347,
+          "p25_atr_mult": 1.933,
+          "p75_atr_mult": 5.328,
+          "median_pct_price": 7.637
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 410,
+          "trend_up|vol_high": 284,
+          "trend_up|vol_low": 178,
+          "range|vol_normal": 28,
+          "range|vol_high": 26,
+          "trend_down|vol_high": 5,
+          "trend_down|vol_normal": 4,
+          "range|vol_low": 1
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 43.8,
+          "trend_up|vol_high": 30.34,
+          "trend_up|vol_low": 19.02,
+          "range|vol_normal": 2.99,
+          "range|vol_high": 2.78,
+          "trend_down|vol_high": 0.53,
+          "trend_down|vol_normal": 0.43,
+          "range|vol_low": 0.11
+        },
+        "trend_counts": {
+          "trend_up": 872,
+          "range": 55,
+          "trend_down": 9
+        },
+        "vol_counts": {
+          "vol_normal": 442,
+          "vol_high": 315,
+          "vol_low": 179
+        },
+        "atr_percentile_p50": 0.53143,
+        "atr_percentile_p05": 0.03197,
+        "atr_percentile_p95": 0.976,
+        "ema_slope_atr_p50": 1.18489,
+        "ema_slope_atr_p05": -0.1443,
+        "ema_slope_atr_p95": 2.1939,
+        "long_regime_ok_bars": 791,
+        "long_regime_ok_frac": 0.5508,
+        "short_regime_ok_bars": 9,
+        "short_regime_ok_frac": 0.0063
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1315,
+        "plannable_frac": 0.9157,
+        "median_planned_atr_mult": 3.578
+      },
+      "long_final_ok_bars": 563,
+      "long_final_ok_frac": 0.3921,
+      "sector": "elektronik/savunma",
+      "short_produced": false
+    },
+    "ASTOR": {
+      "bars": 1436,
+      "anchor_ok_bars": 1401,
+      "anchor_ok_frac": 0.9756,
+      "swing_high_confirmed": 123,
+      "swing_low_confirmed": 106,
+      "swing_high_candidates": 123,
+      "swing_low_candidates": 106,
+      "bars_with_last_swing_high": 1420,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9547,
+      "donchian_thin_window_bars": 64,
+      "breakout_up": 130,
+      "breakout_down": 104,
+      "touch_donchian_high": 193,
+      "touch_donchian_low": 174,
+      "touch_last_swing_high": 457,
+      "touch_last_swing_low": 397,
+      "close_beyond_swing_high": 369,
+      "close_below_swing_low": 338,
+      "stop_valid_long": 1218,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.764,
+          "p25_atr_mult": 1.091,
+          "p75_atr_mult": 4.623,
+          "median_pct_price": 7.015
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_high": 308,
+          "trend_up|vol_normal": 200,
+          "trend_up|vol_low": 120,
+          "trend_down|vol_normal": 117,
+          "trend_down|vol_low": 87,
+          "range|vol_high": 35,
+          "range|vol_normal": 24,
+          "trend_down|vol_high": 23,
+          "range|vol_low": 22
+        },
+        "regime_pct": {
+          "trend_up|vol_high": 32.91,
+          "trend_up|vol_normal": 21.37,
+          "trend_up|vol_low": 12.82,
+          "trend_down|vol_normal": 12.5,
+          "trend_down|vol_low": 9.29,
+          "range|vol_high": 3.74,
+          "range|vol_normal": 2.56,
+          "trend_down|vol_high": 2.46,
+          "range|vol_low": 2.35
+        },
+        "trend_counts": {
+          "trend_up": 628,
+          "trend_down": 227,
+          "range": 81
+        },
+        "vol_counts": {
+          "vol_high": 366,
+          "vol_normal": 341,
+          "vol_low": 229
+        },
+        "atr_percentile_p50": 0.49762,
+        "atr_percentile_p05": 0.038,
+        "atr_percentile_p95": 0.9667,
+        "ema_slope_atr_p50": 0.28075,
+        "ema_slope_atr_p05": -1.44193,
+        "ema_slope_atr_p95": 1.94337,
+        "long_regime_ok_bars": 560,
+        "long_regime_ok_frac": 0.39,
+        "short_regime_ok_bars": 222,
+        "short_regime_ok_frac": 0.1546
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1218,
+        "plannable_frac": 0.8482,
+        "median_planned_atr_mult": 3.269
+      },
+      "long_final_ok_bars": 464,
+      "long_final_ok_frac": 0.3231,
+      "sector": "elektrik ekipman",
+      "short_produced": false
+    },
+    "BIMAS": {
+      "bars": 1436,
+      "anchor_ok_bars": 1385,
+      "anchor_ok_frac": 0.9645,
+      "swing_high_confirmed": 110,
+      "swing_low_confirmed": 102,
+      "swing_high_candidates": 110,
+      "swing_low_candidates": 102,
+      "bars_with_last_swing_high": 1428,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.883,
+      "donchian_thin_window_bars": 167,
+      "breakout_up": 137,
+      "breakout_down": 51,
+      "touch_donchian_high": 203,
+      "touch_donchian_low": 90,
+      "touch_last_swing_high": 474,
+      "touch_last_swing_low": 289,
+      "close_beyond_swing_high": 397,
+      "close_below_swing_low": 225,
+      "stop_valid_long": 1311,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 3.171,
+          "p25_atr_mult": 1.686,
+          "p75_atr_mult": 5.043,
+          "median_pct_price": 6.077
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 331,
+          "trend_up|vol_low": 219,
+          "trend_up|vol_high": 116,
+          "range|vol_normal": 85,
+          "trend_down|vol_normal": 48,
+          "trend_down|vol_low": 48,
+          "trend_down|vol_high": 45,
+          "range|vol_low": 27,
+          "range|vol_high": 17
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 35.36,
+          "trend_up|vol_low": 23.4,
+          "trend_up|vol_high": 12.39,
+          "range|vol_normal": 9.08,
+          "trend_down|vol_normal": 5.13,
+          "trend_down|vol_low": 5.13,
+          "trend_down|vol_high": 4.81,
+          "range|vol_low": 2.88,
+          "range|vol_high": 1.82
+        },
+        "trend_counts": {
+          "trend_up": 666,
+          "trend_down": 141,
+          "range": 129
+        },
+        "vol_counts": {
+          "vol_normal": 464,
+          "vol_low": 294,
+          "vol_high": 178
+        },
+        "atr_percentile_p50": 0.44949,
+        "atr_percentile_p05": 0.016,
+        "atr_percentile_p95": 0.95352,
+        "ema_slope_atr_p50": 0.54289,
+        "ema_slope_atr_p05": -0.85866,
+        "ema_slope_atr_p95": 2.02862,
+        "long_regime_ok_bars": 658,
+        "long_regime_ok_frac": 0.4582,
+        "short_regime_ok_bars": 119,
+        "short_regime_ok_frac": 0.0829
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1311,
+        "plannable_frac": 0.913,
+        "median_planned_atr_mult": 3.454
+      },
+      "long_final_ok_bars": 564,
+      "long_final_ok_frac": 0.3928,
+      "sector": "perakende",
+      "short_produced": false
+    },
+    "EKGYO": {
+      "bars": 1436,
+      "anchor_ok_bars": 1400,
+      "anchor_ok_frac": 0.9749,
+      "swing_high_confirmed": 118,
+      "swing_low_confirmed": 113,
+      "swing_high_candidates": 118,
+      "swing_low_candidates": 113,
+      "bars_with_last_swing_high": 1416,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9471,
+      "donchian_thin_window_bars": 75,
+      "breakout_up": 140,
+      "breakout_down": 71,
+      "touch_donchian_high": 215,
+      "touch_donchian_low": 142,
+      "touch_last_swing_high": 517,
+      "touch_last_swing_low": 341,
+      "close_beyond_swing_high": 423,
+      "close_below_swing_low": 270,
+      "stop_valid_long": 1275,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.907,
+          "p25_atr_mult": 1.453,
+          "p75_atr_mult": 4.855,
+          "median_pct_price": 6.869
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 261,
+          "trend_up|vol_low": 229,
+          "trend_down|vol_normal": 107,
+          "range|vol_normal": 95,
+          "trend_up|vol_high": 85,
+          "trend_down|vol_high": 63,
+          "range|vol_high": 40,
+          "trend_down|vol_low": 39,
+          "range|vol_low": 17
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 27.88,
+          "trend_up|vol_low": 24.47,
+          "trend_down|vol_normal": 11.43,
+          "range|vol_normal": 10.15,
+          "trend_up|vol_high": 9.08,
+          "trend_down|vol_high": 6.73,
+          "range|vol_high": 4.27,
+          "trend_down|vol_low": 4.17,
+          "range|vol_low": 1.82
+        },
+        "trend_counts": {
+          "trend_up": 575,
+          "trend_down": 209,
+          "range": 152
+        },
+        "vol_counts": {
+          "vol_normal": 463,
+          "vol_low": 285,
+          "vol_high": 188
+        },
+        "atr_percentile_p50": 0.51535,
+        "atr_percentile_p05": 0.0373,
+        "atr_percentile_p95": 0.96447,
+        "ema_slope_atr_p50": 0.51562,
+        "ema_slope_atr_p05": -0.79541,
+        "ema_slope_atr_p95": 1.73189,
+        "long_regime_ok_bars": 574,
+        "long_regime_ok_frac": 0.3997,
+        "short_regime_ok_bars": 205,
+        "short_regime_ok_frac": 0.1428
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1275,
+        "plannable_frac": 0.8879,
+        "median_planned_atr_mult": 3.285
+      },
+      "long_final_ok_bars": 450,
+      "long_final_ok_frac": 0.3134,
+      "sector": "GYO",
+      "short_produced": false
+    },
+    "ENKAI": {
+      "bars": 1436,
+      "anchor_ok_bars": 1387,
+      "anchor_ok_frac": 0.9659,
+      "swing_high_confirmed": 120,
+      "swing_low_confirmed": 105,
+      "swing_high_candidates": 120,
+      "swing_low_candidates": 105,
+      "bars_with_last_swing_high": 1416,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.8948,
+      "donchian_thin_window_bars": 150,
+      "breakout_up": 118,
+      "breakout_down": 73,
+      "touch_donchian_high": 169,
+      "touch_donchian_low": 131,
+      "touch_last_swing_high": 498,
+      "touch_last_swing_low": 352,
+      "close_beyond_swing_high": 379,
+      "close_below_swing_low": 289,
+      "stop_valid_long": 1255,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.824,
+          "p25_atr_mult": 1.47,
+          "p75_atr_mult": 4.19,
+          "median_pct_price": 5.667
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 323,
+          "trend_up|vol_high": 229,
+          "trend_up|vol_low": 176,
+          "trend_down|vol_low": 82,
+          "trend_down|vol_normal": 53,
+          "range|vol_normal": 31,
+          "range|vol_high": 24,
+          "range|vol_low": 18
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 34.51,
+          "trend_up|vol_high": 24.47,
+          "trend_up|vol_low": 18.8,
+          "trend_down|vol_low": 8.76,
+          "trend_down|vol_normal": 5.66,
+          "range|vol_normal": 3.31,
+          "range|vol_high": 2.56,
+          "range|vol_low": 1.92
+        },
+        "trend_counts": {
+          "trend_up": 728,
+          "trend_down": 135,
+          "range": 73
+        },
+        "vol_counts": {
+          "vol_normal": 407,
+          "vol_low": 276,
+          "vol_high": 253
+        },
+        "atr_percentile_p50": 0.51771,
+        "atr_percentile_p05": 0.036,
+        "atr_percentile_p95": 0.956,
+        "ema_slope_atr_p50": 0.74122,
+        "ema_slope_atr_p05": -0.52344,
+        "ema_slope_atr_p95": 1.32204,
+        "long_regime_ok_bars": 683,
+        "long_regime_ok_frac": 0.4756,
+        "short_regime_ok_bars": 135,
+        "short_regime_ok_frac": 0.094
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1255,
+        "plannable_frac": 0.874,
+        "median_planned_atr_mult": 3.109
+      },
+      "long_final_ok_bars": 438,
+      "long_final_ok_frac": 0.305,
+      "sector": "in\u015faat",
+      "short_produced": false
+    },
+    "EREGL": {
+      "bars": 1436,
+      "anchor_ok_bars": 1401,
+      "anchor_ok_frac": 0.9756,
+      "swing_high_confirmed": 105,
+      "swing_low_confirmed": 122,
+      "swing_high_candidates": 105,
+      "swing_low_candidates": 122,
+      "bars_with_last_swing_high": 1420,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.945,
+      "donchian_thin_window_bars": 78,
+      "breakout_up": 139,
+      "breakout_down": 92,
+      "touch_donchian_high": 217,
+      "touch_donchian_low": 157,
+      "touch_last_swing_high": 480,
+      "touch_last_swing_low": 342,
+      "close_beyond_swing_high": 405,
+      "close_below_swing_low": 277,
+      "stop_valid_long": 1238,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.892,
+          "p25_atr_mult": 1.39,
+          "p75_atr_mult": 4.452,
+          "median_pct_price": 5.04
+        }
+      },
+      "median_swing_age_bars_high": 7.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 222,
+          "trend_up|vol_high": 209,
+          "trend_down|vol_low": 127,
+          "trend_up|vol_low": 122,
+          "trend_down|vol_normal": 73,
+          "range|vol_high": 66,
+          "range|vol_normal": 64,
+          "trend_down|vol_high": 42,
+          "range|vol_low": 11
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 23.72,
+          "trend_up|vol_high": 22.33,
+          "trend_down|vol_low": 13.57,
+          "trend_up|vol_low": 13.03,
+          "trend_down|vol_normal": 7.8,
+          "range|vol_high": 7.05,
+          "range|vol_normal": 6.84,
+          "trend_down|vol_high": 4.49,
+          "range|vol_low": 1.18
+        },
+        "trend_counts": {
+          "trend_up": 553,
+          "trend_down": 242,
+          "range": 141
+        },
+        "vol_counts": {
+          "vol_normal": 359,
+          "vol_high": 317,
+          "vol_low": 260
+        },
+        "atr_percentile_p50": 0.58408,
+        "atr_percentile_p05": 0.02,
+        "atr_percentile_p95": 0.98174,
+        "ema_slope_atr_p50": 0.2913,
+        "ema_slope_atr_p05": -1.25758,
+        "ema_slope_atr_p95": 1.50827,
+        "long_regime_ok_bars": 504,
+        "long_regime_ok_frac": 0.351,
+        "short_regime_ok_bars": 222,
+        "short_regime_ok_frac": 0.1546
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1238,
+        "plannable_frac": 0.8621,
+        "median_planned_atr_mult": 3.327
+      },
+      "long_final_ok_bars": 376,
+      "long_final_ok_frac": 0.2618,
+      "sector": "demir-\u00e7elik",
+      "short_produced": false
+    },
+    "FROTO": {
+      "bars": 1436,
+      "anchor_ok_bars": 1392,
+      "anchor_ok_frac": 0.9694,
+      "swing_high_confirmed": 99,
+      "swing_low_confirmed": 93,
+      "swing_high_candidates": 99,
+      "swing_low_candidates": 93,
+      "bars_with_last_swing_high": 1420,
+      "bars_with_last_swing_low": 1414,
+      "donchian_available_frac": 0.9185,
+      "donchian_thin_window_bars": 116,
+      "breakout_up": 121,
+      "breakout_down": 88,
+      "touch_donchian_high": 183,
+      "touch_donchian_low": 172,
+      "touch_last_swing_high": 404,
+      "touch_last_swing_low": 432,
+      "close_beyond_swing_high": 331,
+      "close_below_swing_low": 359,
+      "stop_valid_long": 1194,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1414,
+          "median_atr_mult": 2.562,
+          "p25_atr_mult": 0.959,
+          "p75_atr_mult": 4.132,
+          "median_pct_price": 4.557
+        }
+      },
+      "median_swing_age_bars_high": 7.0,
+      "median_swing_age_bars_low": 8.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_down|vol_low": 242,
+          "trend_down|vol_normal": 196,
+          "trend_up|vol_normal": 163,
+          "trend_up|vol_high": 110,
+          "range|vol_normal": 73,
+          "trend_down|vol_high": 67,
+          "range|vol_low": 39,
+          "range|vol_high": 33,
+          "trend_up|vol_low": 13
+        },
+        "regime_pct": {
+          "trend_down|vol_low": 25.85,
+          "trend_down|vol_normal": 20.94,
+          "trend_up|vol_normal": 17.41,
+          "trend_up|vol_high": 11.75,
+          "range|vol_normal": 7.8,
+          "trend_down|vol_high": 7.16,
+          "range|vol_low": 4.17,
+          "range|vol_high": 3.53,
+          "trend_up|vol_low": 1.39
+        },
+        "trend_counts": {
+          "trend_down": 505,
+          "trend_up": 286,
+          "range": 145
+        },
+        "vol_counts": {
+          "vol_normal": 432,
+          "vol_low": 294,
+          "vol_high": 210
+        },
+        "atr_percentile_p50": 0.47002,
+        "atr_percentile_p05": 0.06323,
+        "atr_percentile_p95": 0.946,
+        "ema_slope_atr_p50": -0.24706,
+        "ema_slope_atr_p05": -1.76146,
+        "ema_slope_atr_p95": 1.41338,
+        "long_regime_ok_bars": 253,
+        "long_regime_ok_frac": 0.1762,
+        "short_regime_ok_bars": 504,
+        "short_regime_ok_frac": 0.351
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1194,
+        "plannable_frac": 0.8315,
+        "median_planned_atr_mult": 2.973
+      },
+      "long_final_ok_bars": 206,
+      "long_final_ok_frac": 0.1435,
+      "sector": "otomotiv",
+      "short_produced": false
+    },
+    "GARAN": {
+      "bars": 1436,
+      "anchor_ok_bars": 1402,
+      "anchor_ok_frac": 0.9763,
+      "swing_high_confirmed": 106,
+      "swing_low_confirmed": 101,
+      "swing_high_candidates": 106,
+      "swing_low_candidates": 101,
+      "bars_with_last_swing_high": 1387,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9485,
+      "donchian_thin_window_bars": 73,
+      "breakout_up": 124,
+      "breakout_down": 75,
+      "touch_donchian_high": 193,
+      "touch_donchian_low": 137,
+      "touch_last_swing_high": 434,
+      "touch_last_swing_low": 325,
+      "close_beyond_swing_high": 348,
+      "close_below_swing_low": 261,
+      "stop_valid_long": 1257,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 3.25,
+          "p25_atr_mult": 1.617,
+          "p75_atr_mult": 4.916,
+          "median_pct_price": 6.648
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_low": 276,
+          "trend_down|vol_normal": 195,
+          "trend_up|vol_normal": 157,
+          "trend_down|vol_high": 97,
+          "range|vol_normal": 96,
+          "trend_down|vol_low": 31,
+          "range|vol_high": 29,
+          "trend_up|vol_high": 28,
+          "range|vol_low": 27
+        },
+        "regime_pct": {
+          "trend_up|vol_low": 29.49,
+          "trend_down|vol_normal": 20.83,
+          "trend_up|vol_normal": 16.77,
+          "trend_down|vol_high": 10.36,
+          "range|vol_normal": 10.26,
+          "trend_down|vol_low": 3.31,
+          "range|vol_high": 3.1,
+          "trend_up|vol_high": 2.99,
+          "range|vol_low": 2.88
+        },
+        "trend_counts": {
+          "trend_up": 461,
+          "trend_down": 323,
+          "range": 152
+        },
+        "vol_counts": {
+          "vol_normal": 448,
+          "vol_low": 334,
+          "vol_high": 154
+        },
+        "atr_percentile_p50": 0.38508,
+        "atr_percentile_p05": 0.014,
+        "atr_percentile_p95": 0.936,
+        "ema_slope_atr_p50": 0.51892,
+        "ema_slope_atr_p05": -0.87138,
+        "ema_slope_atr_p95": 1.91826,
+        "long_regime_ok_bars": 461,
+        "long_regime_ok_frac": 0.321,
+        "short_regime_ok_bars": 310,
+        "short_regime_ok_frac": 0.2159
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1257,
+        "plannable_frac": 0.8753,
+        "median_planned_atr_mult": 3.605
+      },
+      "long_final_ok_bars": 404,
+      "long_final_ok_frac": 0.2813,
+      "sector": "banka",
+      "short_produced": false
+    },
+    "GUBRF": {
+      "bars": 1436,
+      "anchor_ok_bars": 1386,
+      "anchor_ok_frac": 0.9652,
+      "swing_high_confirmed": 109,
+      "swing_low_confirmed": 107,
+      "swing_high_candidates": 109,
+      "swing_low_candidates": 107,
+      "bars_with_last_swing_high": 1417,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9589,
+      "donchian_thin_window_bars": 58,
+      "breakout_up": 134,
+      "breakout_down": 82,
+      "touch_donchian_high": 199,
+      "touch_donchian_low": 153,
+      "touch_last_swing_high": 425,
+      "touch_last_swing_low": 387,
+      "close_beyond_swing_high": 339,
+      "close_below_swing_low": 334,
+      "stop_valid_long": 1213,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.791,
+          "p25_atr_mult": 1.144,
+          "p75_atr_mult": 4.507,
+          "median_pct_price": 6.988
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 370,
+          "trend_up|vol_low": 217,
+          "trend_up|vol_high": 103,
+          "range|vol_high": 67,
+          "trend_down|vol_normal": 60,
+          "trend_down|vol_high": 57,
+          "trend_down|vol_low": 33,
+          "range|vol_normal": 17,
+          "range|vol_low": 12
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 39.53,
+          "trend_up|vol_low": 23.18,
+          "trend_up|vol_high": 11.0,
+          "range|vol_high": 7.16,
+          "trend_down|vol_normal": 6.41,
+          "trend_down|vol_high": 6.09,
+          "trend_down|vol_low": 3.53,
+          "range|vol_normal": 1.82,
+          "range|vol_low": 1.28
+        },
+        "trend_counts": {
+          "trend_up": 690,
+          "trend_down": 150,
+          "range": 96
+        },
+        "vol_counts": {
+          "vol_normal": 447,
+          "vol_low": 262,
+          "vol_high": 227
+        },
+        "atr_percentile_p50": 0.51979,
+        "atr_percentile_p05": 0.042,
+        "atr_percentile_p95": 0.9307,
+        "ema_slope_atr_p50": 0.48593,
+        "ema_slope_atr_p05": -2.09105,
+        "ema_slope_atr_p95": 2.16508,
+        "long_regime_ok_bars": 688,
+        "long_regime_ok_frac": 0.4791,
+        "short_regime_ok_bars": 146,
+        "short_regime_ok_frac": 0.1017
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1213,
+        "plannable_frac": 0.8447,
+        "median_planned_atr_mult": 3.164
+      },
+      "long_final_ok_bars": 508,
+      "long_final_ok_frac": 0.3538,
+      "sector": "kimya/g\u00fcbre",
+      "short_produced": false
+    },
+    "ISCTR": {
+      "bars": 1435,
+      "anchor_ok_bars": 1399,
+      "anchor_ok_frac": 0.9749,
+      "swing_high_confirmed": 100,
+      "swing_low_confirmed": 115,
+      "swing_high_candidates": 101,
+      "swing_low_candidates": 115,
+      "bars_with_last_swing_high": 1417,
+      "bars_with_last_swing_low": 1424,
+      "donchian_available_frac": 0.9477,
+      "donchian_thin_window_bars": 74,
+      "breakout_up": 121,
+      "breakout_down": 93,
+      "touch_donchian_high": 188,
+      "touch_donchian_low": 155,
+      "touch_last_swing_high": 439,
+      "touch_last_swing_low": 372,
+      "close_beyond_swing_high": 359,
+      "close_below_swing_low": 317,
+      "stop_valid_long": 1224,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1422,
+          "median_atr_mult": 2.872,
+          "p25_atr_mult": 1.265,
+          "p75_atr_mult": 4.801,
+          "median_pct_price": 6.169
+        }
+      },
+      "median_swing_age_bars_high": 7.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1435,
+        "labelled_bars": 935,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3484,
+        "regime_counts": {
+          "trend_up|vol_low": 234,
+          "trend_down|vol_normal": 198,
+          "trend_up|vol_normal": 143,
+          "trend_down|vol_high": 107,
+          "range|vol_normal": 74,
+          "trend_down|vol_low": 69,
+          "range|vol_high": 51,
+          "trend_up|vol_high": 42,
+          "range|vol_low": 17
+        },
+        "regime_pct": {
+          "trend_up|vol_low": 25.03,
+          "trend_down|vol_normal": 21.18,
+          "trend_up|vol_normal": 15.29,
+          "trend_down|vol_high": 11.44,
+          "range|vol_normal": 7.91,
+          "trend_down|vol_low": 7.38,
+          "range|vol_high": 5.45,
+          "trend_up|vol_high": 4.49,
+          "range|vol_low": 1.82
+        },
+        "trend_counts": {
+          "trend_up": 419,
+          "trend_down": 374,
+          "range": 142
+        },
+        "vol_counts": {
+          "vol_normal": 415,
+          "vol_low": 320,
+          "vol_high": 200
+        },
+        "atr_percentile_p50": 0.438,
+        "atr_percentile_p05": 0.01397,
+        "atr_percentile_p95": 0.94829,
+        "ema_slope_atr_p50": 0.14775,
+        "ema_slope_atr_p05": -1.55804,
+        "ema_slope_atr_p95": 1.72575,
+        "long_regime_ok_bars": 416,
+        "long_regime_ok_frac": 0.2899,
+        "short_regime_ok_bars": 353,
+        "short_regime_ok_frac": 0.246
+      },
+      "context": {
+        "applied": true,
+        "bars": 1435,
+        "longs_allowed_bars": 912,
+        "longs_allowed_frac": 0.6355,
+        "reasons": {
+          "context_ok": 912,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.55,
+          "context_below_ema200": 22.3,
+          "context_warmup": 13.87,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1224,
+        "plannable_frac": 0.853,
+        "median_planned_atr_mult": 3.351
+      },
+      "long_final_ok_bars": 374,
+      "long_final_ok_frac": 0.2606,
+      "sector": "banka",
+      "short_produced": false
+    },
+    "KCHOL": {
+      "bars": 1436,
+      "anchor_ok_bars": 1402,
+      "anchor_ok_frac": 0.9763,
+      "swing_high_confirmed": 108,
+      "swing_low_confirmed": 107,
+      "swing_high_candidates": 109,
+      "swing_low_candidates": 107,
+      "bars_with_last_swing_high": 1428,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9457,
+      "donchian_thin_window_bars": 77,
+      "breakout_up": 106,
+      "breakout_down": 97,
+      "touch_donchian_high": 173,
+      "touch_donchian_low": 169,
+      "touch_last_swing_high": 395,
+      "touch_last_swing_low": 379,
+      "close_beyond_swing_high": 319,
+      "close_below_swing_low": 316,
+      "stop_valid_long": 1221,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.923,
+          "p25_atr_mult": 1.263,
+          "p75_atr_mult": 4.599,
+          "median_pct_price": 5.339
+        }
+      },
+      "median_swing_age_bars_high": 7.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 293,
+          "trend_down|vol_normal": 165,
+          "trend_up|vol_low": 116,
+          "range|vol_normal": 112,
+          "trend_down|vol_low": 81,
+          "trend_down|vol_high": 72,
+          "range|vol_high": 34,
+          "range|vol_low": 32,
+          "trend_up|vol_high": 31
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 31.3,
+          "trend_down|vol_normal": 17.63,
+          "trend_up|vol_low": 12.39,
+          "range|vol_normal": 11.97,
+          "trend_down|vol_low": 8.65,
+          "trend_down|vol_high": 7.69,
+          "range|vol_high": 3.63,
+          "range|vol_low": 3.42,
+          "trend_up|vol_high": 3.31
+        },
+        "trend_counts": {
+          "trend_up": 440,
+          "trend_down": 318,
+          "range": 178
+        },
+        "vol_counts": {
+          "vol_normal": 570,
+          "vol_low": 229,
+          "vol_high": 137
+        },
+        "atr_percentile_p50": 0.496,
+        "atr_percentile_p05": 0.04188,
+        "atr_percentile_p95": 0.93837,
+        "ema_slope_atr_p50": 0.13589,
+        "ema_slope_atr_p05": -1.33973,
+        "ema_slope_atr_p95": 1.62747,
+        "long_regime_ok_bars": 440,
+        "long_regime_ok_frac": 0.3064,
+        "short_regime_ok_bars": 303,
+        "short_regime_ok_frac": 0.211
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1221,
+        "plannable_frac": 0.8503,
+        "median_planned_atr_mult": 3.34
+      },
+      "long_final_ok_bars": 393,
+      "long_final_ok_frac": 0.2737,
+      "sector": "holding",
+      "short_produced": false
+    },
+    "KRDMD": {
+      "bars": 1436,
+      "anchor_ok_bars": 1406,
+      "anchor_ok_frac": 0.9791,
+      "swing_high_confirmed": 109,
+      "swing_low_confirmed": 106,
+      "swing_high_candidates": 109,
+      "swing_low_candidates": 106,
+      "bars_with_last_swing_high": 1424,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9742,
+      "donchian_thin_window_bars": 36,
+      "breakout_up": 136,
+      "breakout_down": 94,
+      "touch_donchian_high": 193,
+      "touch_donchian_low": 166,
+      "touch_last_swing_high": 469,
+      "touch_last_swing_low": 372,
+      "close_beyond_swing_high": 384,
+      "close_below_swing_low": 301,
+      "stop_valid_long": 1274,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.76,
+          "p25_atr_mult": 1.308,
+          "p75_atr_mult": 4.397,
+          "median_pct_price": 6.606
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 230,
+          "trend_up|vol_high": 192,
+          "trend_up|vol_low": 164,
+          "trend_down|vol_normal": 90,
+          "range|vol_normal": 61,
+          "trend_down|vol_low": 57,
+          "trend_down|vol_high": 49,
+          "range|vol_high": 48,
+          "range|vol_low": 45
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 24.57,
+          "trend_up|vol_high": 20.51,
+          "trend_up|vol_low": 17.52,
+          "trend_down|vol_normal": 9.62,
+          "range|vol_normal": 6.52,
+          "trend_down|vol_low": 6.09,
+          "trend_down|vol_high": 5.24,
+          "range|vol_high": 5.13,
+          "range|vol_low": 4.81
+        },
+        "trend_counts": {
+          "trend_up": 586,
+          "trend_down": 196,
+          "range": 154
+        },
+        "vol_counts": {
+          "vol_normal": 381,
+          "vol_high": 289,
+          "vol_low": 266
+        },
+        "atr_percentile_p50": 0.562,
+        "atr_percentile_p05": 0.0493,
+        "atr_percentile_p95": 0.976,
+        "ema_slope_atr_p50": 0.33107,
+        "ema_slope_atr_p05": -1.26314,
+        "ema_slope_atr_p95": 1.11254,
+        "long_regime_ok_bars": 536,
+        "long_regime_ok_frac": 0.3733,
+        "short_regime_ok_bars": 190,
+        "short_regime_ok_frac": 0.1323
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1274,
+        "plannable_frac": 0.8872,
+        "median_planned_atr_mult": 3.029
+      },
+      "long_final_ok_bars": 474,
+      "long_final_ok_frac": 0.3301,
+      "sector": "demir-\u00e7elik",
+      "short_produced": false
+    },
+    "MGROS": {
+      "bars": 1436,
+      "anchor_ok_bars": 1394,
+      "anchor_ok_frac": 0.9708,
+      "swing_high_confirmed": 103,
+      "swing_low_confirmed": 105,
+      "swing_high_candidates": 103,
+      "swing_low_candidates": 105,
+      "bars_with_last_swing_high": 1428,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9192,
+      "donchian_thin_window_bars": 115,
+      "breakout_up": 132,
+      "breakout_down": 90,
+      "touch_donchian_high": 198,
+      "touch_donchian_low": 148,
+      "touch_last_swing_high": 489,
+      "touch_last_swing_low": 322,
+      "close_beyond_swing_high": 401,
+      "close_below_swing_low": 246,
+      "stop_valid_long": 1275,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 3.056,
+          "p25_atr_mult": 1.585,
+          "p75_atr_mult": 4.7,
+          "median_pct_price": 5.808
+        }
+      },
+      "median_swing_age_bars_high": 7.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_low": 217,
+          "trend_down|vol_normal": 203,
+          "trend_up|vol_normal": 188,
+          "trend_up|vol_high": 87,
+          "trend_down|vol_high": 83,
+          "range|vol_normal": 62,
+          "trend_down|vol_low": 53,
+          "range|vol_low": 22,
+          "range|vol_high": 21
+        },
+        "regime_pct": {
+          "trend_up|vol_low": 23.18,
+          "trend_down|vol_normal": 21.69,
+          "trend_up|vol_normal": 20.09,
+          "trend_up|vol_high": 9.29,
+          "trend_down|vol_high": 8.87,
+          "range|vol_normal": 6.62,
+          "trend_down|vol_low": 5.66,
+          "range|vol_low": 2.35,
+          "range|vol_high": 2.24
+        },
+        "trend_counts": {
+          "trend_up": 492,
+          "trend_down": 339,
+          "range": 105
+        },
+        "vol_counts": {
+          "vol_normal": 453,
+          "vol_low": 292,
+          "vol_high": 191
+        },
+        "atr_percentile_p50": 0.4412,
+        "atr_percentile_p05": 0.01868,
+        "atr_percentile_p95": 0.938,
+        "ema_slope_atr_p50": 0.34414,
+        "ema_slope_atr_p05": -1.26834,
+        "ema_slope_atr_p95": 1.71939,
+        "long_regime_ok_bars": 483,
+        "long_regime_ok_frac": 0.3364,
+        "short_regime_ok_bars": 309,
+        "short_regime_ok_frac": 0.2152
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1275,
+        "plannable_frac": 0.8879,
+        "median_planned_atr_mult": 3.32
+      },
+      "long_final_ok_bars": 433,
+      "long_final_ok_frac": 0.3015,
+      "sector": "perakende",
+      "short_produced": false
+    },
+    "PETKM": {
+      "bars": 1436,
+      "anchor_ok_bars": 1409,
+      "anchor_ok_frac": 0.9812,
+      "swing_high_confirmed": 112,
+      "swing_low_confirmed": 114,
+      "swing_high_candidates": 112,
+      "swing_low_candidates": 114,
+      "bars_with_last_swing_high": 1400,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9868,
+      "donchian_thin_window_bars": 18,
+      "breakout_up": 123,
+      "breakout_down": 117,
+      "touch_donchian_high": 208,
+      "touch_donchian_low": 181,
+      "touch_last_swing_high": 438,
+      "touch_last_swing_low": 375,
+      "close_beyond_swing_high": 350,
+      "close_below_swing_low": 310,
+      "stop_valid_long": 1258,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.787,
+          "p25_atr_mult": 1.259,
+          "p75_atr_mult": 4.443,
+          "median_pct_price": 5.559
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_down|vol_low": 241,
+          "trend_down|vol_normal": 196,
+          "trend_up|vol_high": 173,
+          "range|vol_normal": 86,
+          "trend_up|vol_normal": 82,
+          "range|vol_high": 65,
+          "trend_down|vol_high": 57,
+          "trend_up|vol_low": 25,
+          "range|vol_low": 11
+        },
+        "regime_pct": {
+          "trend_down|vol_low": 25.75,
+          "trend_down|vol_normal": 20.94,
+          "trend_up|vol_high": 18.48,
+          "range|vol_normal": 9.19,
+          "trend_up|vol_normal": 8.76,
+          "range|vol_high": 6.94,
+          "trend_down|vol_high": 6.09,
+          "trend_up|vol_low": 2.67,
+          "range|vol_low": 1.18
+        },
+        "trend_counts": {
+          "trend_down": 494,
+          "trend_up": 280,
+          "range": 162
+        },
+        "vol_counts": {
+          "vol_normal": 364,
+          "vol_high": 295,
+          "vol_low": 277
+        },
+        "atr_percentile_p50": 0.473,
+        "atr_percentile_p05": 0.008,
+        "atr_percentile_p95": 0.962,
+        "ema_slope_atr_p50": -0.20813,
+        "ema_slope_atr_p05": -1.71298,
+        "ema_slope_atr_p95": 1.08998,
+        "long_regime_ok_bars": 231,
+        "long_regime_ok_frac": 0.1609,
+        "short_regime_ok_bars": 488,
+        "short_regime_ok_frac": 0.3398
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1258,
+        "plannable_frac": 0.876,
+        "median_planned_atr_mult": 3.123
+      },
+      "long_final_ok_bars": 214,
+      "long_final_ok_frac": 0.149,
+      "sector": "petrokimya",
+      "short_produced": false
+    },
+    "PGSUS": {
+      "bars": 1436,
+      "anchor_ok_bars": 1410,
+      "anchor_ok_frac": 0.9819,
+      "swing_high_confirmed": 112,
+      "swing_low_confirmed": 104,
+      "swing_high_candidates": 113,
+      "swing_low_candidates": 104,
+      "bars_with_last_swing_high": 1424,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9868,
+      "donchian_thin_window_bars": 18,
+      "breakout_up": 109,
+      "breakout_down": 99,
+      "touch_donchian_high": 166,
+      "touch_donchian_low": 176,
+      "touch_last_swing_high": 400,
+      "touch_last_swing_low": 394,
+      "close_beyond_swing_high": 324,
+      "close_below_swing_low": 316,
+      "stop_valid_long": 1242,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.721,
+          "p25_atr_mult": 1.152,
+          "p75_atr_mult": 4.453,
+          "median_pct_price": 4.824
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_down|vol_normal": 303,
+          "trend_down|vol_low": 236,
+          "trend_up|vol_normal": 113,
+          "range|vol_normal": 83,
+          "trend_up|vol_low": 78,
+          "trend_down|vol_high": 47,
+          "trend_up|vol_high": 39,
+          "range|vol_low": 25,
+          "range|vol_high": 12
+        },
+        "regime_pct": {
+          "trend_down|vol_normal": 32.37,
+          "trend_down|vol_low": 25.21,
+          "trend_up|vol_normal": 12.07,
+          "range|vol_normal": 8.87,
+          "trend_up|vol_low": 8.33,
+          "trend_down|vol_high": 5.02,
+          "trend_up|vol_high": 4.17,
+          "range|vol_low": 2.67,
+          "range|vol_high": 1.28
+        },
+        "trend_counts": {
+          "trend_down": 586,
+          "trend_up": 230,
+          "range": 120
+        },
+        "vol_counts": {
+          "vol_normal": 499,
+          "vol_low": 339,
+          "vol_high": 98
+        },
+        "atr_percentile_p50": 0.456,
+        "atr_percentile_p05": 0.022,
+        "atr_percentile_p95": 0.95359,
+        "ema_slope_atr_p50": -0.10748,
+        "ema_slope_atr_p05": -1.62584,
+        "ema_slope_atr_p95": 1.51114,
+        "long_regime_ok_bars": 209,
+        "long_regime_ok_frac": 0.1455,
+        "short_regime_ok_bars": 585,
+        "short_regime_ok_frac": 0.4074
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1242,
+        "plannable_frac": 0.8649,
+        "median_planned_atr_mult": 3.16
+      },
+      "long_final_ok_bars": 143,
+      "long_final_ok_frac": 0.0996,
+      "sector": "havac\u0131l\u0131k",
+      "short_produced": false
+    },
+    "SAHOL": {
+      "bars": 1436,
+      "anchor_ok_bars": 1402,
+      "anchor_ok_frac": 0.9763,
+      "swing_high_confirmed": 124,
+      "swing_low_confirmed": 120,
+      "swing_high_candidates": 124,
+      "swing_low_candidates": 120,
+      "bars_with_last_swing_high": 1428,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9478,
+      "donchian_thin_window_bars": 74,
+      "breakout_up": 118,
+      "breakout_down": 85,
+      "touch_donchian_high": 181,
+      "touch_donchian_low": 152,
+      "touch_last_swing_high": 456,
+      "touch_last_swing_low": 355,
+      "close_beyond_swing_high": 377,
+      "close_below_swing_low": 285,
+      "stop_valid_long": 1247,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.878,
+          "p25_atr_mult": 1.381,
+          "p75_atr_mult": 4.581,
+          "median_pct_price": 6.046
+        }
+      },
+      "median_swing_age_bars_high": 5.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 201,
+          "trend_up|vol_low": 173,
+          "trend_down|vol_normal": 172,
+          "trend_down|vol_low": 94,
+          "range|vol_normal": 89,
+          "trend_down|vol_high": 77,
+          "range|vol_high": 48,
+          "range|vol_low": 43,
+          "trend_up|vol_high": 39
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 21.47,
+          "trend_up|vol_low": 18.48,
+          "trend_down|vol_normal": 18.38,
+          "trend_down|vol_low": 10.04,
+          "range|vol_normal": 9.51,
+          "trend_down|vol_high": 8.23,
+          "range|vol_high": 5.13,
+          "range|vol_low": 4.59,
+          "trend_up|vol_high": 4.17
+        },
+        "trend_counts": {
+          "trend_up": 413,
+          "trend_down": 343,
+          "range": 180
+        },
+        "vol_counts": {
+          "vol_normal": 462,
+          "vol_low": 310,
+          "vol_high": 164
+        },
+        "atr_percentile_p50": 0.4867,
+        "atr_percentile_p05": 0.026,
+        "atr_percentile_p95": 0.97392,
+        "ema_slope_atr_p50": 0.16364,
+        "ema_slope_atr_p05": -1.18612,
+        "ema_slope_atr_p95": 1.45167,
+        "long_regime_ok_bars": 413,
+        "long_regime_ok_frac": 0.2876,
+        "short_regime_ok_bars": 327,
+        "short_regime_ok_frac": 0.2277
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1247,
+        "plannable_frac": 0.8684,
+        "median_planned_atr_mult": 3.209
+      },
+      "long_final_ok_bars": 376,
+      "long_final_ok_frac": 0.2618,
+      "sector": "holding",
+      "short_produced": false
+    },
+    "SASA": {
+      "bars": 1436,
+      "anchor_ok_bars": 1402,
+      "anchor_ok_frac": 0.9763,
+      "swing_high_confirmed": 83,
+      "swing_low_confirmed": 91,
+      "swing_high_candidates": 83,
+      "swing_low_candidates": 91,
+      "bars_with_last_swing_high": 1421,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9756,
+      "donchian_thin_window_bars": 34,
+      "breakout_up": 93,
+      "breakout_down": 120,
+      "touch_donchian_high": 153,
+      "touch_donchian_low": 234,
+      "touch_last_swing_high": 365,
+      "touch_last_swing_low": 445,
+      "close_beyond_swing_high": 295,
+      "close_below_swing_low": 373,
+      "stop_valid_long": 1175,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.38,
+          "p25_atr_mult": 0.848,
+          "p75_atr_mult": 3.928,
+          "median_pct_price": 5.849
+        }
+      },
+      "median_swing_age_bars_high": 9.0,
+      "median_swing_age_bars_low": 8.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_down|vol_normal": 377,
+          "trend_down|vol_low": 259,
+          "trend_down|vol_high": 96,
+          "trend_up|vol_high": 96,
+          "range|vol_high": 43,
+          "range|vol_normal": 32,
+          "trend_up|vol_normal": 18,
+          "range|vol_low": 10,
+          "trend_up|vol_low": 5
+        },
+        "regime_pct": {
+          "trend_down|vol_normal": 40.28,
+          "trend_down|vol_low": 27.67,
+          "trend_down|vol_high": 10.26,
+          "trend_up|vol_high": 10.26,
+          "range|vol_high": 4.59,
+          "range|vol_normal": 3.42,
+          "trend_up|vol_normal": 1.92,
+          "range|vol_low": 1.07,
+          "trend_up|vol_low": 0.53
+        },
+        "trend_counts": {
+          "trend_down": 732,
+          "trend_up": 119,
+          "range": 85
+        },
+        "vol_counts": {
+          "vol_normal": 427,
+          "vol_low": 274,
+          "vol_high": 235
+        },
+        "atr_percentile_p50": 0.528,
+        "atr_percentile_p05": 0.02607,
+        "atr_percentile_p95": 0.966,
+        "ema_slope_atr_p50": -0.72483,
+        "ema_slope_atr_p05": -2.03735,
+        "ema_slope_atr_p95": 0.72204,
+        "long_regime_ok_bars": 77,
+        "long_regime_ok_frac": 0.0536,
+        "short_regime_ok_bars": 721,
+        "short_regime_ok_frac": 0.5021
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1175,
+        "plannable_frac": 0.8182,
+        "median_planned_atr_mult": 2.886
+      },
+      "long_final_ok_bars": 52,
+      "long_final_ok_frac": 0.0362,
+      "sector": "tekstil/kimya",
+      "short_produced": false
+    },
+    "SISE": {
+      "bars": 1435,
+      "anchor_ok_bars": 1398,
+      "anchor_ok_frac": 0.9742,
+      "swing_high_confirmed": 110,
+      "swing_low_confirmed": 100,
+      "swing_high_candidates": 110,
+      "swing_low_candidates": 100,
+      "bars_with_last_swing_high": 1419,
+      "bars_with_last_swing_low": 1424,
+      "donchian_available_frac": 0.947,
+      "donchian_thin_window_bars": 75,
+      "breakout_up": 100,
+      "breakout_down": 121,
+      "touch_donchian_high": 144,
+      "touch_donchian_low": 212,
+      "touch_last_swing_high": 393,
+      "touch_last_swing_low": 469,
+      "close_beyond_swing_high": 313,
+      "close_below_swing_low": 396,
+      "stop_valid_long": 1169,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1422,
+          "median_atr_mult": 2.586,
+          "p25_atr_mult": 0.746,
+          "p75_atr_mult": 4.239,
+          "median_pct_price": 4.353
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1435,
+        "labelled_bars": 935,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3484,
+        "regime_counts": {
+          "trend_down|vol_normal": 200,
+          "trend_up|vol_high": 188,
+          "trend_up|vol_normal": 137,
+          "trend_down|vol_low": 132,
+          "trend_down|vol_high": 96,
+          "range|vol_high": 81,
+          "range|vol_normal": 79,
+          "range|vol_low": 12,
+          "trend_up|vol_low": 10
+        },
+        "regime_pct": {
+          "trend_down|vol_normal": 21.39,
+          "trend_up|vol_high": 20.11,
+          "trend_up|vol_normal": 14.65,
+          "trend_down|vol_low": 14.12,
+          "trend_down|vol_high": 10.27,
+          "range|vol_high": 8.66,
+          "range|vol_normal": 8.45,
+          "range|vol_low": 1.28,
+          "trend_up|vol_low": 1.07
+        },
+        "trend_counts": {
+          "trend_down": 428,
+          "trend_up": 335,
+          "range": 172
+        },
+        "vol_counts": {
+          "vol_normal": 416,
+          "vol_high": 365,
+          "vol_low": 154
+        },
+        "atr_percentile_p50": 0.666,
+        "atr_percentile_p05": 0.06798,
+        "atr_percentile_p95": 0.978,
+        "ema_slope_atr_p50": -0.2069,
+        "ema_slope_atr_p05": -1.61258,
+        "ema_slope_atr_p95": 0.93428,
+        "long_regime_ok_bars": 279,
+        "long_regime_ok_frac": 0.1944,
+        "short_regime_ok_bars": 402,
+        "short_regime_ok_frac": 0.2801
+      },
+      "context": {
+        "applied": true,
+        "bars": 1435,
+        "longs_allowed_bars": 912,
+        "longs_allowed_frac": 0.6355,
+        "reasons": {
+          "context_ok": 912,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.55,
+          "context_below_ema200": 22.3,
+          "context_warmup": 13.87,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1169,
+        "plannable_frac": 0.8146,
+        "median_planned_atr_mult": 3.151
+      },
+      "long_final_ok_bars": 255,
+      "long_final_ok_frac": 0.1777,
+      "sector": "cam",
+      "short_produced": false
+    },
+    "TAVHL": {
+      "bars": 1436,
+      "anchor_ok_bars": 1407,
+      "anchor_ok_frac": 0.9798,
+      "swing_high_confirmed": 108,
+      "swing_low_confirmed": 106,
+      "swing_high_candidates": 108,
+      "swing_low_candidates": 106,
+      "bars_with_last_swing_high": 1415,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9735,
+      "donchian_thin_window_bars": 37,
+      "breakout_up": 143,
+      "breakout_down": 92,
+      "touch_donchian_high": 221,
+      "touch_donchian_low": 149,
+      "touch_last_swing_high": 486,
+      "touch_last_swing_low": 373,
+      "close_beyond_swing_high": 388,
+      "close_below_swing_low": 302,
+      "stop_valid_long": 1254,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.846,
+          "p25_atr_mult": 1.318,
+          "p75_atr_mult": 4.759,
+          "median_pct_price": 5.849
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_down|vol_normal": 224,
+          "trend_up|vol_low": 176,
+          "trend_up|vol_normal": 166,
+          "trend_down|vol_high": 150,
+          "range|vol_high": 60,
+          "trend_up|vol_high": 58,
+          "range|vol_normal": 52,
+          "range|vol_low": 25,
+          "trend_down|vol_low": 25
+        },
+        "regime_pct": {
+          "trend_down|vol_normal": 23.93,
+          "trend_up|vol_low": 18.8,
+          "trend_up|vol_normal": 17.74,
+          "trend_down|vol_high": 16.03,
+          "range|vol_high": 6.41,
+          "trend_up|vol_high": 6.2,
+          "range|vol_normal": 5.56,
+          "range|vol_low": 2.67,
+          "trend_down|vol_low": 2.67
+        },
+        "trend_counts": {
+          "trend_up": 400,
+          "trend_down": 399,
+          "range": 137
+        },
+        "vol_counts": {
+          "vol_normal": 442,
+          "vol_high": 268,
+          "vol_low": 226
+        },
+        "atr_percentile_p50": 0.56741,
+        "atr_percentile_p05": 0.052,
+        "atr_percentile_p95": 0.9685,
+        "ema_slope_atr_p50": 0.33165,
+        "ema_slope_atr_p05": -0.89091,
+        "ema_slope_atr_p95": 1.9942,
+        "long_regime_ok_bars": 397,
+        "long_regime_ok_frac": 0.2765,
+        "short_regime_ok_bars": 370,
+        "short_regime_ok_frac": 0.2577
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1254,
+        "plannable_frac": 0.8733,
+        "median_planned_atr_mult": 3.239
+      },
+      "long_final_ok_bars": 340,
+      "long_final_ok_frac": 0.2368,
+      "sector": "havac\u0131l\u0131k/havaliman\u0131",
+      "short_produced": false
+    },
+    "TCELL": {
+      "bars": 1436,
+      "anchor_ok_bars": 1398,
+      "anchor_ok_frac": 0.9735,
+      "swing_high_confirmed": 117,
+      "swing_low_confirmed": 115,
+      "swing_high_candidates": 117,
+      "swing_low_candidates": 115,
+      "bars_with_last_swing_high": 1424,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9345,
+      "donchian_thin_window_bars": 93,
+      "breakout_up": 115,
+      "breakout_down": 82,
+      "touch_donchian_high": 180,
+      "touch_donchian_low": 128,
+      "touch_last_swing_high": 442,
+      "touch_last_swing_low": 357,
+      "close_beyond_swing_high": 365,
+      "close_below_swing_low": 279,
+      "stop_valid_long": 1290,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.652,
+          "p25_atr_mult": 1.385,
+          "p75_atr_mult": 4.467,
+          "median_pct_price": 5.464
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 192,
+          "trend_down|vol_normal": 164,
+          "trend_up|vol_low": 154,
+          "range|vol_low": 108,
+          "range|vol_normal": 88,
+          "trend_up|vol_high": 72,
+          "range|vol_high": 60,
+          "trend_down|vol_low": 58,
+          "trend_down|vol_high": 40
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 20.51,
+          "trend_down|vol_normal": 17.52,
+          "trend_up|vol_low": 16.45,
+          "range|vol_low": 11.54,
+          "range|vol_normal": 9.4,
+          "trend_up|vol_high": 7.69,
+          "range|vol_high": 6.41,
+          "trend_down|vol_low": 6.2,
+          "trend_down|vol_high": 4.27
+        },
+        "trend_counts": {
+          "trend_up": 418,
+          "trend_down": 262,
+          "range": 256
+        },
+        "vol_counts": {
+          "vol_normal": 444,
+          "vol_low": 320,
+          "vol_high": 172
+        },
+        "atr_percentile_p50": 0.41589,
+        "atr_percentile_p05": 0.014,
+        "atr_percentile_p95": 0.93089,
+        "ema_slope_atr_p50": 0.17592,
+        "ema_slope_atr_p05": -0.64167,
+        "ema_slope_atr_p95": 1.74301,
+        "long_regime_ok_bars": 418,
+        "long_regime_ok_frac": 0.2911,
+        "short_regime_ok_bars": 244,
+        "short_regime_ok_frac": 0.1699
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1290,
+        "plannable_frac": 0.8983,
+        "median_planned_atr_mult": 2.993
+      },
+      "long_final_ok_bars": 370,
+      "long_final_ok_frac": 0.2577,
+      "sector": "telekom",
+      "short_produced": false
+    },
+    "THYAO": {
+      "bars": 1436,
+      "anchor_ok_bars": 1404,
+      "anchor_ok_frac": 0.9777,
+      "swing_high_confirmed": 110,
+      "swing_low_confirmed": 108,
+      "swing_high_candidates": 110,
+      "swing_low_candidates": 108,
+      "bars_with_last_swing_high": 1428,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.961,
+      "donchian_thin_window_bars": 55,
+      "breakout_up": 120,
+      "breakout_down": 92,
+      "touch_donchian_high": 183,
+      "touch_donchian_low": 150,
+      "touch_last_swing_high": 470,
+      "touch_last_swing_low": 361,
+      "close_beyond_swing_high": 362,
+      "close_below_swing_low": 298,
+      "stop_valid_long": 1236,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.757,
+          "p25_atr_mult": 1.278,
+          "p75_atr_mult": 4.409,
+          "median_pct_price": 4.461
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 193,
+          "trend_down|vol_normal": 143,
+          "trend_up|vol_low": 133,
+          "trend_down|vol_high": 101,
+          "trend_down|vol_low": 100,
+          "trend_up|vol_high": 94,
+          "range|vol_normal": 79,
+          "range|vol_high": 53,
+          "range|vol_low": 40
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 20.62,
+          "trend_down|vol_normal": 15.28,
+          "trend_up|vol_low": 14.21,
+          "trend_down|vol_high": 10.79,
+          "trend_down|vol_low": 10.68,
+          "trend_up|vol_high": 10.04,
+          "range|vol_normal": 8.44,
+          "range|vol_high": 5.66,
+          "range|vol_low": 4.27
+        },
+        "trend_counts": {
+          "trend_up": 420,
+          "trend_down": 344,
+          "range": 172
+        },
+        "vol_counts": {
+          "vol_normal": 415,
+          "vol_low": 273,
+          "vol_high": 248
+        },
+        "atr_percentile_p50": 0.456,
+        "atr_percentile_p05": 0.01609,
+        "atr_percentile_p95": 0.9387,
+        "ema_slope_atr_p50": 0.09193,
+        "ema_slope_atr_p05": -1.24954,
+        "ema_slope_atr_p95": 1.34143,
+        "long_regime_ok_bars": 403,
+        "long_regime_ok_frac": 0.2806,
+        "short_regime_ok_bars": 337,
+        "short_regime_ok_frac": 0.2347
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1236,
+        "plannable_frac": 0.8607,
+        "median_planned_atr_mult": 3.151
+      },
+      "long_final_ok_bars": 330,
+      "long_final_ok_frac": 0.2298,
+      "sector": "havac\u0131l\u0131k",
+      "short_produced": false
+    },
+    "TOASO": {
+      "bars": 1436,
+      "anchor_ok_bars": 1401,
+      "anchor_ok_frac": 0.9756,
+      "swing_high_confirmed": 102,
+      "swing_low_confirmed": 105,
+      "swing_high_candidates": 102,
+      "swing_low_candidates": 105,
+      "bars_with_last_swing_high": 1416,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.945,
+      "donchian_thin_window_bars": 78,
+      "breakout_up": 131,
+      "breakout_down": 105,
+      "touch_donchian_high": 203,
+      "touch_donchian_low": 179,
+      "touch_last_swing_high": 442,
+      "touch_last_swing_low": 440,
+      "close_beyond_swing_high": 349,
+      "close_below_swing_low": 351,
+      "stop_valid_long": 1225,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.596,
+          "p25_atr_mult": 1.029,
+          "p75_atr_mult": 4.407,
+          "median_pct_price": 5.581
+        }
+      },
+      "median_swing_age_bars_high": 7.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 210,
+          "trend_down|vol_normal": 185,
+          "trend_up|vol_low": 116,
+          "trend_up|vol_high": 114,
+          "trend_down|vol_low": 84,
+          "range|vol_normal": 78,
+          "trend_down|vol_high": 68,
+          "range|vol_high": 59,
+          "range|vol_low": 22
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 22.44,
+          "trend_down|vol_normal": 19.76,
+          "trend_up|vol_low": 12.39,
+          "trend_up|vol_high": 12.18,
+          "trend_down|vol_low": 8.97,
+          "range|vol_normal": 8.33,
+          "trend_down|vol_high": 7.26,
+          "range|vol_high": 6.3,
+          "range|vol_low": 2.35
+        },
+        "trend_counts": {
+          "trend_up": 440,
+          "trend_down": 337,
+          "range": 159
+        },
+        "vol_counts": {
+          "vol_normal": 473,
+          "vol_high": 241,
+          "vol_low": 222
+        },
+        "atr_percentile_p50": 0.55015,
+        "atr_percentile_p05": 0.02972,
+        "atr_percentile_p95": 0.9667,
+        "ema_slope_atr_p50": 0.13841,
+        "ema_slope_atr_p05": -2.01326,
+        "ema_slope_atr_p95": 1.52968,
+        "long_regime_ok_bars": 415,
+        "long_regime_ok_frac": 0.289,
+        "short_regime_ok_bars": 304,
+        "short_regime_ok_frac": 0.2117
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1225,
+        "plannable_frac": 0.8531,
+        "median_planned_atr_mult": 3.032
+      },
+      "long_final_ok_bars": 341,
+      "long_final_ok_frac": 0.2375,
+      "sector": "otomotiv",
+      "short_produced": false
+    },
+    "TTKOM": {
+      "bars": 1436,
+      "anchor_ok_bars": 1407,
+      "anchor_ok_frac": 0.9798,
+      "swing_high_confirmed": 116,
+      "swing_low_confirmed": 109,
+      "swing_high_candidates": 116,
+      "swing_low_candidates": 109,
+      "bars_with_last_swing_high": 1413,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9868,
+      "donchian_thin_window_bars": 18,
+      "breakout_up": 143,
+      "breakout_down": 79,
+      "touch_donchian_high": 205,
+      "touch_donchian_low": 126,
+      "touch_last_swing_high": 490,
+      "touch_last_swing_low": 290,
+      "close_beyond_swing_high": 400,
+      "close_below_swing_low": 213,
+      "stop_valid_long": 1303,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.892,
+          "p25_atr_mult": 1.691,
+          "p75_atr_mult": 4.244,
+          "median_pct_price": 6.216
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 256,
+          "trend_up|vol_low": 191,
+          "trend_down|vol_normal": 159,
+          "trend_down|vol_low": 79,
+          "range|vol_normal": 65,
+          "range|vol_low": 61,
+          "range|vol_high": 51,
+          "trend_down|vol_high": 41,
+          "trend_up|vol_high": 33
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 27.35,
+          "trend_up|vol_low": 20.41,
+          "trend_down|vol_normal": 16.99,
+          "trend_down|vol_low": 8.44,
+          "range|vol_normal": 6.94,
+          "range|vol_low": 6.52,
+          "range|vol_high": 5.45,
+          "trend_down|vol_high": 4.38,
+          "trend_up|vol_high": 3.53
+        },
+        "trend_counts": {
+          "trend_up": 480,
+          "trend_down": 279,
+          "range": 177
+        },
+        "vol_counts": {
+          "vol_normal": 480,
+          "vol_low": 331,
+          "vol_high": 125
+        },
+        "atr_percentile_p50": 0.41399,
+        "atr_percentile_p05": 0.016,
+        "atr_percentile_p95": 0.92,
+        "ema_slope_atr_p50": 0.3934,
+        "ema_slope_atr_p05": -0.86069,
+        "ema_slope_atr_p95": 1.71822,
+        "long_regime_ok_bars": 475,
+        "long_regime_ok_frac": 0.3308,
+        "short_regime_ok_bars": 276,
+        "short_regime_ok_frac": 0.1922
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1303,
+        "plannable_frac": 0.9074,
+        "median_planned_atr_mult": 3.094
+      },
+      "long_final_ok_bars": 333,
+      "long_final_ok_frac": 0.2319,
+      "sector": "telekom",
+      "short_produced": false
+    },
+    "TUPRS": {
+      "bars": 1436,
+      "anchor_ok_bars": 1396,
+      "anchor_ok_frac": 0.9721,
+      "swing_high_confirmed": 96,
+      "swing_low_confirmed": 102,
+      "swing_high_candidates": 97,
+      "swing_low_candidates": 102,
+      "bars_with_last_swing_high": 1420,
+      "bars_with_last_swing_low": 1413,
+      "donchian_available_frac": 0.922,
+      "donchian_thin_window_bars": 111,
+      "breakout_up": 131,
+      "breakout_down": 99,
+      "touch_donchian_high": 215,
+      "touch_donchian_low": 171,
+      "touch_last_swing_high": 428,
+      "touch_last_swing_low": 365,
+      "close_beyond_swing_high": 367,
+      "close_below_swing_low": 287,
+      "stop_valid_long": 1250,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1413,
+          "median_atr_mult": 3.119,
+          "p25_atr_mult": 1.37,
+          "p75_atr_mult": 5.045,
+          "median_pct_price": 5.453
+        }
+      },
+      "median_swing_age_bars_high": 7.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_high": 295,
+          "trend_up|vol_normal": 241,
+          "trend_down|vol_low": 162,
+          "trend_down|vol_normal": 91,
+          "trend_down|vol_high": 67,
+          "range|vol_high": 28,
+          "trend_up|vol_low": 26,
+          "range|vol_normal": 19,
+          "range|vol_low": 7
+        },
+        "regime_pct": {
+          "trend_up|vol_high": 31.52,
+          "trend_up|vol_normal": 25.75,
+          "trend_down|vol_low": 17.31,
+          "trend_down|vol_normal": 9.72,
+          "trend_down|vol_high": 7.16,
+          "range|vol_high": 2.99,
+          "trend_up|vol_low": 2.78,
+          "range|vol_normal": 2.03,
+          "range|vol_low": 0.75
+        },
+        "trend_counts": {
+          "trend_up": 562,
+          "trend_down": 320,
+          "range": 54
+        },
+        "vol_counts": {
+          "vol_high": 390,
+          "vol_normal": 351,
+          "vol_low": 195
+        },
+        "atr_percentile_p50": 0.624,
+        "atr_percentile_p05": 0.01886,
+        "atr_percentile_p95": 0.964,
+        "ema_slope_atr_p50": 0.42109,
+        "ema_slope_atr_p05": -1.39494,
+        "ema_slope_atr_p95": 1.69002,
+        "long_regime_ok_bars": 525,
+        "long_regime_ok_frac": 0.3656,
+        "short_regime_ok_bars": 301,
+        "short_regime_ok_frac": 0.2096
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1250,
+        "plannable_frac": 0.8705,
+        "median_planned_atr_mult": 3.51
+      },
+      "long_final_ok_bars": 416,
+      "long_final_ok_frac": 0.2897,
+      "sector": "enerji/rafineri",
+      "short_produced": false
+    },
+    "VAKBN": {
+      "bars": 1436,
+      "anchor_ok_bars": 1405,
+      "anchor_ok_frac": 0.9784,
+      "swing_high_confirmed": 116,
+      "swing_low_confirmed": 101,
+      "swing_high_candidates": 116,
+      "swing_low_candidates": 101,
+      "bars_with_last_swing_high": 1418,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9763,
+      "donchian_thin_window_bars": 33,
+      "breakout_up": 123,
+      "breakout_down": 97,
+      "touch_donchian_high": 185,
+      "touch_donchian_low": 158,
+      "touch_last_swing_high": 495,
+      "touch_last_swing_low": 382,
+      "close_beyond_swing_high": 389,
+      "close_below_swing_low": 313,
+      "stop_valid_long": 1228,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 2.837,
+          "p25_atr_mult": 1.22,
+          "p75_atr_mult": 4.551,
+          "median_pct_price": 6.602
+        }
+      },
+      "median_swing_age_bars_high": 6.0,
+      "median_swing_age_bars_low": 7.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 252,
+          "trend_up|vol_low": 221,
+          "trend_down|vol_normal": 127,
+          "range|vol_normal": 104,
+          "trend_down|vol_high": 67,
+          "trend_up|vol_high": 58,
+          "trend_down|vol_low": 50,
+          "range|vol_high": 42,
+          "range|vol_low": 15
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 26.92,
+          "trend_up|vol_low": 23.61,
+          "trend_down|vol_normal": 13.57,
+          "range|vol_normal": 11.11,
+          "trend_down|vol_high": 7.16,
+          "trend_up|vol_high": 6.2,
+          "trend_down|vol_low": 5.34,
+          "range|vol_high": 4.49,
+          "range|vol_low": 1.6
+        },
+        "trend_counts": {
+          "trend_up": 531,
+          "trend_down": 244,
+          "range": 161
+        },
+        "vol_counts": {
+          "vol_normal": 483,
+          "vol_low": 286,
+          "vol_high": 167
+        },
+        "atr_percentile_p50": 0.49657,
+        "atr_percentile_p05": 0.0506,
+        "atr_percentile_p95": 0.968,
+        "ema_slope_atr_p50": 0.39671,
+        "ema_slope_atr_p05": -0.6922,
+        "ema_slope_atr_p95": 1.48941,
+        "long_regime_ok_bars": 518,
+        "long_regime_ok_frac": 0.3607,
+        "short_regime_ok_bars": 232,
+        "short_regime_ok_frac": 0.1616
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1228,
+        "plannable_frac": 0.8552,
+        "median_planned_atr_mult": 3.27
+      },
+      "long_final_ok_bars": 427,
+      "long_final_ok_frac": 0.2974,
+      "sector": "banka",
+      "short_produced": false
+    },
+    "YKBNK": {
+      "bars": 1436,
+      "anchor_ok_bars": 1405,
+      "anchor_ok_frac": 0.9784,
+      "swing_high_confirmed": 96,
+      "swing_low_confirmed": 107,
+      "swing_high_candidates": 96,
+      "swing_low_candidates": 107,
+      "bars_with_last_swing_high": 1420,
+      "bars_with_last_swing_low": 1425,
+      "donchian_available_frac": 0.9728,
+      "donchian_thin_window_bars": 38,
+      "breakout_up": 131,
+      "breakout_down": 96,
+      "touch_donchian_high": 200,
+      "touch_donchian_low": 181,
+      "touch_last_swing_high": 439,
+      "touch_last_swing_low": 354,
+      "close_beyond_swing_high": 368,
+      "close_below_swing_low": 293,
+      "stop_valid_long": 1239,
+      "stop_valid_short": 0,
+      "stop_distance": {
+        "long": {
+          "n": 1423,
+          "median_atr_mult": 3.055,
+          "p25_atr_mult": 1.388,
+          "p75_atr_mult": 4.976,
+          "median_pct_price": 6.789
+        }
+      },
+      "median_swing_age_bars_high": 8.0,
+      "median_swing_age_bars_low": 6.0,
+      "regime": {
+        "bars": 1436,
+        "labelled_bars": 936,
+        "unlabelled_bars": 500,
+        "unlabelled_frac": 0.3482,
+        "regime_counts": {
+          "trend_up|vol_normal": 237,
+          "trend_up|vol_low": 228,
+          "trend_down|vol_normal": 142,
+          "trend_down|vol_high": 84,
+          "range|vol_normal": 80,
+          "range|vol_high": 54,
+          "trend_up|vol_high": 39,
+          "trend_down|vol_low": 37,
+          "range|vol_low": 35
+        },
+        "regime_pct": {
+          "trend_up|vol_normal": 25.32,
+          "trend_up|vol_low": 24.36,
+          "trend_down|vol_normal": 15.17,
+          "trend_down|vol_high": 8.97,
+          "range|vol_normal": 8.55,
+          "range|vol_high": 5.77,
+          "trend_up|vol_high": 4.17,
+          "trend_down|vol_low": 3.95,
+          "range|vol_low": 3.74
+        },
+        "trend_counts": {
+          "trend_up": 504,
+          "trend_down": 263,
+          "range": 169
+        },
+        "vol_counts": {
+          "vol_normal": 459,
+          "vol_low": 300,
+          "vol_high": 177
+        },
+        "atr_percentile_p50": 0.50785,
+        "atr_percentile_p05": 0.028,
+        "atr_percentile_p95": 0.95633,
+        "ema_slope_atr_p50": 0.31789,
+        "ema_slope_atr_p05": -1.35583,
+        "ema_slope_atr_p95": 1.56252,
+        "long_regime_ok_bars": 502,
+        "long_regime_ok_frac": 0.3496,
+        "short_regime_ok_bars": 250,
+        "short_regime_ok_frac": 0.1741
+      },
+      "context": {
+        "applied": true,
+        "bars": 1436,
+        "longs_allowed_bars": 913,
+        "longs_allowed_frac": 0.6358,
+        "reasons": {
+          "context_ok": 913,
+          "context_below_ema200": 320,
+          "context_warmup": 199,
+          "context_stale": 3,
+          "context_missing": 1
+        },
+        "reasons_pct": {
+          "context_ok": 63.58,
+          "context_below_ema200": 22.28,
+          "context_warmup": 13.86,
+          "context_stale": 0.21,
+          "context_missing": 0.07
+        },
+        "median_context_age_hours": 16.0,
+        "max_context_age_hours": 140.0
+      },
+      "plan_long": {
+        "plannable_bars": 1239,
+        "plannable_frac": 0.8628,
+        "median_planned_atr_mult": 3.531
+      },
+      "long_final_ok_bars": 440,
+      "long_final_ok_frac": 0.3064,
+      "sector": "banka",
+      "short_produced": false
+    }
+  }
+}

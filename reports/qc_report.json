@@ -1,0 +1,1182 @@
+{
+  "generated_at": "2026-09-16T13:56:31.966662+00:00",
+  "assets": [
+    {
+      "asset_key": "BTC",
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "rows": 19888,
+      "first_ts": "2017-08-17T04:00:00+00:00",
+      "last_ts": "2026-09-16T08:00:00+00:00",
+      "verdict": "AMBER",
+      "usable_for_modelling": true,
+      "enough_history": true,
+      "mode": "core",
+      "n_error": 0,
+      "n_warn": 3,
+      "blockers": [],
+      "caveats": [
+        "1 zero-range bars (high==low==open==close): 0.01% of data",
+        "2 bar with |log return| > 20% on a CONTIGUOUS pair (bad print, roll gap or genuine extreme move). AYRICA incelenmeli, ASLA SILINMEMELI.",
+        "BTCUSDT SPOT serisi sinyal verisidir. Funding yalnizca maliyet/baglam katmanidir; PERP SINYALI URETILMEZ."
+      ],
+      "stats": {
+        "grid_anchor_tz": "UTC",
+        "grid_anchor_local": "00:00",
+        "distinct_utc_hours": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20
+        ],
+        "expected_bars": 19909.0,
+        "missing_bar_fraction": 0.001054799336983274,
+        "bars_per_session_observed": 6.0,
+        "gap_threshold_bars": 50.0,
+        "zero_range_bars": 1.0,
+        "gap_anomaly_tolerance_bars": 13.0,
+        "bars_crossing_data_gap": 0.0,
+        "bars_crossing_gap_frac": 0.0,
+        "gap_anomaly_rule": "gap > modal_gap(dayofweek, local_hour) + 13 bars (seans bazl\u0131: 24/7 ise 2 seans, de\u011filse 8 seans; tavan 25 bar; bps=6.0)",
+        "abs_logret_max_raw_incl_gaps": 0.2716237113205769,
+        "bars_after_normal_session_gap": 8.0,
+        "abs_logret_median": 0.005010076663711397,
+        "abs_logret_p99": 0.0541257631878316,
+        "abs_logret_max": 0.2716237113205769,
+        "outlier_return_count": 286.0,
+        "outlier_range_count": 169.0,
+        "outlier_contiguous_count": 2.0,
+        "volume_zero_fraction": 5.0281576830249393e-05,
+        "volume_total": 195941256.941427,
+        "volume_vs_range_corr": 0.2932314707053988,
+        "optional_populated": [
+          "quote_volume",
+          "trades",
+          "taker_buy_volume"
+        ],
+        "optional_partial_nan": [],
+        "last_bar_age_hours": 5.941992557222222,
+        "last_bar_is_complete": true,
+        "history_years": 9.081907369381701,
+        "bars": 19888.0,
+        "sessions": 3318,
+        "bars_per_session_median": 6.0,
+        "bars_per_session_min": 1,
+        "bars_per_session_max": 6,
+        "mode": "core",
+        "adjust_pipeline_ran": true,
+        "roll_flagged_bars": 0,
+        "bad_print_flagged_bars": 0,
+        "non_tradable_bars": 1,
+        "return_invalid_bars": 2,
+        "outage_windows": 1,
+        "roll_correction_applied": false,
+        "non_tradable_frac": 5.0281576830249393e-05,
+        "non_tradable_reasons": {
+          "outage_resumption": 1
+        }
+      },
+      "findings": [
+        {
+          "check": "schema",
+          "severity": "INFO",
+          "message": "canonical schema OK; optional columns present: ['quote_volume', 'trades', 'taker_buy_volume']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "no duplicated timestamps",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "timestamps strictly increasing",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "all bars aligned to the 4h grid anchored at 00:00 (utc mode, tz=UTC). Distinct UTC hours: [0, 4, 8, 12, 16, 20]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "INFO",
+          "message": "bar completeness 99.89%",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "INFO",
+          "message": "no gap larger than 50 bars (session-aware threshold, 6.0 bars/session)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "ohlc",
+          "severity": "INFO",
+          "message": "OHLC envelope consistent on every bar",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "ohlc",
+          "severity": "WARN",
+          "message": "1 zero-range bars (high==low==open==close): 0.01% of data",
+          "metric": 5.0281576830249393e-05,
+          "examples": []
+        },
+        {
+          "check": "continuity",
+          "severity": "INFO",
+          "message": "no bar crosses an UNEXPECTED data gap: her getiri ya bitisik ya da seans takviminin normal bir boslugu (hafta sonu / gece arasi)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "outlier",
+          "severity": "WARN",
+          "message": "2 bar with |log return| > 20% on a CONTIGUOUS pair (bad print, roll gap or genuine extreme move). AYRICA incelenmeli, ASLA SILINMEMELI.",
+          "metric": 2.0,
+          "examples": [
+            "2017-09-15T12:00:00+00:00 r=+0.272",
+            "2020-03-12T20:00:00+00:00 r=-0.229"
+          ]
+        },
+        {
+          "check": "outlier",
+          "severity": "INFO",
+          "message": "286 MAD(8) return outliers kept but flagged for review",
+          "metric": 286.0,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "INFO",
+          "message": "zero-volume bars: 0.01%",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "INFO",
+          "message": "volume vs bar-range correlation = 0.293",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "optional",
+          "severity": "INFO",
+          "message": "optional columns fully populated: ['quote_volume', 'trades', 'taker_buy_volume']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "optional",
+          "severity": "INFO",
+          "message": "optional columns present but entirely NaN (dropped from the feature set): ['funding_rate', 'open_interest', 'spread', 'dxy', 'usdtry', 'benchmark']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "resample",
+          "severity": "INFO",
+          "message": "no source frame supplied: resampling audit skipped",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "freshness",
+          "severity": "INFO",
+          "message": "last complete bar 5.9h old",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "history",
+          "severity": "INFO",
+          "message": "19888 bars / 9.08 years of history",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "grid anchored 00:00 in mode 'utc' (UTC)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "distinct UTC hours used: [0, 4, 8, 12, 16, 20]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "BTCUSDT SPOT serisi sinyal verisidir. Funding yalnizca maliyet/baglam katmanidir; PERP SINYALI URETILMEZ.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "adjustment",
+          "severity": "INFO",
+          "message": "adjust pipeline calisti (bu varlikta roll TANIM GEREGI imkansiz: 0 roll). 1 bar non-tradable isaretlendi, 2 getiri gecersiz sayildi.",
+          "metric": null,
+          "examples": []
+        }
+      ]
+    },
+    {
+      "asset_key": "GOLD",
+      "symbol": "XAUUSD_PROXY_GC",
+      "timeframe": "4h",
+      "rows": 3606,
+      "first_ts": "2024-04-24T02:00:00+00:00",
+      "last_ts": "2026-09-16T06:00:00+00:00",
+      "verdict": "AMBER",
+      "usable_for_modelling": true,
+      "enough_history": true,
+      "mode": "core",
+      "n_error": 0,
+      "n_warn": 8,
+      "blockers": [],
+      "caveats": [
+        "4.0% of expected 4h bars are missing",
+        "46 4h bar (1.3%) was built from <75% of the expected 4 source bars (half days / holidays / maintenance halt)",
+        "GC=F ON-AY vadeli serisidir: roll gap duzeltmesi yapilmadan ham getiri serisi KULLANILAMAZ. Roll tespiti (gap > esik ATR) zorunludur. requires_adjustment=True oldugu icin duzeltme calistirilana kadar QC bu varligi 'model icin uygun DEGIL' olarak isaretler.",
+        "Intraday gecmis ~2.4 yil ile sinirlidir (Yahoo 1h limiti 730 gun).",
+        "TESPIT (KARAR 3): 2026-01-30 15:00 UTC -> 2026-02-02 18:00 UTC arasinda 75 saatlik VERI KESINTISI var (normal hafta sonu 80 bar; burada Pazartesi 00:00-15:00 UTC de kayip). 2026-02-02 gunu yalnizca 5 bar gelmis (normal ~23). Kesintiyi atlayan -%7.97'lik getiri NE ROLL NE BAD PRINT'tir: SAHTE bir getiridir. BAR SILINMEZ, 'boslugu atlayan getiri' olarak isaretlenir ve getiri/roll hesaplarinda HARIC TUTULUR.",
+        "UYARI: 2026-01-26 .. 2026-02-06 penceresinde fiyat 5.626 -> 4.653 arasinda (yaklasik -%17) savruluyor ve gunluk hacim onceki donemin %38'ine dusuyor. Feed kalitesi bu pencerede DUSUK; ayni kesinti SILVER'da da birebir ayni tarihlerde goruluyor (Yahoo kaynakli ortak sorun). Bu doneme dayandirilan sonuclara guvenilmez, egitim/validasyonda ayrica isaretlenmelidir.",
+        "adjclose, close ile %100.0 oraninda AYNI: bu seri kurumsal aksiyon duzeltmesi ICMERMIYOR (Yahoo intraday davranisi). Temettu/bolunme tespiti bu seriden YAPILAMAZ; GUNLUK serinin adjclose/close orani kullanilmalidir (adjust.corporate_actions_from_daily). Aksi halde bolunmeler SAHTE fiyat sicramasi olarak seriye girer.",
+        "10 roll ADAYI yalnizca ISARETLENDI, fiyat DUZELTILMEDI. Sebep: Yahoo on-ay serisinde KONTRAT AYI kimligi yoktur, bu yuzden roll ile gercek ekstrem hareket kesin olarak AYIRT EDILEMEZ. close_adjusted == close_raw. Roll adaylari reports/adjust_evidence.md icinde listelenir ve INSAN INCELEMESI bekler. Kesin cozum: kontrat ayi kimligi olan bir continuous future kaynagi saglamak."
+      ],
+      "stats": {
+        "grid_anchor_tz": "America/New_York",
+        "grid_anchor_local": "18:00",
+        "distinct_utc_hours": [
+          2,
+          3,
+          6,
+          7,
+          10,
+          11,
+          14,
+          15,
+          18,
+          19,
+          22,
+          23
+        ],
+        "expected_bars": 3756.0,
+        "missing_bar_fraction": 0.039936102236421724,
+        "bars_per_session_observed": 6.0,
+        "gap_threshold_bars": 50.0,
+        "zero_range_bars": 0.0,
+        "gap_anomaly_tolerance_bars": 25.0,
+        "bars_crossing_data_gap": 0.0,
+        "bars_crossing_gap_frac": 0.0,
+        "gap_anomaly_rule": "gap > modal_gap(dayofweek, local_hour) + 25 bars (seans bazl\u0131: 24/7 ise 2 seans, de\u011filse 8 seans; tavan 25 bar; bps=6.0)",
+        "abs_logret_max_raw_incl_gaps": 0.07965633272884393,
+        "bars_after_normal_session_gap": 145.0,
+        "abs_logret_median": 0.0025999977891403925,
+        "abs_logret_p99": 0.019541740762415896,
+        "abs_logret_max": 0.07965633272884393,
+        "outlier_return_count": 16.0,
+        "outlier_range_count": 15.0,
+        "outlier_contiguous_count": 0.0,
+        "volume_zero_fraction": 0.00027731558513588466,
+        "volume_total": 111583489.0,
+        "volume_vs_range_corr": 0.48865496360513155,
+        "optional_populated": [],
+        "optional_partial_nan": [],
+        "resample_ratio_expected": 4.0,
+        "resample_thin_bars": 46.0,
+        "resample_thin_fraction": 0.012756516916250694,
+        "last_bar_age_hours": 7.942066644166666,
+        "last_bar_is_complete": true,
+        "history_years": 2.396075747205111,
+        "bars": 3606.0,
+        "sessions": 616,
+        "bars_per_session_median": 6.0,
+        "bars_per_session_min": 1,
+        "bars_per_session_max": 6,
+        "mode": "core",
+        "adjclose_equals_close_frac": 1.0,
+        "adjust_pipeline_ran": true,
+        "roll_flagged_bars": 10,
+        "bad_print_flagged_bars": 0,
+        "non_tradable_bars": 31,
+        "return_invalid_bars": 32,
+        "outage_windows": 22,
+        "roll_correction_applied": false,
+        "non_tradable_frac": 0.008596783139212423,
+        "non_tradable_reasons": {
+          "outage_resumption": 18,
+          "thin_bar": 9,
+          "outage_resumption+thin_bar": 4
+        }
+      },
+      "findings": [
+        {
+          "check": "schema",
+          "severity": "INFO",
+          "message": "canonical schema OK; optional columns present: ['quote_volume', 'trades', 'taker_buy_volume']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "no duplicated timestamps",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "timestamps strictly increasing",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "all bars aligned to the 4h grid anchored at 18:00 (local mode, tz=America/New_York). Distinct UTC hours: [2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "WARN",
+          "message": "4.0% of expected 4h bars are missing",
+          "metric": 0.039936102236421724,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "INFO",
+          "message": "no gap larger than 50 bars (session-aware threshold, 6.0 bars/session)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "ohlc",
+          "severity": "INFO",
+          "message": "OHLC envelope consistent on every bar",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "continuity",
+          "severity": "INFO",
+          "message": "no bar crosses an UNEXPECTED data gap: her getiri ya bitisik ya da seans takviminin normal bir boslugu (hafta sonu / gece arasi)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "outlier",
+          "severity": "INFO",
+          "message": "no contiguous bar with |log return| > 20%",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "outlier",
+          "severity": "INFO",
+          "message": "16 MAD(8) return outliers kept but flagged for review",
+          "metric": 16.0,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "INFO",
+          "message": "zero-volume bars: 0.03%",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "INFO",
+          "message": "volume vs bar-range correlation = 0.489",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "optional",
+          "severity": "INFO",
+          "message": "optional columns present but entirely NaN (dropped from the feature set): ['funding_rate', 'open_interest', 'spread', 'quote_volume', 'trades', 'taker_buy_volume', 'dxy', 'usdtry', 'benchmark']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "resample",
+          "severity": "WARN",
+          "message": "46 4h bar (1.3%) was built from <75% of the expected 4 source bars (half days / holidays / maintenance halt)",
+          "metric": 46.0,
+          "examples": []
+        },
+        {
+          "check": "resample",
+          "severity": "INFO",
+          "message": "resampled OHLC envelope matches the source",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "freshness",
+          "severity": "INFO",
+          "message": "last complete bar 7.9h old",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "history",
+          "severity": "INFO",
+          "message": "3606 bars / 2.40 years of history",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "46 bars built from <75% of the expected 4 source bars",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "grid anchored 18:00 in mode 'local' (America/New_York)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "distinct UTC hours used: [2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "GC=F ON-AY vadeli serisidir: roll gap duzeltmesi yapilmadan ham getiri serisi KULLANILAMAZ. Roll tespiti (gap > esik ATR) zorunludur. requires_adjustment=True oldugu icin duzeltme calistirilana kadar QC bu varligi 'model icin uygun DEGIL' olarak isaretler.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "Intraday gecmis ~2.4 yil ile sinirlidir (Yahoo 1h limiti 730 gun).",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "TESPIT (KARAR 3): 2026-01-30 15:00 UTC -> 2026-02-02 18:00 UTC arasinda 75 saatlik VERI KESINTISI var (normal hafta sonu 80 bar; burada Pazartesi 00:00-15:00 UTC de kayip). 2026-02-02 gunu yalnizca 5 bar gelmis (normal ~23). Kesintiyi atlayan -%7.97'lik getiri NE ROLL NE BAD PRINT'tir: SAHTE bir getiridir. BAR SILINMEZ, 'boslugu atlayan getiri' olarak isaretlenir ve getiri/roll hesaplarinda HARIC TUTULUR.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "UYARI: 2026-01-26 .. 2026-02-06 penceresinde fiyat 5.626 -> 4.653 arasinda (yaklasik -%17) savruluyor ve gunluk hacim onceki donemin %38'ine dusuyor. Feed kalitesi bu pencerede DUSUK; ayni kesinti SILVER'da da birebir ayni tarihlerde goruluyor (Yahoo kaynakli ortak sorun). Bu doneme dayandirilan sonuclara guvenilmez, egitim/validasyonda ayrica isaretlenmelidir.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "corporate_actions",
+          "severity": "WARN",
+          "message": "adjclose, close ile %100.0 oraninda AYNI: bu seri kurumsal aksiyon duzeltmesi ICMERMIYOR (Yahoo intraday davranisi). Temettu/bolunme tespiti bu seriden YAPILAMAZ; GUNLUK serinin adjclose/close orani kullanilmalidir (adjust.corporate_actions_from_daily). Aksi halde bolunmeler SAHTE fiyat sicramasi olarak seriye girer.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "adjustment",
+          "severity": "INFO",
+          "message": "adjust pipeline CALISTI: 22 kesinti penceresi isaretlendi, 31 bar non-tradable, 32 getiri gecersiz sayildi, 10 roll adayi ISARETLENDI (fiyat duzeltmesi uygulandi=False). Bar SILINMEDI, bar UYDURULMADI.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "adjustment",
+          "severity": "WARN",
+          "message": "10 roll ADAYI yalnizca ISARETLENDI, fiyat DUZELTILMEDI. Sebep: Yahoo on-ay serisinde KONTRAT AYI kimligi yoktur, bu yuzden roll ile gercek ekstrem hareket kesin olarak AYIRT EDILEMEZ. close_adjusted == close_raw. Roll adaylari reports/adjust_evidence.md icinde listelenir ve INSAN INCELEMESI bekler. Kesin cozum: kontrat ayi kimligi olan bir continuous future kaynagi saglamak.",
+          "metric": null,
+          "examples": []
+        }
+      ]
+    },
+    {
+      "asset_key": "SILVER",
+      "symbol": "XAGUSD_PROXY_SI",
+      "timeframe": "4h",
+      "rows": 3606,
+      "first_ts": "2024-04-24T02:00:00+00:00",
+      "last_ts": "2026-09-16T06:00:00+00:00",
+      "verdict": "AMBER",
+      "usable_for_modelling": true,
+      "enough_history": true,
+      "mode": "core",
+      "n_error": 0,
+      "n_warn": 9,
+      "blockers": [],
+      "caveats": [
+        "4.0% of expected 4h bars are missing",
+        "1 bar with |log return| > 20% on a CONTIGUOUS pair (bad print, roll gap or genuine extreme move). AYRICA incelenmeli, ASLA SILINMEMELI.",
+        "47 4h bar (1.3%) was built from <75% of the expected 4 source bars (half days / holidays / maintenance halt)",
+        "SI=F ON-AY vadeli serisidir: roll gap duzeltmesi zorunludur. requires_adjustment=True oldugu icin duzeltme calistirilana kadar QC bu varligi 'model icin uygun DEGIL' olarak isaretler.",
+        "Intraday gecmis ~2.4 yil ile sinirlidir (Yahoo 1h limiti 730 gun).",
+        "TESPIT (KARAR 3): 2026-02-02'deki tek barlik -%22 hareket incelendi. SONUC: bu NE ROLL NE BAD PRINT'tir. 2026-01-30 15:00 UTC -> 2026-02-02 18:00 UTC arasinda 75 saatlik VERI KESINTISI var (normal hafta sonu 80 bar; burada Pazartesi 00:00-15:00 UTC de kayip) ve 2026-02-02 gunu yalnizca 5 bar gelmis (normal ~23). Dolayisiyla -%22, veri boslugunu atlayan SAHTE bir getiridir. BAR SILINMEZ; 'boslugu atlayan getiri' olarak isaretlenir ve getiri/roll/label hesaplarinda HARIC TUTULUR.",
+        "UYARI: 2026-01-26 .. 2026-02-06 penceresinde fiyat 121.79 -> 66.88 arasinda (yaklasik -%45) savruluyor ve gunluk hacim onceki donemin %42'sine dusuyor. Ayni kesinti GOLD'da da birebir ayni tarihlerde var (Yahoo kaynakli ortak sorun). Bu pencerede feed kalitesi COK DUSUK; model egitimi/validasyonunda ayrica isaretlenmeli, sonuclar bu doneme dayandirilmamali.",
+        "adjclose, close ile %100.0 oraninda AYNI: bu seri kurumsal aksiyon duzeltmesi ICMERMIYOR (Yahoo intraday davranisi). Temettu/bolunme tespiti bu seriden YAPILAMAZ; GUNLUK serinin adjclose/close orani kullanilmalidir (adjust.corporate_actions_from_daily). Aksi halde bolunmeler SAHTE fiyat sicramasi olarak seriye girer.",
+        "6 roll ADAYI yalnizca ISARETLENDI, fiyat DUZELTILMEDI. Sebep: Yahoo on-ay serisinde KONTRAT AYI kimligi yoktur, bu yuzden roll ile gercek ekstrem hareket kesin olarak AYIRT EDILEMEZ. close_adjusted == close_raw. Roll adaylari reports/adjust_evidence.md icinde listelenir ve INSAN INCELEMESI bekler. Kesin cozum: kontrat ayi kimligi olan bir continuous future kaynagi saglamak."
+      ],
+      "stats": {
+        "grid_anchor_tz": "America/New_York",
+        "grid_anchor_local": "18:00",
+        "distinct_utc_hours": [
+          2,
+          3,
+          6,
+          7,
+          10,
+          11,
+          14,
+          15,
+          18,
+          19,
+          22,
+          23
+        ],
+        "expected_bars": 3756.0,
+        "missing_bar_fraction": 0.039936102236421724,
+        "bars_per_session_observed": 6.0,
+        "gap_threshold_bars": 50.0,
+        "zero_range_bars": 0.0,
+        "gap_anomaly_tolerance_bars": 25.0,
+        "bars_crossing_data_gap": 0.0,
+        "bars_crossing_gap_frac": 0.0,
+        "gap_anomaly_rule": "gap > modal_gap(dayofweek, local_hour) + 25 bars (seans bazl\u0131: 24/7 ise 2 seans, de\u011filse 8 seans; tavan 25 bar; bps=6.0)",
+        "abs_logret_max_raw_incl_gaps": 0.2221922273166659,
+        "bars_after_normal_session_gap": 145.0,
+        "abs_logret_median": 0.0045550554395086445,
+        "abs_logret_p99": 0.04028222595600498,
+        "abs_logret_max": 0.2221922273166659,
+        "outlier_return_count": 34.0,
+        "outlier_range_count": 25.0,
+        "outlier_contiguous_count": 1.0,
+        "volume_zero_fraction": 0.00027731558513588466,
+        "volume_total": 40158621.0,
+        "volume_vs_range_corr": 0.4774126854363096,
+        "optional_populated": [],
+        "optional_partial_nan": [],
+        "resample_ratio_expected": 4.0,
+        "resample_thin_bars": 47.0,
+        "resample_thin_fraction": 0.013033832501386578,
+        "last_bar_age_hours": 7.942142491111111,
+        "last_bar_is_complete": true,
+        "history_years": 2.396075747205111,
+        "bars": 3606.0,
+        "sessions": 616,
+        "bars_per_session_median": 6.0,
+        "bars_per_session_min": 1,
+        "bars_per_session_max": 6,
+        "mode": "core",
+        "adjclose_equals_close_frac": 1.0,
+        "adjust_pipeline_ran": true,
+        "roll_flagged_bars": 6,
+        "bad_print_flagged_bars": 0,
+        "non_tradable_bars": 31,
+        "return_invalid_bars": 32,
+        "outage_windows": 22,
+        "roll_correction_applied": false,
+        "non_tradable_frac": 0.008596783139212423,
+        "non_tradable_reasons": {
+          "outage_resumption": 18,
+          "thin_bar": 9,
+          "outage_resumption+thin_bar": 4
+        }
+      },
+      "findings": [
+        {
+          "check": "schema",
+          "severity": "INFO",
+          "message": "canonical schema OK; optional columns present: ['quote_volume', 'trades', 'taker_buy_volume']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "no duplicated timestamps",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "timestamps strictly increasing",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "all bars aligned to the 4h grid anchored at 18:00 (local mode, tz=America/New_York). Distinct UTC hours: [2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "WARN",
+          "message": "4.0% of expected 4h bars are missing",
+          "metric": 0.039936102236421724,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "INFO",
+          "message": "no gap larger than 50 bars (session-aware threshold, 6.0 bars/session)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "ohlc",
+          "severity": "INFO",
+          "message": "OHLC envelope consistent on every bar",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "continuity",
+          "severity": "INFO",
+          "message": "no bar crosses an UNEXPECTED data gap: her getiri ya bitisik ya da seans takviminin normal bir boslugu (hafta sonu / gece arasi)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "outlier",
+          "severity": "WARN",
+          "message": "1 bar with |log return| > 20% on a CONTIGUOUS pair (bad print, roll gap or genuine extreme move). AYRICA incelenmeli, ASLA SILINMEMELI.",
+          "metric": 1.0,
+          "examples": [
+            "2026-02-02T15:00:00+00:00 r=-0.222"
+          ]
+        },
+        {
+          "check": "outlier",
+          "severity": "INFO",
+          "message": "34 MAD(8) return outliers kept but flagged for review",
+          "metric": 34.0,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "INFO",
+          "message": "zero-volume bars: 0.03%",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "INFO",
+          "message": "volume vs bar-range correlation = 0.477",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "optional",
+          "severity": "INFO",
+          "message": "optional columns present but entirely NaN (dropped from the feature set): ['funding_rate', 'open_interest', 'spread', 'quote_volume', 'trades', 'taker_buy_volume', 'dxy', 'usdtry', 'benchmark']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "resample",
+          "severity": "WARN",
+          "message": "47 4h bar (1.3%) was built from <75% of the expected 4 source bars (half days / holidays / maintenance halt)",
+          "metric": 47.0,
+          "examples": []
+        },
+        {
+          "check": "resample",
+          "severity": "INFO",
+          "message": "resampled OHLC envelope matches the source",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "freshness",
+          "severity": "INFO",
+          "message": "last complete bar 7.9h old",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "history",
+          "severity": "INFO",
+          "message": "3606 bars / 2.40 years of history",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "47 bars built from <75% of the expected 4 source bars",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "grid anchored 18:00 in mode 'local' (America/New_York)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "distinct UTC hours used: [2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "SI=F ON-AY vadeli serisidir: roll gap duzeltmesi zorunludur. requires_adjustment=True oldugu icin duzeltme calistirilana kadar QC bu varligi 'model icin uygun DEGIL' olarak isaretler.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "Intraday gecmis ~2.4 yil ile sinirlidir (Yahoo 1h limiti 730 gun).",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "TESPIT (KARAR 3): 2026-02-02'deki tek barlik -%22 hareket incelendi. SONUC: bu NE ROLL NE BAD PRINT'tir. 2026-01-30 15:00 UTC -> 2026-02-02 18:00 UTC arasinda 75 saatlik VERI KESINTISI var (normal hafta sonu 80 bar; burada Pazartesi 00:00-15:00 UTC de kayip) ve 2026-02-02 gunu yalnizca 5 bar gelmis (normal ~23). Dolayisiyla -%22, veri boslugunu atlayan SAHTE bir getiridir. BAR SILINMEZ; 'boslugu atlayan getiri' olarak isaretlenir ve getiri/roll/label hesaplarinda HARIC TUTULUR.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "UYARI: 2026-01-26 .. 2026-02-06 penceresinde fiyat 121.79 -> 66.88 arasinda (yaklasik -%45) savruluyor ve gunluk hacim onceki donemin %42'sine dusuyor. Ayni kesinti GOLD'da da birebir ayni tarihlerde var (Yahoo kaynakli ortak sorun). Bu pencerede feed kalitesi COK DUSUK; model egitimi/validasyonunda ayrica isaretlenmeli, sonuclar bu doneme dayandirilmamali.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "corporate_actions",
+          "severity": "WARN",
+          "message": "adjclose, close ile %100.0 oraninda AYNI: bu seri kurumsal aksiyon duzeltmesi ICMERMIYOR (Yahoo intraday davranisi). Temettu/bolunme tespiti bu seriden YAPILAMAZ; GUNLUK serinin adjclose/close orani kullanilmalidir (adjust.corporate_actions_from_daily). Aksi halde bolunmeler SAHTE fiyat sicramasi olarak seriye girer.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "adjustment",
+          "severity": "INFO",
+          "message": "adjust pipeline CALISTI: 22 kesinti penceresi isaretlendi, 31 bar non-tradable, 32 getiri gecersiz sayildi, 6 roll adayi ISARETLENDI (fiyat duzeltmesi uygulandi=False). Bar SILINMEDI, bar UYDURULMADI.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "adjustment",
+          "severity": "WARN",
+          "message": "6 roll ADAYI yalnizca ISARETLENDI, fiyat DUZELTILMEDI. Sebep: Yahoo on-ay serisinde KONTRAT AYI kimligi yoktur, bu yuzden roll ile gercek ekstrem hareket kesin olarak AYIRT EDILEMEZ. close_adjusted == close_raw. Roll adaylari reports/adjust_evidence.md icinde listelenir ve INSAN INCELEMESI bekler. Kesin cozum: kontrat ayi kimligi olan bir continuous future kaynagi saglamak.",
+          "metric": null,
+          "examples": []
+        }
+      ]
+    },
+    {
+      "asset_key": "BIST30",
+      "symbol": "XU030_INDEX",
+      "timeframe": "4h",
+      "rows": 1435,
+      "first_ts": "2023-10-27T07:00:00+00:00",
+      "last_ts": "2026-09-15T11:00:00+00:00",
+      "verdict": "AMBER (insufficient history)",
+      "usable_for_modelling": false,
+      "enough_history": false,
+      "mode": "watch_only",
+      "n_error": 0,
+      "n_warn": 13,
+      "blockers": [],
+      "caveats": [
+        "4.7% of expected 4h bars are missing",
+        "12 gaps larger than 18 bars (max 36 bars) - holidays/outages need review",
+        "9 bar (0.627%) BEKLENMEDIK bir veri boslugunu atliyor (kural: gap > modal_gap(dayofweek, local_hour) + 17 bars (seans bazl\u0131: 24/7 ise 2 seans, de\u011filse 8 seans; tavan 25 bar; bps=2.0)). Bu barlarin getirisi GERCEK GETIRI DEGILDIR: roll-gap/outlier tespiti, label uretimi ve backtest P/L hesabinda HARIC TUTULMALIDIR. Barlar SILINMEZ, isaretlenir. En buyuk sahte getiriler:",
+        "KULLANICI KARARI: bu varlikta hacim verisi yoktur ve hacim/onay bacagi DEVRE DISIDIR (volume_required=False). Cift onay yalnizca trend + momentum ile sinirlidir; bu kisit tum raporlarda caveat olarak tasinar.",
+        "volume is zero on every bar (beklenen durum: endeks serisi, hacim bacagi zaten devre disi)",
+        "only 1435 4h bars (2.89 years). Minimum for a trustworthy walk-forward study is 1500. Results on this asset will be statistically weak.",
+        "BIST30 dogrudan trade edilemez: XU030.IS endeksin kendisidir. Execution VIOp XU030 vadeli maliyet modeliyle VARSAYIMSAL olarak modellenir.",
+        "Hacim verisi YOKTUR (her bar 0). Hacim/onay bacagi bu varlikta KULLANILMAZ; cift onay burada trend + momentum ile sinirlidir.",
+        "Gecmis sadece ~2.9 yil. 4H bar sayisi ~2.157 gorunur ama bunun ~721 adedi yalnizca 09:30 ACILIS ANI printini iceren INCE barlardir; TAM 4H bar sayisi ~1.436'ddir. BTC'nin 19.888 bariyla karsilastirildiginda istatistiksel guc COK DUSUKTUR; sonuclar yalnizca yon gosterir, kesinlik iddia edilemez.",
+        "Alternatif VIOp XU030 futures gecmisi bulunamadigi surece BIST30 backtest portfoyune ZORLA SOKULMAZ, izleme modunda kalir.",
+        "4H grid faz farki: BIST30 barlari 07/11 UTC'de, BTC barlari 00/04/08 UTC'de acilir. Bu yuzden varliklar arasi korelasyon YALNIZCA GUNLUK bazda hesaplanir; 4H seviyesinde ortak bar yoktur (n=0).",
+        "KULLANICI KARARI: bu varlik 'watch_only' modundadir. Sinyal uretilir ve raporlanir ama backtest/PORTFOY performansina ZORLA SOKULMAZ. Cekirdek portfoy: BTC + GOLD + SILVER.",
+        "adjclose, close ile %100.0 oraninda AYNI: bu seri kurumsal aksiyon duzeltmesi ICMERMIYOR (Yahoo intraday davranisi). Temettu/bolunme tespiti bu seriden YAPILAMAZ; GUNLUK serinin adjclose/close orani kullanilmalidir (adjust.corporate_actions_from_daily). Aksi halde bolunmeler SAHTE fiyat sicramasi olarak seriye girer."
+      ],
+      "stats": {
+        "grid_anchor_tz": "Europe/Istanbul",
+        "grid_anchor_local": "10:00",
+        "distinct_utc_hours": [
+          7,
+          11
+        ],
+        "expected_bars": 1506.0,
+        "missing_bar_fraction": 0.04714475431606906,
+        "bars_per_session_observed": 2.0,
+        "gap_threshold_bars": 18.0,
+        "zero_range_bars": 0.0,
+        "gap_anomaly_tolerance_bars": 17.0,
+        "bars_crossing_data_gap": 9.0,
+        "bars_crossing_gap_frac": 0.0062717770034843206,
+        "gap_anomaly_rule": "gap > modal_gap(dayofweek, local_hour) + 17 bars (seans bazl\u0131: 24/7 ise 2 seans, de\u011filse 8 seans; tavan 25 bar; bps=2.0)",
+        "abs_logret_max_raw_incl_gaps": 0.0777343305942929,
+        "bars_after_normal_session_gap": 711.0,
+        "abs_logret_median": 0.0054099029124419044,
+        "abs_logret_p99": 0.040393352383923414,
+        "abs_logret_max": 0.0777343305942929,
+        "outlier_return_count": 8.0,
+        "outlier_range_count": 7.0,
+        "outlier_contiguous_count": 0.0,
+        "volume_zero_fraction": 1.0,
+        "volume_total": 0.0,
+        "volume_vs_range_corr": NaN,
+        "optional_populated": [],
+        "optional_partial_nan": [],
+        "resample_ratio_expected": 4.0,
+        "resample_thin_bars": 0.0,
+        "resample_thin_fraction": 0.0,
+        "last_bar_age_hours": 26.942195510555557,
+        "last_bar_is_complete": true,
+        "history_years": 2.8861510381017568,
+        "bars": 1435.0,
+        "sessions": 721,
+        "bars_per_session_median": 2.0,
+        "bars_per_session_min": 1,
+        "bars_per_session_max": 2,
+        "mode": "watch_only",
+        "adjclose_equals_close_frac": 1.0,
+        "adjust_pipeline_ran": true,
+        "roll_flagged_bars": 0,
+        "bad_print_flagged_bars": 0,
+        "non_tradable_bars": 25,
+        "return_invalid_bars": 26,
+        "outage_windows": 25,
+        "roll_correction_applied": false,
+        "non_tradable_frac": 0.017421602787456445,
+        "non_tradable_reasons": {
+          "outage_resumption": 25
+        }
+      },
+      "findings": [
+        {
+          "check": "schema",
+          "severity": "INFO",
+          "message": "canonical schema OK; optional columns present: ['quote_volume', 'trades', 'taker_buy_volume']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "no duplicated timestamps",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "timestamps strictly increasing",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "timestamp",
+          "severity": "INFO",
+          "message": "all bars aligned to the 4h grid anchored at 10:00 (local mode, tz=Europe/Istanbul). Distinct UTC hours: [7, 11]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "WARN",
+          "message": "4.7% of expected 4h bars are missing",
+          "metric": 0.04714475431606906,
+          "examples": []
+        },
+        {
+          "check": "completeness",
+          "severity": "WARN",
+          "message": "12 gaps larger than 18 bars (max 36 bars) - holidays/outages need review",
+          "metric": 12.0,
+          "examples": [
+            "2024-01-02T07:00:00+00:00 (+1 bars)",
+            "2024-04-15T07:00:00+00:00 (+1 bars)",
+            "2024-06-20T07:00:00+00:00 (+1 bars)",
+            "2024-07-16T07:00:00+00:00 (+1 bars)",
+            "2024-09-02T07:00:00+00:00 (+1 bars)"
+          ]
+        },
+        {
+          "check": "ohlc",
+          "severity": "INFO",
+          "message": "OHLC envelope consistent on every bar",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "continuity",
+          "severity": "WARN",
+          "message": "9 bar (0.627%) BEKLENMEDIK bir veri boslugunu atliyor (kural: gap > modal_gap(dayofweek, local_hour) + 17 bars (seans bazl\u0131: 24/7 ise 2 seans, de\u011filse 8 seans; tavan 25 bar; bps=2.0)). Bu barlarin getirisi GERCEK GETIRI DEGILDIR: roll-gap/outlier tespiti, label uretimi ve backtest P/L hesabinda HARIC TUTULMALIDIR. Barlar SILINMEZ, isaretlenir. En buyuk sahte getiriler:",
+          "metric": 9.0,
+          "examples": [
+            "2024-06-20T07:00:00+00:00 r=+1.977% (bosluk 35 bar, tipik 5)",
+            "2025-06-10T07:00:00+00:00 r=+1.529% (bosluk 30 bar, tipik 5)",
+            "2025-05-20T07:00:00+00:00 r=-1.046% (bosluk 23 bar, tipik 5)",
+            "2026-06-01T07:00:00+00:00 r=+1.034% (bosluk 36 bar, tipik 17)",
+            "2025-04-02T07:00:00+00:00 r=-0.970% (bosluk 29 bar, tipik 5)"
+          ]
+        },
+        {
+          "check": "outlier",
+          "severity": "INFO",
+          "message": "no contiguous bar with |log return| > 20%",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "outlier",
+          "severity": "INFO",
+          "message": "8 MAD(8) return outliers kept but flagged for review",
+          "metric": 8.0,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "WARN",
+          "message": "KULLANICI KARARI: bu varlikta hacim verisi yoktur ve hacim/onay bacagi DEVRE DISIDIR (volume_required=False). Cift onay yalnizca trend + momentum ile sinirlidir; bu kisit tum raporlarda caveat olarak tasinar.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "volume",
+          "severity": "WARN",
+          "message": "volume is zero on every bar (beklenen durum: endeks serisi, hacim bacagi zaten devre disi)",
+          "metric": 1.0,
+          "examples": []
+        },
+        {
+          "check": "optional",
+          "severity": "INFO",
+          "message": "optional columns present but entirely NaN (dropped from the feature set): ['funding_rate', 'open_interest', 'spread', 'quote_volume', 'trades', 'taker_buy_volume', 'dxy', 'usdtry', 'benchmark']",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "resample",
+          "severity": "INFO",
+          "message": "every 4h bar has the expected number of source bars (~4)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "freshness",
+          "severity": "INFO",
+          "message": "last complete bar 26.9h old",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "history",
+          "severity": "WARN",
+          "message": "only 1435 4h bars (2.89 years). Minimum for a trustworthy walk-forward study is 1500. Results on this asset will be statistically weak.",
+          "metric": 1435.0,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "0 bars built from <75% of the expected 4 source bars",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "grid anchored 10:00 in mode 'local' (Europe/Istanbul)",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "session",
+          "severity": "INFO",
+          "message": "distinct UTC hours used: [7, 11]",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "BIST30 dogrudan trade edilemez: XU030.IS endeksin kendisidir. Execution VIOp XU030 vadeli maliyet modeliyle VARSAYIMSAL olarak modellenir.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "Hacim verisi YOKTUR (her bar 0). Hacim/onay bacagi bu varlikta KULLANILMAZ; cift onay burada trend + momentum ile sinirlidir.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "Gecmis sadece ~2.9 yil. 4H bar sayisi ~2.157 gorunur ama bunun ~721 adedi yalnizca 09:30 ACILIS ANI printini iceren INCE barlardir; TAM 4H bar sayisi ~1.436'ddir. BTC'nin 19.888 bariyla karsilastirildiginda istatistiksel guc COK DUSUKTUR; sonuclar yalnizca yon gosterir, kesinlik iddia edilemez.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "Alternatif VIOp XU030 futures gecmisi bulunamadigi surece BIST30 backtest portfoyune ZORLA SOKULMAZ, izleme modunda kalir.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "mandated_caveat",
+          "severity": "WARN",
+          "message": "4H grid faz farki: BIST30 barlari 07/11 UTC'de, BTC barlari 00/04/08 UTC'de acilir. Bu yuzden varliklar arasi korelasyon YALNIZCA GUNLUK bazda hesaplanir; 4H seviyesinde ortak bar yoktur (n=0).",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "portfolio",
+          "severity": "WARN",
+          "message": "KULLANICI KARARI: bu varlik 'watch_only' modundadir. Sinyal uretilir ve raporlanir ama backtest/PORTFOY performansina ZORLA SOKULMAZ. Cekirdek portfoy: BTC + GOLD + SILVER.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "corporate_actions",
+          "severity": "WARN",
+          "message": "adjclose, close ile %100.0 oraninda AYNI: bu seri kurumsal aksiyon duzeltmesi ICMERMIYOR (Yahoo intraday davranisi). Temettu/bolunme tespiti bu seriden YAPILAMAZ; GUNLUK serinin adjclose/close orani kullanilmalidir (adjust.corporate_actions_from_daily). Aksi halde bolunmeler SAHTE fiyat sicramasi olarak seriye girer.",
+          "metric": null,
+          "examples": []
+        },
+        {
+          "check": "adjustment",
+          "severity": "INFO",
+          "message": "adjust pipeline calisti (bu varlikta roll TANIM GEREGI imkansiz: 0 roll). 25 bar non-tradable isaretlendi, 26 getiri gecersiz sayildi.",
+          "metric": null,
+          "examples": []
+        }
+      ]
+    }
+  ],
+  "portfolio": {
+    "common_window": {
+      "start": "2024-04-24T02:00:00+00:00",
+      "end": "2026-09-15T11:00:00+00:00",
+      "per_asset": {
+        "BTC": {
+          "start": "2017-08-17T04:00:00+00:00",
+          "end": "2026-09-16T08:00:00+00:00"
+        },
+        "GOLD": {
+          "start": "2024-04-24T02:00:00+00:00",
+          "end": "2026-09-16T06:00:00+00:00"
+        },
+        "SILVER": {
+          "start": "2024-04-24T02:00:00+00:00",
+          "end": "2026-09-16T06:00:00+00:00"
+        },
+        "BIST30": {
+          "start": "2023-10-27T07:00:00+00:00",
+          "end": "2026-09-15T11:00:00+00:00"
+        }
+      }
+    },
+    "common_window_bars": {
+      "BTC": 5245,
+      "GOLD": 3600,
+      "SILVER": 3600,
+      "BIST30": 1189
+    },
+    "overlap_sufficient": true,
+    "pairwise": {
+      "BIST30|BTC": {
+        "corr": null,
+        "n": 0
+      },
+      "BIST30|GOLD": {
+        "corr": 0.0705,
+        "n": 334
+      },
+      "BIST30|SILVER": {
+        "corr": 0.1039,
+        "n": 334
+      },
+      "BTC|GOLD": {
+        "corr": null,
+        "n": 0
+      },
+      "BTC|SILVER": {
+        "corr": null,
+        "n": 0
+      },
+      "GOLD|SILVER": {
+        "corr": 0.7807,
+        "n": 3600
+      }
+    },
+    "pairwise_min_overlap": 0,
+    "correlation_warning": [
+      "GOLD|SILVER = +0.781 (n=3600)"
+    ],
+    "max_abs_correlation": {
+      "pair": "GOLD|SILVER",
+      "corr": 0.7807,
+      "abs": 0.7807
+    },
+    "daily": {
+      "rows": 874,
+      "corr": {
+        "BIST30|BTC": 0.0847,
+        "BIST30|GOLD": 0.0427,
+        "BIST30|SILVER": 0.0815,
+        "BTC|GOLD": 0.1796,
+        "BTC|SILVER": 0.2651,
+        "GOLD|SILVER": 0.7682
+      },
+      "overlap_days": {
+        "BTC": 874,
+        "GOLD": 603,
+        "SILVER": 603,
+        "BIST30": 461
+      }
+    },
+    "daily_correlation_warning": [
+      "GOLD|SILVER = +0.768"
+    ]
+  }
+}

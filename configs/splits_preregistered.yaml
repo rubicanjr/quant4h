@@ -1,0 +1,465 @@
+policy_version: '1.1'
+preregistered_at_utc: '2026-09-16T13:56:32.444634+00:00'
+purpose: Bu dosya bir ON-KAYITTIR (pre-registration). Test dönemi, herhangi bir model/indikatory/eşik SONUCU GÖRÜLMEDEN
+  sabitlenir. Sonuçlar görüldükten sonra bu dosyayı DEĞİŞTİRMEK tüm OOS iddialarını geçersiz kılar; gerekiyorsa
+  policy_version artırılıp YENİ bir dosya yazılır, eskisi silinmez.
+policy:
+  test_bars: 1000
+  valid_bars: 800
+  purge_bars: 30
+  embargo_bars: 12
+  min_test_bars: 400
+  counting_basis: tradable_bars_only
+  test_is_most_recent: true
+  no_shuffle: true
+  test_used_exactly_once: true
+  min_test_calendar_days: 365
+  min_test_sessions: 200
+  version_note: 'v1.1 (2026-09-16): BIST grid tanimi DEGISTI. Ince ''acilis ani'' bari (06:00-10:00 lokal, n_src=1)
+    artik URETILMIYOR cunku non_tradable oldugu icin anchor olamiyordu ve k=3 fraktal HICBIR swing''i onaylayamiyordu
+    (28 hissede swing=0/Donchian=0/stop=0). Yeni grid: gunde 2 TAM bar (07/11 UTC). v1.0 configs/splits_preregistered.v1.0.archived.yaml
+    icinde SAKLANDI, silinmedi.'
+  rationale: 'Sabit BAR SAYISI (yuzde degil) secildi, cunku varlik gecmisleri 4 kat fark ediyor (BTC 19.9k bar /
+    metaller 3.6k). Yuzde (60/20/20) kullanilsaydi metallerin test penceresi ~167 bar = ~28 gun olurdu ve hicbir
+    sey soylemezdi. Bedeli: BTC test penceresi kisa kalir (~958 bar = ~159 gun). Bu bedel KABUL EDILDI cunku BTC
+    icin asil OOS araci tek bir test penceresi degil, Asama 9''daki WALK-FOLD katlanacak walk-forward analizidir.
+    Politika degistirmek istenirse policy_version artirilir ve YENI dosya yazilir; eskisi silinmez.'
+hard_rules:
+- TEST dönemi hiçbir eğitim, hyperparameter araması veya eşik seçiminde KULLANILMAZ.
+- TEST tam olarak BİR KEZ, tüm kararlar dondurulduktan sonra çalıştırılır.
+- Hyperparameter araması yalnızca VALID üzerinde yapılır.
+- 'Purge ve embargo atlanamaz: label horizon''u kadar bar her sınırda budanır.'
+- Örneklem sayımları non_tradable barlar HARİÇ tutularak yapılır.
+- Bu dosya değiştikçe frozen_sha256 uyuşmazlığı kontrol edilir; uyuşmazsa kayıt GEÇERSİZ sayılır ve yeniden üretilmesi
+  gerekir.
+assets:
+  BTC:
+    asset: BTC
+    symbol: BTCUSDT
+    mode: core
+    frozen_file: data/frozen/btc_4h_frozen.parquet
+    frozen_sha256: aab99f83c7572d84e016cd33b355cd2ad672d1ba7a8cb39e56180197cff41b12
+    live_file_at_registration: data/processed/btc_4h_adjusted.parquet
+    live_sha256_at_registration: aab99f83c7572d84e016cd33b355cd2ad672d1ba7a8cb39e56180197cff41b12
+    timeframe: 4h
+    rows_total: 19888
+    rows_tradable: 19887
+    rows_non_tradable: 1
+    history_years: 9.082
+    train:
+      raw:
+        n_raw: 18087
+        first_pos: 0
+        last_pos: 18087
+        first_utc: '2017-08-17 04:00:00+00:00'
+        last_utc: '2025-11-20 08:00:00+00:00'
+      used:
+        n_raw: 18045
+        first_pos: 0
+        last_pos: 18045
+        first_utc: '2017-08-17 04:00:00+00:00'
+        last_utc: '2025-11-13 08:00:00+00:00'
+    valid:
+      raw:
+        n_raw: 800
+        first_pos: 18088
+        last_pos: 18887
+        first_utc: '2025-11-20 12:00:00+00:00'
+        last_utc: '2026-04-02 16:00:00+00:00'
+      used:
+        n_raw: 716
+        first_pos: 18130
+        last_pos: 18845
+        first_utc: '2025-11-27 12:00:00+00:00'
+        last_utc: '2026-03-26 16:00:00+00:00'
+    test:
+      raw:
+        n_raw: 1000
+        first_pos: 18888
+        last_pos: 19887
+        first_utc: '2026-04-02 20:00:00+00:00'
+        last_utc: '2026-09-16 08:00:00+00:00'
+      used:
+        n_raw: 958
+        first_pos: 18930
+        last_pos: 19887
+        first_utc: '2026-04-09 20:00:00+00:00'
+        last_utc: '2026-09-16 08:00:00+00:00'
+      calendar_days: 159
+      sessions: 161
+    purge_bars: 30
+    embargo_bars: 12
+    warnings:
+    - 'TEST penceresi yalnızca 159 takvim günü (< 365): tek başına OOS sonucuna güvenmek için KISA. Bu varlıkta
+      asıl OOS aracı walk-forward olmalıdır.'
+    - 'TEST dönemi yalnızca 161 ayrı seans/gün içeriyor (< 200): İSTATİSTİKSEL GÜÇ ÇOK DÜŞÜK. ''sufficient_for_oos=True''
+      olsa bile sonuçlar yalnızca YÖN GÖSTERİR.'
+    - 1 bar non_tradable (kesinti/ince bar/henüz oluşuyor) -> örneklem sayımları bunlar HARİÇ tutularak yapıldı.
+    sufficient_for_oos: true
+  GOLD:
+    asset: GOLD
+    symbol: XAUUSD_PROXY_GC
+    mode: core
+    frozen_file: data/frozen/gold_4h_frozen.parquet
+    frozen_sha256: f7d53a8ead743a7b15157f09ad6dc9d50694e283f9e6ea95ba617c7b289efecc
+    live_file_at_registration: data/processed/gold_4h_adjusted.parquet
+    live_sha256_at_registration: f7d53a8ead743a7b15157f09ad6dc9d50694e283f9e6ea95ba617c7b289efecc
+    timeframe: 4h
+    rows_total: 3606
+    rows_tradable: 3575
+    rows_non_tradable: 31
+    history_years: 2.396
+    train:
+      raw:
+        n_raw: 1775
+        first_pos: 0
+        last_pos: 1788
+        first_utc: '2024-04-24 02:00:00+00:00'
+        last_utc: '2025-06-30 18:00:00+00:00'
+      used:
+        n_raw: 1733
+        first_pos: 0
+        last_pos: 1745
+        first_utc: '2024-04-24 02:00:00+00:00'
+        last_utc: '2025-06-19 14:00:00+00:00'
+    valid:
+      raw:
+        n_raw: 800
+        first_pos: 1789
+        last_pos: 2595
+        first_utc: '2025-06-30 22:00:00+00:00'
+        last_utc: '2026-01-13 15:00:00+00:00'
+      used:
+        n_raw: 716
+        first_pos: 1832
+        last_pos: 2553
+        first_utc: '2025-07-10 18:00:00+00:00'
+        last_utc: '2026-01-02 15:00:00+00:00'
+    test:
+      raw:
+        n_raw: 1000
+        first_pos: 2596
+        last_pos: 3605
+        first_utc: '2026-01-13 19:00:00+00:00'
+        last_utc: '2026-09-16 06:00:00+00:00'
+      used:
+        n_raw: 958
+        first_pos: 2640
+        last_pos: 3605
+        first_utc: '2026-01-26 03:00:00+00:00'
+        last_utc: '2026-09-16 06:00:00+00:00'
+      calendar_days: 233
+      sessions: 165
+    purge_bars: 30
+    embargo_bars: 12
+    warnings:
+    - 'TEST penceresi yalnızca 233 takvim günü (< 365): tek başına OOS sonucuna güvenmek için KISA. Bu varlıkta
+      asıl OOS aracı walk-forward olmalıdır.'
+    - 'TEST dönemi yalnızca 165 ayrı seans/gün içeriyor (< 200): İSTATİSTİKSEL GÜÇ ÇOK DÜŞÜK. ''sufficient_for_oos=True''
+      olsa bile sonuçlar yalnızca YÖN GÖSTERİR.'
+    - 31 bar non_tradable (kesinti/ince bar/henüz oluşuyor) -> örneklem sayımları bunlar HARİÇ tutularak yapıldı.
+    - 'ön-ay vadeli seri: roll KESİN tespit edilemez (feed''de kontrat ayı kimliği yok). close_adjusted == close_raw;
+      roll adayları yalnızca işaretli.'
+    sufficient_for_oos: true
+  SILVER:
+    asset: SILVER
+    symbol: XAGUSD_PROXY_SI
+    mode: core
+    frozen_file: data/frozen/silver_4h_frozen.parquet
+    frozen_sha256: 1df18551a0d2bb0ef5b745d0b6e5a5cd493c53c98ad3239130acadc300541fbd
+    live_file_at_registration: data/processed/silver_4h_adjusted.parquet
+    live_sha256_at_registration: 1df18551a0d2bb0ef5b745d0b6e5a5cd493c53c98ad3239130acadc300541fbd
+    timeframe: 4h
+    rows_total: 3606
+    rows_tradable: 3575
+    rows_non_tradable: 31
+    history_years: 2.396
+    train:
+      raw:
+        n_raw: 1775
+        first_pos: 0
+        last_pos: 1788
+        first_utc: '2024-04-24 02:00:00+00:00'
+        last_utc: '2025-06-30 18:00:00+00:00'
+      used:
+        n_raw: 1733
+        first_pos: 0
+        last_pos: 1745
+        first_utc: '2024-04-24 02:00:00+00:00'
+        last_utc: '2025-06-19 14:00:00+00:00'
+    valid:
+      raw:
+        n_raw: 800
+        first_pos: 1789
+        last_pos: 2595
+        first_utc: '2025-06-30 22:00:00+00:00'
+        last_utc: '2026-01-13 15:00:00+00:00'
+      used:
+        n_raw: 716
+        first_pos: 1832
+        last_pos: 2553
+        first_utc: '2025-07-10 18:00:00+00:00'
+        last_utc: '2026-01-02 15:00:00+00:00'
+    test:
+      raw:
+        n_raw: 1000
+        first_pos: 2596
+        last_pos: 3605
+        first_utc: '2026-01-13 19:00:00+00:00'
+        last_utc: '2026-09-16 06:00:00+00:00'
+      used:
+        n_raw: 958
+        first_pos: 2640
+        last_pos: 3605
+        first_utc: '2026-01-26 03:00:00+00:00'
+        last_utc: '2026-09-16 06:00:00+00:00'
+      calendar_days: 233
+      sessions: 165
+    purge_bars: 30
+    embargo_bars: 12
+    warnings:
+    - 'TEST penceresi yalnızca 233 takvim günü (< 365): tek başına OOS sonucuna güvenmek için KISA. Bu varlıkta
+      asıl OOS aracı walk-forward olmalıdır.'
+    - 'TEST dönemi yalnızca 165 ayrı seans/gün içeriyor (< 200): İSTATİSTİKSEL GÜÇ ÇOK DÜŞÜK. ''sufficient_for_oos=True''
+      olsa bile sonuçlar yalnızca YÖN GÖSTERİR.'
+    - 31 bar non_tradable (kesinti/ince bar/henüz oluşuyor) -> örneklem sayımları bunlar HARİÇ tutularak yapıldı.
+    - 'ön-ay vadeli seri: roll KESİN tespit edilemez (feed''de kontrat ayı kimliği yok). close_adjusted == close_raw;
+      roll adayları yalnızca işaretli.'
+    sufficient_for_oos: true
+  BIST30:
+    asset: BIST30
+    symbol: XU030_INDEX
+    mode: watch_only
+    frozen_file: data/frozen/bist30_4h_frozen.parquet
+    frozen_sha256: ddc9669d896f0bd15c7a4a2d3d2bc90c4894168e2e80f7033641f5466e89ce43
+    live_file_at_registration: data/processed/bist30_4h_adjusted.parquet
+    live_sha256_at_registration: ddc9669d896f0bd15c7a4a2d3d2bc90c4894168e2e80f7033641f5466e89ce43
+    timeframe: 4h
+    rows_total: 1435
+    rows_tradable: 1410
+    rows_non_tradable: 25
+    history_years: 2.886
+    train:
+      raw:
+        n_raw: 470
+        first_pos: 0
+        last_pos: 477
+        first_utc: '2023-10-27 07:00:00+00:00'
+        last_utc: '2024-10-11 11:00:00+00:00'
+      used:
+        n_raw: 428
+        first_pos: 0
+        last_pos: 435
+        first_utc: '2023-10-27 07:00:00+00:00'
+        last_utc: '2024-09-12 11:00:00+00:00'
+    valid:
+      raw:
+        n_raw: 470
+        first_pos: 478
+        last_pos: 955
+        first_utc: '2024-10-14 07:00:00+00:00'
+        last_utc: '2025-09-26 11:00:00+00:00'
+      used:
+        n_raw: 386
+        first_pos: 521
+        last_pos: 913
+        first_utc: '2024-11-14 07:00:00+00:00'
+        last_utc: '2025-08-28 11:00:00+00:00'
+    test:
+      raw:
+        n_raw: 470
+        first_pos: 956
+        last_pos: 1434
+        first_utc: '2025-09-29 07:00:00+00:00'
+        last_utc: '2026-09-15 11:00:00+00:00'
+      used:
+        n_raw: 428
+        first_pos: 998
+        last_pos: 1434
+        first_utc: '2025-10-28 07:00:00+00:00'
+        last_utc: '2026-09-15 11:00:00+00:00'
+      calendar_days: 322
+      sessions: 220
+    purge_bars: 30
+    embargo_bars: 12
+    warnings:
+    - 'TEST penceresi yalnızca 322 takvim günü (< 365): tek başına OOS sonucuna güvenmek için KISA. Bu varlıkta
+      asıl OOS aracı walk-forward olmalıdır.'
+    - 'watch_only: sinyal üretilir ama portföy performansına ZORLA SOKULMAZ.'
+    - 25 bar non_tradable (kesinti/ince bar/henüz oluşuyor) -> örneklem sayımları bunlar HARİÇ tutularak yapıldı.
+    sufficient_for_oos: true
+bist30_basket:
+  type: basket
+  name: bist30_basket
+  asset: BIST30_BASKET
+  symbol: BIST30 basket (28 hisse, eşit-risk)
+  mode: core
+  timeframe: 4h
+  universe_version: 2026-09-16.v1
+  weighting: equal_risk
+  signal_level: per_stock
+  stocks:
+  - AEFES
+  - AKBNK
+  - ASELS
+  - ASTOR
+  - BIMAS
+  - EKGYO
+  - ENKAI
+  - EREGL
+  - FROTO
+  - GARAN
+  - GUBRF
+  - ISCTR
+  - KCHOL
+  - KRDMD
+  - MGROS
+  - PETKM
+  - PGSUS
+  - SAHOL
+  - SASA
+  - SISE
+  - TAVHL
+  - TCELL
+  - THYAO
+  - TOASO
+  - TTKOM
+  - TUPRS
+  - VAKBN
+  - YKBNK
+  n_stocks: 28
+  excluded_from_basket:
+  - DSTKF
+  - TRALT
+  missing_data: []
+  common_window:
+    start_utc: '2023-10-27 07:00:00+00:00'
+    end_utc: '2026-09-16 07:00:00+00:00'
+  grid_bars: 1436
+  frozen_file: data/frozen/bist30_basket_4h_frozen.parquet
+  frozen_sha256: 218de18b6158581ff5895040ed95f67e8babbc97fe76ecc34c545e6ad5f4c521
+  frozen_rows: 40206
+  live_file_at_registration: data/processed/bist30/
+  live_sha256_at_registration: ''
+  train:
+    used:
+      grid_bars: 437
+      first_utc: '2023-10-27 07:00:00+00:00'
+      last_utc: '2024-09-13 07:00:00+00:00'
+      median_tradable_bars_per_stock: 426.0
+      min_tradable_bars_per_stock: 423
+      max_tradable_bars_per_stock: 429
+      stocks:
+        AEFES: 426
+        AKBNK: 426
+        ASELS: 426
+        ASTOR: 426
+        BIMAS: 423
+        EKGYO: 429
+        ENKAI: 423
+        EREGL: 426
+        FROTO: 423
+        GARAN: 426
+        GUBRF: 429
+        ISCTR: 426
+        KCHOL: 427
+        KRDMD: 426
+        MGROS: 426
+        PETKM: 429
+        PGSUS: 429
+        SAHOL: 427
+        SASA: 429
+        SISE: 426
+        TAVHL: 429
+        TCELL: 426
+        THYAO: 429
+        TOASO: 426
+        TTKOM: 429
+        TUPRS: 426
+        VAKBN: 429
+        YKBNK: 426
+  valid:
+    used:
+      grid_bars: 395
+      first_utc: '2024-11-14 07:00:00+00:00'
+      last_utc: '2025-08-29 11:00:00+00:00'
+      median_tradable_bars_per_stock: 385.0
+      min_tradable_bars_per_stock: 382
+      max_tradable_bars_per_stock: 388
+      stocks:
+        AEFES: 385
+        AKBNK: 385
+        ASELS: 385
+        ASTOR: 385
+        BIMAS: 382
+        EKGYO: 385
+        ENKAI: 382
+        EREGL: 385
+        FROTO: 382
+        GARAN: 386
+        GUBRF: 388
+        ISCTR: 386
+        KCHOL: 385
+        KRDMD: 388
+        MGROS: 384
+        PETKM: 388
+        PGSUS: 388
+        SAHOL: 386
+        SASA: 388
+        SISE: 385
+        TAVHL: 388
+        TCELL: 382
+        THYAO: 385
+        TOASO: 385
+        TTKOM: 388
+        TUPRS: 386
+        VAKBN: 388
+        YKBNK: 388
+  test:
+    used:
+      grid_bars: 436
+      first_utc: '2025-10-30 11:00:00+00:00'
+      last_utc: '2026-09-16 07:00:00+00:00'
+      median_tradable_bars_per_stock: 425.0
+      min_tradable_bars_per_stock: 421
+      max_tradable_bars_per_stock: 428
+      stocks:
+        AEFES: 425
+        AKBNK: 425
+        ASELS: 425
+        ASTOR: 428
+        BIMAS: 421
+        EKGYO: 425
+        ENKAI: 422
+        EREGL: 425
+        FROTO: 422
+        GARAN: 425
+        GUBRF: 428
+        ISCTR: 425
+        KCHOL: 425
+        KRDMD: 428
+        MGROS: 422
+        PETKM: 428
+        PGSUS: 428
+        SAHOL: 425
+        SASA: 428
+        SISE: 426
+        TAVHL: 425
+        TCELL: 425
+        THYAO: 428
+        TOASO: 426
+        TTKOM: 428
+        TUPRS: 425
+        VAKBN: 428
+        YKBNK: 428
+  test_calendar_days: 320
+  purge_bars: 30
+  embargo_bars: 12
+  warnings:
+  - 'SURVIVORSHIP BIAS: sepet yalnızca BUGÜN BIST30''da olan 28 hisseyi içerir; geçmişte endekste olup çıkanlar
+    YOKTUR. Sonuçlar YUKARI yönlü çarpıktır.'
+  - BIST30 hisseleri LONG-ONLY'dir ve XU030 bağlam filtresine tabidir; bu split o filtre UYGULANMADAN önceki ham
+    pencereyi tanımlar.
+  - DSTKF ve TRALT ünivers üyesi olduğu hâlde sepette DEĞİL (Aşama 1.5'te elendi) → sepet BIST30'u TAM temsil etmez.
+  - TEST penceresi 320 takvim günü (< 365).
+  sufficient_for_oos: true
