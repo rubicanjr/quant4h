@@ -7,10 +7,37 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **192/192 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19
+**Test durumu:** **207/207 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15
 
 ---
+
+## TAMAMLANDI: Aşama 8 — Risk modülü + portföy simülatörü (tavanlı vs tavansız, IN-SAMPLE)
+
+Özet: `src/quant4h/risk/limits.py` (RiskLimits: tavan kümesi + fail-closed doğrulama + `from_profile`; banka listesi DONMUŞ üniversalden `sector=="banka"` → AKBNK/GARAN/ISCTR/VAKBN/YKBNK) + `src/quant4h/risk/simulator.py` (event-driven portföy simülatörü: global timeline = akış timestamp BİRLEŞİMİ; **P0×A0 kilitli** — `profile!="P0"` → ValueError; fill kuralları Aşama 6 motoruyla birebir — `_close_trade` TEK kaynak; t+1 icra · D6 · H35 · çift taraf maliyet; ORTAK realized equity; boyutlama = risk/stop-mesafesi + kaldıraç kıskacı; **tavanlar YALNIZ GİRİŞTE, çıkışlara dokunmaz**) + `scripts/run_risk_report.py` → `reports/stage8_risk.md|json`. Bağlayıcı tavanlar (direktif 2026-09-17): toplam 6 · BTC 2 · GOLD 1 · SILVER 1 · sepet 3 · metals TEK kova ısı ≤1×rpt · basket ısı ≤3×rpt · hisse ≤1×rpt · banka ≤2 eşzamanlı · günlük %2 / haftalık %5 (realized baz, fail-closed) · 4 ardışık kayıp → 20 bar fren.
+
+### Aşama 8 sonuç özeti (in-sample, balanced %0.5, 100k)
+
+| ölçü | TAVANSIZ | TAVANLI |
+|---|---:|---:|
+| trade | 423 | **247** (red: basket_concurrent 137 · metals_heat 29 · fren 10) |
+| net getiri (mtm) | +16.37% | **+17.68%** |
+| max DD (mtm eğri) | −17.66% | **−7.76%** |
+| exposure | %70.2 | %68.5 |
+| tepe eşzamanlı / metals ısı / basket ısı / banka | 28 / %1.00 / %13.00 / 5 | **5 / %0.50 / %1.50 / 1** (hepsi tavan altında) |
+
+Varlık bazında (TAVANLI, expR R-bazlı): BTC 177 trade +0.199 CI [−0.015,+0.405] · GOLD 17 ⚠ +0.476 · SILVER 18 ⚠ +0.018 · BASKET 35 ⚠ +0.126 (sepet eşzamanlı 3 tavanı trade sayısını 172→35'e indirir; hisse appendix'i kabul kriteri 6 gereği yalnız tanısal). Günlük/haftalık limitler bu örneklemde HİÇ tetiklenmedi (0 red).
+
+### Aşama 8 kilitleri
+
+1. **Regresyon kilidi:** TAVANSIZ koşu Aşama 7 P0×A0 hücreleriyle birebir (BTC 187/+0.2064 · GOLD 30/+0.6259 · SILVER 34/+0.0022 · BASKET 172/+0.077); `run_risk_report.py` exit code bu kilide bağlı. Tek-akış tavansız sim == Aşama 6 motoru alan-alan (test).
+2. **Tavan ihlali SIFIR:** gerçek verili tavanlı koşuda [entry,exit) süpürmesiyle doğrulandı — toplam ≤6, BTC ≤2, GOLD/SILVER ≤1, sepet ≤3, metals birleşik ısı ≤%0.5, basket ısı ≤%1.5, banka ≤2 (test).
+3. **Fren regresyon testli:** 4. ardışık kayıptan sonra 20 bar giriş yok; limitsiz koşuda aynı sinyal girer (test).
+4. **Tavanlar çıkışı değiştirmez:** capped trade'lerin çıkış bar/fiyat/sebebi unlimited karşılığıyla birebir (test).
+5. Dürüst notlar: günlük/haftalık limitler REALIZED P&L bazlıdır (mtm bazlı varyant ayrı onay ister) · `max_correlation` ayrıca zorlanmadı (metals tek kova zaten sınırlar; günlük korelasyon limiti Aşama 9 bağlamı) · **Stage 0 `RiskProfile.max_open_positions=3` bu direktifle SUPERSEDE edildi (toplam 6)** — yaml'a dokunulmadı, kayıt buradadır.
+6. Testler: 192 → **207/207** (+15 `test_risk.py`).
+
+**HÜKÜM ÜRETİLMEZ:** bu rapor in-sample'dır; go/no-go Aşama 9 OOS + `user_decisions.yaml → go_no_go` eşikleriyle. Aşama 9 YETKİ BEKLİYOR.
 
 ## TAMAMLANDI: Aşama 7 — Çıkış mimarisi grid'i (esnek TP + alternatif anchor'lar; KARŞILAŞTIRMA, SEÇİM YOK)
 
@@ -354,13 +381,16 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
       `donchian_valid_frac`, `stop_long/short`, `stop_*_atr_mult`, `stop_*_pct_price`,
       `stop_valid_long/short`, `non_tradable`, `return_valid`.
 
-- [ ] **AŞAMA 8 — Risk modülü** ← **YETKİ BEKLİYOR**
-      Kapsam (kayıtlı kararlardan): pozisyon boyutu (eşit-risk formülü motor'da VAR;
-      portföy düzeyi eksik), maks eşzamanlı pozisyon, günlük/haftalık zarar limiti,
-      korelasyon limiti (günlük bazda), `precious_metals` TEK kova + `bucket_heat <=
-      risk_per_trade`, sepet tavanları (maks eşzamanlı, sektör, basket ısısı).
-      Hazır girdi: `reports/stage7_exit_grid.json` (12×4 hücre), `engine.py`
-      (pozisyon/partial muhasebesi), `user_decisions.yaml → risk` + `go_no_go`.
+- [x] ~~**AŞAMA 8 — Risk modülü**~~ ✅ (2026-09-17 — `risk/limits.py` + `risk/simulator.py` + `scripts/run_risk_report.py` → `reports/stage8_risk.md|json`; tavanlar yalnız girişte; tavansız koşu Aşama 7 P0×A0 ile birebir; bkz. TAMAMLANDI bloğu)
+- [ ] **AŞAMA 9 — Robustluk + TEK seçim noktası** ← **YETKİ BEKLİYOR**
+      Kapsam: walk-forward (ön-kayıtlı split'ler v1.1: BTC 18.044/716/958 ·
+      GOLD-SILVER 1.733/716/958 · basket 437/395/436), parametre duyarlılığı
+      (kilitli aday kümeleri: TS {60,90,120} × TP {2R,3R,4R} × buffer {0.5,1.0,1.5}
+      × profil {P0..P3} × anchor {A0..A2}), Monte Carlo; SEÇİM YALNIZ CORE
+      (BTC/GOLD/SILVER), hisseler yalnız OOS raporlanır; go/no-go eşikleri
+      (`user_decisions.yaml → go_no_go`) burada uygulanır; TEST seti YALNIZ 1 KEZ.
+      Hazır girdi: `reports/stage7_exit_grid.json` (mimari grid), `reports/stage8_risk.json`
+      (risk katmanı), `engine.py` + `simulator.py` (P0 dışı profiller de motor seviyesinde hazır).
 
 ### Aşama 1.5'ten bağımsız, bilinen teknik borç
 
@@ -393,8 +423,8 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 | 6 | Baseline backtest (maliyet dahil, next-bar-open) | ✅ **TAMAM** — 26 test, `reports/backtest_baseline.*` + **2026-09-17 denetimi: 10/10 uyumlu, NO-GO (in-sample; bkz. `reports/stage6_audit.md`)** |
 | 6d | Aşama 6 denetimi (şartname + go/no-go + sapma listesi + basket attrs) | ✅ **TAMAM** — 173/173, D1–D8 bulguları onay bekliyor |
 | 7 | Stop / esnek kâr alma (partial+runner, trailing, breakeven, time-stop) | ✅ **TAMAM** (2026-09-17) — grid 4 profil × 3 anchor × 4 varlık, IN-SAMPLE, **SEÇİM YOK** (Aşama 9); P0×A0 regresyon kilidi OK; D6 çözüldü; 192/192 |
-| 8 | Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon, ısı) | ⬜ **YETKİ BEKLİYOR** |
-| 9 | Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) | ⬜ |
+| 8 | Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon, ısı) | ✅ **TAMAM** (2026-09-17) — portföy simülatörü + tavanlar; regresyon kilidi OK; 207/207 |
+| 9 | Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) | ⬜ **YETKİ BEKLİYOR** |
 | 10 | Opsiyonel ML ikinci onay (HistGradientBoosting + purged/embargo) | ⬜ |
 | 11 | Çıktılar (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları) | ⬜ |
 

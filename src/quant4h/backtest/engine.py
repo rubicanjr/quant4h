@@ -81,6 +81,7 @@ class Trade:
     partial_net: float = 0.0
     stop_at_breakeven: bool = False
     stop_was_trailed: bool = False
+    group_key: str = ""              # Aşama 8: portföy simülatörü varlık etiketi (engine boş bırakır)
 
     def to_dict(self) -> Dict[str, Any]:
         return {k: (float(v) if isinstance(v, (np.floating, float)) else v)
