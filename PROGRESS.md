@@ -6,11 +6,29 @@
 
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
-**Son güncelleme:** 2026-09-16 (UTC)
-**Test durumu:** **167/167 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26
+**Son güncelleme:** 2026-09-17 (UTC)
+**Test durumu:** **173/173 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6
 
 ---
+
+## TAMAMLANDI: Aşama 6 DENETİMİ (2026-09-17, yeni oturum devralma — kod değişmedi)
+
+Özet: Kullanıcı yetkisiyle (2a–2d) Aşama 6 çıktıları şartnameye karşı denetlendi: `reports/stage6_audit.md`. **Fill-kuralı denetimi 10/10 UYUMLU** (capped primary · open[t+1] · aynı-bar STOP öncelikli · gap fill · çift taraf maliyet · H35 kilidi testli · bootstrap CI seed=42/B=1000 · basket agregasyonu ana/hisse appendix · tune kilidi). **Go/no-go: GENEL NO-GO** (beklenen): Aşama 6 in-sample; OOS bacağı Aşama 9'da. In-sample: BTC GEÇTİ (CI altı +0.006 sınırda) · GOLD İSTATİSTİKSEL ZAYIF (30<100) · SILVER KALDI (CI 0'ı içeriyor, PF 0.935) · sepet KALDI (CI −0.133, PF 0.931; 172≥150 trade tamam). **Sapma listesi D1–D8** raporda; en kritikleri: go/no-go eşikleri + "kabul kriteri 1–8" listesi repoda KAYITLI DEĞİL (D1), `user_decisions.yaml` stage_gate (D4) ve basket_policy split sayıları (D5) BAYAT — düzeltmeleri ONAY BEKLİYOR, tek satır değiştirilmedi. **2d:** eksik `bist30_basket_4h_frozen.attrs.json` deterministik ÜRETİLDİ (`scripts/make_basket_attrs.py`, tarih damgasız, `--check` modlu) + `tests/test_basket_attrs.py` 6/6; frozen parquet sha256 değişmedi, `register_splits.py --check` önce ve sonra EXIT 0. **Suite: 167 → 173/173 PASS** (11 dosya).
+
+## DÜZELTME (2026-09-17, yeni oturum devralma denetimi — kullanıcı onaylı)
+
+1. **Bayat AŞAMA DURUM LİSTESİ:** Tabloda Aşama 3, 4 ve 6 satırları "⬜ YETKİ BEKLİYOR" olarak kalmıştı; oysa üçü için de bu dosyada TAMAMLANDI bloğu var (Aşama 6 denetimi de bunu teyit etti). Satırlar ✅ olarak GÜNCELLENDİ. Sıradaki yetki bekleyen aşama: **7 (esnek kâr alma)** ve 5b.
+2. **KARAR 6 bloğundaki satır sayısı:** "bist30_basket_4h_frozen.parquet (**60.416 satır**)" ifadesi v1.0 dönemindendir (ince barlar elenmeden önce, grid 2.158). Gerçek frozen snapshot (policy **v1.1**, H27 ince-bar elemesi sonrası): **40.206 satır**, grid **1.436**, TRAIN 437 (medyan 426) · VALID 395 (385) · TEST 436 (425). sha256 (`218de18b…`) `splits_preregistered.yaml` kilidiyle birebir → VERİ SAĞLAM, metin bayattı. KARAR 6 blok metni tarihî kayıt olarak silinmedi; bağlayıcı sayı kaynağı `configs/splits_preregistered.yaml` (v1.1)'dir. Aynı v1.0 sayıları `user_decisions.yaml → basket_policy.split_preregistration` içinde de duruyor (D5 — senkronizasyonu onay bekliyor).
+
+## KURAL: Patch-tabanlı senkron (2026-09-17, kullanıcı onaylı)
+
+Sandbox'tan `git push` YOK (yetki yok); token sohbete ASLA girmez. Yeni senkron kuralı:
+1. Her aşama/iş-birimi bitiminde: PROGRESS bloğu + **local commit**.
+2. Patch üret: `git format-patch <son-senkron-commit>..HEAD --stdout > patches/stageN.patch` (bu birim: `patches/stage6_audit.patch`; son senkron commit: **`b58144b`**).
+3. Kullanıcı patch'i indirir, local repoda `git am` + `git push` yapar → yeni son-senkron commit, uygulanan patch'in son commit'i olur (bir sonraki format-patch aralığı oradan başlar).
+4. `patches/` klasörü repo dışında tutulur (untracked; yalnız teslimat artefaktı).
+5. **Ortam notu (2026-09-17'de ölçüldü):** sandbox, turlar arasında `.git` geçmişini KORUMUYOR (yalnız normal dosyalar kalıcı). Bu yüzden her tur başında `.git` remote'tan yeniden kurulur (`git clone` → `.git` kopyala); local commit'ler tur içinde geçerlidir ve KALICI TESLİMAT ARACI `patches/*.patch` dosyalarıdır. Kullanıcı patch'i uygulayıp push ettikten sonra bir sonraki tur aynı commit'leri remote'tan görür.
 
 ## TAMAMLANDI: Aşama 6 — Baseline backtest (gerçek çıkış motoru + maliyet)
 
@@ -343,11 +361,12 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 | 1 | Veri kalitesi | ✅ **TAMAM** — toplama + 4H + QC + adjust + cleaning + split ön-kaydı (55/55 test) |
 | 1.5 | BIST30 hisse üniversali | ✅ **TAMAM** — 30 üye sabitlendi, 28 hisse sepete girdi, rapor üretildi |
 | 2 | Piyasa rejimi (EMA200 yönü + ATR yüzdeliği) + XU030 bağlam filtresi | ✅ **TAMAM** — 6 durum, fail-closed, look-ahead testi geçti |
-| 3 | Yapısal seviyeler (swing + Donchian20 + ATR buffer stop) | ⬜ **YETKİ BEKLİYOR** |
-| 4 | Momentum onayı (ATR-normalize ROC) | ⬜ **YETKİ BEKLİYOR** |
+| 3 | Yapısal seviyeler (swing + Donchian20 + ATR buffer stop) | ✅ **TAMAM** — 23 test, FrozenStop kilidi (DÜZELTME 2026-09-17: tablo bayattı) |
+| 4 | Momentum onayı (ATR-normalize ROC) | ✅ **TAMAM** — 16 test, aday kümesi Aşama 9'a kilitli (DÜZELTME 2026-09-17) |
 | 5 | Giriş tetiği + sinyal montajı + cooldown + icra zamanı | ✅ **TAMAM** — 19 test, 31 varlık, 3 akış raporlandı |
 | 5b | Çift onayın KAPATILMASI: precision/recall/F1/false-positive + opsiyonel ML 3. filtre | ⬜ **YETKİ BEKLİYOR** |
-| 6 | Baseline backtest (maliyet dahil, next-bar-open) | ⬜ **YETKİ BEKLİYOR** |
+| 6 | Baseline backtest (maliyet dahil, next-bar-open) | ✅ **TAMAM** — 26 test, `reports/backtest_baseline.*` + **2026-09-17 denetimi: 10/10 uyumlu, NO-GO (in-sample; bkz. `reports/stage6_audit.md`)** |
+| 6d | Aşama 6 denetimi (şartname + go/no-go + sapma listesi + basket attrs) | ✅ **TAMAM** — 173/173, D1–D8 bulguları onay bekliyor |
 | 7 | Stop / esnek kâr alma (partial+runner, trailing, breakeven, time-stop) | ⬜ **YETKİ BEKLİYOR** |
 | 8 | Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon, ısı) | ⬜ |
 | 9 | Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) | ⬜ |
