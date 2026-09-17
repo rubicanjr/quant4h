@@ -680,6 +680,19 @@ class ExitConfig:
     min_trades_for_significance: int = 100
     bootstrap_resamples: int = 1000
     random_seed: int = 42
+    # ---- AŞAMA 7: çıkış mimarisi KARŞILAŞTIRMASI (2026-09-17 kullanıcı şartnamesi) ----
+    # SEÇİM YOKTUR: P0 varsayılan kalır; profil/anchor seçimi YALNIZ Aşama 9'da,
+    # YALNIZ OOS (ön-kayıtlı split'ler) ile yapılır. Aşama 7 grid'i in-sample'dır.
+    #   P0 baseline      : TS90 + TP3R (Aşama 6 davranışı, birebir korunur)
+    #   P1 partial+runner: 1R'de %50 kapat + stop breakeven + runner chandelier ATR×3 (TS YOK)
+    #   P2 trailing      : girişten chandelier ATR×3 (dondurulmuş stop'un üstüne çıkar,
+    #                      gevşemez), sabit TP YOK, TS90 emniyet
+    #   P3 breakeven     : 1R sonrası stop→breakeven, TP3R + TS90 (partial YOK)
+    profile: str = "P0"
+    exit_profile_candidates: tuple = ("P0", "P1", "P2", "P3")
+    partial_frac: float = 0.5              # şartname sabiti — KİLİTLİ
+    breakeven_trigger_r: float = 1.0       # şartname sabiti — KİLİTLİ
+    chandelier_atr_mult: float = 3.0       # şartname sabiti — KİLİTLİ
 
     def __post_init__(self) -> None:
         if self.time_stop_bars not in self.time_stop_candidates:
@@ -697,6 +710,18 @@ class ExitConfig:
             raise ValueError(
                 f"same_bar_priority '{self.same_bar_priority}' desteklenmiyor; "
                 f"kabul kriteri 2 gereği PESİMİST olmalı ('stop').")
+        # ---- Aşama 7 kilitleri ----
+        if self.profile not in self.exit_profile_candidates:
+            raise ValueError(
+                f"profile '{self.profile}' aday kümesinde değil: "
+                f"{self.exit_profile_candidates}. Profil SEÇİMİ yalnızca Aşama "
+                f"{PARAM_TUNING_STAGE}'da, yalnızca OOS yapılır.")
+        if self.partial_frac != 0.5:
+            raise ValueError("partial_frac Aşama 7 şartname sabitidir (0.5); değiştirilemez/tune edilemez.")
+        if self.breakeven_trigger_r != 1.0:
+            raise ValueError("breakeven_trigger_r Aşama 7 şartname sabitidir (1.0); değiştirilemez/tune edilemez.")
+        if self.chandelier_atr_mult != 3.0:
+            raise ValueError("chandelier_atr_mult Aşama 7 şartname sabitidir (3.0); değiştirilemez/tune edilemez.")
 
 
 DEFAULT_EXIT = ExitConfig()

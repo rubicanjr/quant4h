@@ -7,10 +7,26 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **173/173 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6
+**Test durumu:** **192/192 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19
 
 ---
+
+## TAMAMLANDI: Aşama 7 — Çıkış mimarisi grid'i (esnek TP + alternatif anchor'lar; KARŞILAŞTIRMA, SEÇİM YOK)
+
+Özet: `ExitConfig.profile` enum'ı eklendi: **P0** baseline TS90+TP3R (varsayılan, Aşama 9'a kadar) · **P1** partial+runner (1R'de %50 + stop→BE + runner chandelier ATR×3; TS/TP YOK — şartname gereği) · **P2** trailing (girişten chandelier ATR×3, ratchet, TP YOK, TS90 emniyet) · **P3** breakeven (1R→BE + TP3R + TS90). Şartname sabitleri KİLİTLİ (`partial_frac=0.5`, `breakeven_trigger_r=1.0`, `chandelier_atr_mult=3.0`; küme/ profil dışı → ValueError). Stop anchor'ları `src/quant4h/backtest/anchors.py`: **A0** swing−1.0×ATR (mevcut, no-op) · **A1** Donchian(20) ters bandı · **A2** swing−0.5×ATR (`levels.add_structural_stop` buffer 0.5 ile YENİDEN kullanıldı — kilitli küme içi). Anchor override SİNYAL ÜRETİMİNDEN ÖNCE: `stop_valid` kapısı + capped proxy + motor AYNI stop'u görür. Grid: `scripts/run_exit_grid.py` → `reports/stage7_exit_grid.md|json` — 4 profil × 3 anchor × {BTC, GOLD, SILVER, basket(28 hisse)}; **tüm hücreler IN-SAMPLE etiketli, SEÇİM YOK** (seçim yalnız Aşama 9, OOS, core-only).
+
+### Aşama 7 kilitleri ve bulguları
+
+1. **P0×A0 regresyon kilidi:** grid'in P0×A0 hücreleri Aşama 6 baseline'ını (`reports/backtest_baseline.json`) birebir yeniden üretiyor (n_trades/win/PF/expR/maxDD/total_cost; script exit code bu kilide bağlı, UYUŞMAZSA 1). Motor refactor'ü baseline'ı DEĞİŞTİRMEDİ.
+2. **D6 ÇÖZÜLDÜ:** bar `t` içinde kapanan pozisyonun ardından bar `t` AÇILIŞINDA yeni giriş YASAK (`exited_bar` kapısı) + `test_same_bar_exit_blocks_same_bar_entry`. Regresyon kilidi, bu kapının mevcut sonuçları değiştirmediğini kanıtladı (capped akışta erişilemezdi; artık test ile kilitli).
+3. **Nedensellik:** BE/trailing güncellemeleri bar SONUNDA yazılır, bir SONRAKİ bardan geçerli (bar içi sıkılaştırma YOK); chandelier yalnız KAPALI barların HH/LL'si + `atr[t]` ile hesaplanır; P2 truncation (look-ahead silme) testi GEÇTİ. P1'de aynı barda stop+1R çakışırsa **STOP kazanır, partial YAPILMAZ** (kabul kriteri 2).
+4. **Muhasebe:** partial tek Trade satırında (pozisyon başına 1 satır; `partial_*` alanları); maliyet bacaklara bölünür, TOPLAM = one_way × (giriş + tüm çıkış notional'ları) — test ile kilitli; `equity_after − equity_before == net_pnl`.
+5. **Tanımlayıcı özet (ÖNERİ DEĞİL, in-sample expR):** BTC en iyi `P3xA2` +0.262 / en kötü `P1xA1` +0.109 · GOLD en iyi `P0xA0` +0.626 (⚠️ 30 trade) / en kötü `P2xA1` +0.190 · SILVER en iyi `P3xA2` +0.214 / en kötü `P2xA2` −0.135 · BASKET en iyi `P3xA2` +0.145 / en kötü `P2xA2` −0.062. Mimari gözlem: **P2 tutma süresini ve maruziyeti dramatik kısaltıyor** (BTC ort. 59.6→17.4 bar, exposure %57→%17, maxDD −7.05%→−2.80%) — maliyet/tur-over etkisi Aşama 8-9'da değerlendirilecek. P1'de TS olmaması tutmayı uzatıyor (BTC 75.7 bar).
+6. **D1/D4/D5 işlendi (kullanıcı onayı 2026-09-17):** `user_decisions.yaml`'a `go_no_go` (OOS expR>0 + CI altı>0 · PF≥1.2 · maxDD≤%25 · min trade core≥100/basket≥150; değerlendirme Aşama 9) + `stage6_acceptance_criteria` (2/3/4/6/7/8 koddan yeniden kuruldu; **1 ve 5 KAYIP — reserve, uydurulmadı**) eklendi; `stage_gate` senkronlandı; `basket_policy.split_preregistration` v1.1 sayılarına düzeltildi (superseded_note ile).
+7. Testler: 173 → **192** (+19 `exit_profiles`: enum/sabit/anchor kilitleri, D6, P1 partial+gap+çakışma+chandelier+TS-yok, P2 ratchet+TS90, P3 BE+TP+next-bar, short simetri, maliyet bölüşümü, look-ahead truncation, P0×A0 gerçek-veri regresyonu).
+
+Caveat'ler aynen geçerli: in-sample · risk modülü YOK (Aşama 8: kova ısısı/korelasyon/tavanlar) · survivorship bias (sepet) · metallerde roll belirsizliği · bu tablolardan KARAR ÜRETİLMEZ.
 
 ## TAMAMLANDI: Aşama 6 DENETİMİ (2026-09-17, yeni oturum devralma — kod değişmedi)
 
@@ -306,7 +322,9 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 - [x] ~~**AŞAMA 4 — Momentum onayı**~~ ✅ (bkz. TAMAMLANDI bloğu)
 - [x] ~~**AŞAMA 5 — Giriş tetiği + sinyal montajı**~~ ✅ (bkz. TAMAMLANDI bloğu)
 - [x] ~~**AŞAMA 6 — Baseline backtest**~~ ✅ (bkz. TAMAMLANDI bloğu)
-- [ ] **AŞAMA 7 — Esnek kâr alma** ← **YETKİ BEKLİYOR**
+- [x] ~~**AŞAMA 7 — Esnek kâr alma + alternatif stop anchor'ları**~~ ✅ (2026-09-17 — KARŞILAŞTIRMA grid'i; SEÇİM YOK, seçim Aşama 9 OOS. Bkz. en üstteki TAMAMLANDI bloğu + `reports/stage7_exit_grid.md`)
+      *(Tarihî kuyruk notu — Aşama 6/7 kapanışında işlendi; kapsamın karşılanan kısmı
+      TAMAMLANDI bloğunda, kalan 5b işleri aşağıda duruyor:)*
       Kapsam: partial TP + runner, trailing stop, breakeven after 1R,
       volatility-adjusted trailing, time-based exit. Her varlık için ayrı
       test; TP/SL oranı risk yönetimiyle birlikte değerlendirme.
@@ -336,6 +354,13 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
       `donchian_valid_frac`, `stop_long/short`, `stop_*_atr_mult`, `stop_*_pct_price`,
       `stop_valid_long/short`, `non_tradable`, `return_valid`.
 
+- [ ] **AŞAMA 8 — Risk modülü** ← **YETKİ BEKLİYOR**
+      Kapsam (kayıtlı kararlardan): pozisyon boyutu (eşit-risk formülü motor'da VAR;
+      portföy düzeyi eksik), maks eşzamanlı pozisyon, günlük/haftalık zarar limiti,
+      korelasyon limiti (günlük bazda), `precious_metals` TEK kova + `bucket_heat <=
+      risk_per_trade`, sepet tavanları (maks eşzamanlı, sektör, basket ısısı).
+      Hazır girdi: `reports/stage7_exit_grid.json` (12×4 hücre), `engine.py`
+      (pozisyon/partial muhasebesi), `user_decisions.yaml → risk` + `go_no_go`.
 
 ### Aşama 1.5'ten bağımsız, bilinen teknik borç
 
@@ -367,8 +392,8 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 | 5b | Çift onayın KAPATILMASI: precision/recall/F1/false-positive + opsiyonel ML 3. filtre | ⬜ **YETKİ BEKLİYOR** |
 | 6 | Baseline backtest (maliyet dahil, next-bar-open) | ✅ **TAMAM** — 26 test, `reports/backtest_baseline.*` + **2026-09-17 denetimi: 10/10 uyumlu, NO-GO (in-sample; bkz. `reports/stage6_audit.md`)** |
 | 6d | Aşama 6 denetimi (şartname + go/no-go + sapma listesi + basket attrs) | ✅ **TAMAM** — 173/173, D1–D8 bulguları onay bekliyor |
-| 7 | Stop / esnek kâr alma (partial+runner, trailing, breakeven, time-stop) | ⬜ **YETKİ BEKLİYOR** |
-| 8 | Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon, ısı) | ⬜ |
+| 7 | Stop / esnek kâr alma (partial+runner, trailing, breakeven, time-stop) | ✅ **TAMAM** (2026-09-17) — grid 4 profil × 3 anchor × 4 varlık, IN-SAMPLE, **SEÇİM YOK** (Aşama 9); P0×A0 regresyon kilidi OK; D6 çözüldü; 192/192 |
+| 8 | Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon, ısı) | ⬜ **YETKİ BEKLİYOR** |
 | 9 | Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) | ⬜ |
 | 10 | Opsiyonel ML ikinci onay (HistGradientBoosting + purged/embargo) | ⬜ |
 | 11 | Çıktılar (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları) | ⬜ |

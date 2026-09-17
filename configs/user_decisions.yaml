@@ -284,15 +284,21 @@ basket_policy:
   split_preregistration:
     decision: "TEK ORTAK TAKVİM PENCERESİ — hisse başına ayrı split YOK"
     file: "configs/splits_preregistered.yaml -> bist30_basket"
+    policy_version: "1.1"            # D5 düzeltmesi (2026-09-17, kullanıcı onaylı)
+    superseded_note: >
+      v1.0 dönemi sayıları (grid 2158 · TRAIN 678/449 · VALID 635/421 · TEST 677/448 ·
+      frozen 60.416 satır) Aşama 3 ince-bar elemesi (H27/H28, min_source_bars_per_target=3)
+      sonrası GEÇERSİZDİR. v1.0 dosyası configs/splits_preregistered.v1.0.archived.yaml
+      içinde saklıdır (silinmez). Bağlayıcı sayı kaynağı splits_preregistered.yaml (v1.1)'dir.
     common_window: "2023-10-27 → 2026-09-16"
-    grid_bars: 2158
+    grid_bars: 1436
     stocks: 28
-    frozen_snapshot: "data/frozen/bist30_basket_4h_frozen.parquet (H17 kuralı: sha256 ile kilitli)"
+    frozen_snapshot: "data/frozen/bist30_basket_4h_frozen.parquet (40.206 satır; H17: sha256 kilitli; sidecar attrs deterministik: scripts/make_basket_attrs.py --check)"
     purge_embargo: "core varlıklarla AYNI (30 + 12 bar)"
     blocks:
-      train: {grid_bars: 678, median_tradable_per_stock: 449, window: "2023-10-27 → 2024-09-24"}
-      valid: {grid_bars: 635, median_tradable_per_stock: 421, window: "2024-11-04 → 2025-09-09"}
-      test:  {grid_bars: 677, median_tradable_per_stock: 448, window: "2025-10-17 → 2026-09-16", calendar_days: 333}
+      train: {grid_bars: 437, median_tradable_per_stock: 426, window: "2023-10-27 → 2024-09-13"}
+      valid: {grid_bars: 395, median_tradable_per_stock: 385, window: "2024-11-14 → 2025-08-29"}
+      test:  {grid_bars: 436, median_tradable_per_stock: 425, window: "2025-10-30 → 2026-09-16"}
 
 xu030_context_filter:
   decision: "Aşama 2 içinde KODLANACAK"
@@ -355,6 +361,56 @@ simplicity_rules:
     validation: "purged K-fold + embargo + walk-forward; test seti yalnızca 1 kez"
 
 # ---------------------------------------------------------------------------
+# KARAR 7 — GO/NO-GO eşikleri + Aşama 6 kabul kriterleri
+# (2026-09-17 KAYDA ALINDI, kullanıcı onaylı — Aşama 6 denetimi bulgusu D1:
+#  eşikler kullanıcı mesajlarındaydı ama repoda KAYITLI DEĞİLDİ. Repoda yazılı
+#  olmayan kural bağlayıcı sayılamaz; bu blok o boşluğu kapatır.)
+# ---------------------------------------------------------------------------
+go_no_go:
+  decided_on: "2026-09-17"
+  evaluation_stage: 9
+  scope: >
+    OOS (ön-kayıtlı split'ler + Aşama 9 walk-forward) ölçümleriyle değerlendirilir.
+    IN-SAMPLE okumalar go kararı için ASLA yeterli değildir (Aşama 6 raporu in-sample'dır).
+  thresholds:
+    oos_expectancy_r: "> 0"
+    oos_expectancy_bootstrap_ci95_lower: "> 0"
+    profit_factor_net: ">= 1.2"
+    max_drawdown_frac: "<= 0.25"
+    min_trades_core_per_asset: 100     # BTC / GOLD / SILVER ayrı ayrı
+    min_trades_basket_total: 150       # BIST30 sepet agregasyonu (toplam)
+  verdict_labels: ["GEÇTİ", "KALDI", "İSTATİSTİKSEL ZAYIF"]
+  rules:
+    - "Tek bir eşik bile KALDI ise varlık için hüküm NO-GO'dur."
+    - "min trade eşiğinin altındaki her sonuç İSTATİSTİKSEL ZAYIF'tır; diğer eşikler geçilse bile karar üretmez."
+    - "Değerlendirme varlık bazında (BTC, GOLD, SILVER) + basket agregasyonu için ayrı ayrı yapılır; hisse bazlı go/no-go YOKTUR (kabul kriteri 6)."
+  d2_note: >
+    Motor tarafındaki 'statistically_weak' bayrağı min_trades_for_significance=100
+    (config.py) ile TÜM varlıklara uygulanır; basket'e özgü 150 eşiği KARAR katmanı
+    kapısıdır (bu blok). Kod bayrağının 150'ye değiştirilmesi ayrı onay gerektirir.
+  stage6_audit_baseline_2026_09_17:
+    verdict: "GENEL NO-GO (beklenen): Aşama 6 in-sample; OOS bacağı ölçülmedi (Aşama 9)"
+    in_sample_reading: "BTC GEÇTİ(IS) · GOLD İSTATİSTİKSEL ZAYIF (30<100) · SILVER KALDI (CI 0'ı içeriyor, PF 0.935) · basket KALDI (CI altı -0.133, PF 0.931; 172>=150 trade TAMAM)"
+    evidence: "reports/stage6_audit.md §2"
+
+stage6_acceptance_criteria:
+  registered_on: "2026-09-17"
+  reconstructed_from: >
+    Kod içi atıflar (config.py, engine.py, run_backtest.py) + reports/backtest_baseline.md.
+    Orijinal numaralı liste Aşama 6 Part 1/2 şartname mesajındaydı (repoya hiç girmedi).
+    1 ve 5 numaralı maddeler yeniden KURULAMADI — numaraları REZERVE bırakıldı;
+    uydurma içerik YAZILMADI.
+  items:
+    1: "KAYIP (orijinal Part 1/2 şartnamesinde) — numara reserve"
+    2: "PESİMİST fill: aynı barda çakışma -> STOP öncelikli; stop gap'i open'dan (aleyhimize), TP gap'i open'dan (lehimize/gerçekçi); time-stop kapanıştan; maliyetler (komisyon + yarım spread + slippage) İKİ tarafa da"
+    3: "İcra sözleşmesi: giriş open[t+1]; sinyal bar kapanışı P&L'de kullanılmaz; GEÇERLİ STOPU OLMAYAN POZİSYON ASLA AÇILMAZ (H35)"
+    4: "Momentum guard fail-closed: ATR/close geçersizse momentum_valid=False; asla '0 varsay' denmez"
+    5: "KAYIP (orijinal Part 1/2 şartnamesinde) — numara reserve"
+    6: "Trade sayısı eşik altı hisse/varlık sonuçları İSTATİSTİKSEL ZAYIF bayraklıdır ve appendix'e taşınır; sepet kararı BASKET AGREGASYONUNDAN okunur"
+    7: "Maliyet satırı zorunlu: net (maliyetli) ve brüt (maliyetsiz) sonuç yan yana raporlanır; maliyetin sonucu tersine çevirip çevirmediği açıkça yazılır"
+    8: "Equity, trade listesinden BAĞIMSIZ yeniden hesaplanır ve motor eğrisiyle tutarlılığı doğrulanır (equity_from_trades)"
+
+# ---------------------------------------------------------------------------
 # Çalışma kuralları (kullanıcı kararı, bağlayıcı)
 # ---------------------------------------------------------------------------
 process_rules:
@@ -371,30 +427,34 @@ process_rules:
 # Aşama kapısı
 # ---------------------------------------------------------------------------
 stage_gate:
-  current_stage: "1 (veri kalitesi)"
+  # D4 düzeltmesi (2026-09-17, kullanıcı onaylı): blok Aşama 1 döneminde kalmıştı;
+  # PROGRESS.md TAMAMLANDI bloklarıyla senkronlandı. Bağlayıcı sıra kaynağı PROGRESS.md'dir.
+  current_stage: "7 TAMAMLANDI (2026-09-17) — çıkış mimarisi grid'i (P0-P3 × A0-A2, in-sample, SEÇİM YOK)"
   queue:
-    - id: "1a"
-      task: "adjust.py — roll + veri-kesintisi düzeltmesi (KARAR 2 & 3)"
-      status: "KOMUT VERİLDİ (2026-09-16)"
-    - id: "1b"
-      task: "cleaning.py testleri"
-      status: "KOMUT VERİLDİ (2026-09-16)"
-    - id: "1c"
-      task: "split tarihlerini configs/'e ön-kaydet (purge/embargo, varlık bazlı)"
-      status: "KOMUT VERİLDİ (2026-09-16)"
-    - id: "1.5"
-      task: "BIST30 HİSSE üniverseli (konstitüant sabitleme + indirme + 4H + hisse bazlı QC)"
-      status: "TAMAMLANDI (2026-09-16) — 30 üye, 28 hisse sepete girdi"
-    - id: "2"
-      task: "Piyasa rejimi (EMA200 yönü + ATR yüzdeliği) + XU030 bağlam filtresi"
-      status: "KOMUT VERİLDİ (2026-09-16 'geç')"
-    - id: "3"
-      task: "Yapısal seviyeler (swing + Donchian20 + ATR buffer stop)"
-      status: "KUYRUKTA — YETKİ BEKLİYOR"
-  next_stage: "3 (yapısal seviyeler: swing + Donchian20 + ATR buffer stop)"
-  next_stage_authorization: "BEKLİYOR — kullanıcı 'geç' demeden Aşama 2'ye BAŞLANMAZ"
+    - {id: "1a", task: "adjust.py — roll + veri-kesintisi düzeltmesi (KARAR 2 & 3)", status: "TAMAMLANDI (2026-09-16)"}
+    - {id: "1b", task: "cleaning.py testleri", status: "TAMAMLANDI (2026-09-16)"}
+    - {id: "1c", task: "split ön-kaydı (purge/embargo, varlık bazlı)", status: "TAMAMLANDI (2026-09-16)"}
+    - {id: "1.5", task: "BIST30 HİSSE üniversali", status: "TAMAMLANDI (2026-09-16) — 30 üye, 28 hisse sepete girdi"}
+    - {id: "2", task: "Piyasa rejimi + XU030 bağlam filtresi", status: "TAMAMLANDI (2026-09-16)"}
+    - {id: "3", task: "Yapısal seviyeler (swing + Donchian20 + ATR buffer stop)", status: "TAMAMLANDI (2026-09-16)"}
+    - {id: "4", task: "Momentum onayı (ATR-normalize ROC)", status: "TAMAMLANDI (2026-09-16)"}
+    - {id: "5", task: "Giriş tetiği + sinyal montajı + cooldown + icra zamanı", status: "TAMAMLANDI (2026-09-16) — sayılar GEÇİCİ (Aşama 6 NOT'u)"}
+    - {id: "5b", task: "Çift onayın kapatılması: precision/recall/F1 + opsiyonel ML 3. filtre", status: "KUYRUKTA — YETKİ BEKLİYOR"}
+    - {id: "6", task: "Baseline backtest (maliyet dahil, next-bar-open)", status: "TAMAMLANDI (2026-09-16) + DENETİM (2026-09-17) 10/10 uyumlu — reports/stage6_audit.md"}
+    - {id: "7", task: "Çıkış mimarisi: esnek TP (partial+runner/trailing/BE) + alternatif stop anchor'ları — KARŞILAŞTIRMA, SEÇİM YOK", status: "TAMAMLANDI (2026-09-17) — reports/stage7_exit_grid.md; 4 profil × 3 anchor × 4 varlık; P0×A0 regresyon kilidi OK"}
+    - {id: "8", task: "Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon kovaları, ısı)", status: "KUYRUKTA — YETKİ BEKLİYOR"}
+    - {id: "9", task: "Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) + TEK seçim noktası (OOS)", status: "KUYRUKTA — YETKİ BEKLİYOR"}
+    - {id: "10", task: "Opsiyonel ML ikinci onay (HistGradientBoosting + purged/embargo)", status: "KUYRUKTA"}
+    - {id: "11", task: "Çıktılar (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları)", status: "KUYRUKTA"}
+  next_stage: "8 (risk modülü) — kullanıcı 'geç' demeden BAŞLANMAZ"
+  next_stage_authorization: "BEKLİYOR (2026-09-17: Aşama 7 teslimi sonrası DUR)"
   resolved_2026_09_16:
     - "28 hisse için split ön-kaydı -> ÇÖZÜLDÜ: bist30_basket (tek ortak takvim penceresi)"
     - "Sepet ağırlıklandırma -> ÇÖZÜLDÜ: EŞİT-RİSK, sermaye ağırlıklandırması YOK"
     - "Sinyal seviyesi -> ÇÖZÜLDÜ: HİSSE BAŞINA; portföy tavanları Aşama 8"
     - "XU030 bağlam filtresi -> ÇÖZÜLDÜ: Aşama 2'de kodlandı (LONG-ONLY, fail-closed)"
+  resolved_2026_09_17:
+    - "D1 go/no-go eşikleri + kabul kriterleri -> ÇÖZÜLDÜ: bu dosyaya işlendi (go_no_go + stage6_acceptance_criteria)"
+    - "D4 stage_gate bayat -> ÇÖZÜLDÜ: bu blok senkronlandı"
+    - "D5 basket_policy v1.0 sayıları -> ÇÖZÜLDÜ: v1.1'e senkronlandı (superseded_note ile)"
+    - "D6 aynı-bar çıkış+giriş kenar durumu -> ÇÖZÜLDÜ: Aşama 7 engine kilidi + test_same_bar_exit_blocks_same_bar_entry"

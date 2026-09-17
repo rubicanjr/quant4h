@@ -39,7 +39,7 @@ import pandas as pd
 from ..config import (DEFAULT_EXIT, DEFAULT_PROFILE, RISK_PROFILES, CostModel,  # noqa: F401
                       ExitConfig)
 
-EXIT_REASONS = ("stop", "take_profit", "time_stop", "end_of_data")
+EXIT_REASONS = ("stop", "take_profit", "time_stop", "chandelier", "end_of_data")
 
 
 @dataclass
@@ -71,6 +71,16 @@ class Trade:
     return_frac: float            # net_pnl / equity_before
     atr_at_entry: float
     stop_distance_atr: float
+    # ---- Aşama 7: profil + partial/trailing alanları (P0'da tümü varsayılan) ----
+    profile: str = "P0"
+    partial_filled: bool = False
+    partial_exit_bar: int = -1
+    partial_exit_price: float = float("nan")
+    partial_units: float = 0.0
+    partial_gross: float = 0.0
+    partial_net: float = 0.0
+    stop_at_breakeven: bool = False
+    stop_was_trailed: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return {k: (float(v) if isinstance(v, (np.floating, float)) else v)
@@ -176,9 +186,27 @@ def run_backtest(df: pd.DataFrame, cost: CostModel, *,
     atr_entry = np.nan
     rejected_no_stop = 0
     rejected_not_tradable = 0
+    # ---- Aşama 7: profil durumu (P0'da cur_stop == stop_px sabit kalır) ----
+    profile = exit_cfg.profile
+    cur_stop = np.nan            # aktif stop (girişte dondurulmuş stop; P1/P2/P3'te bar SONUNDA güncellenir)
+    initial_stop = np.nan        # giriş anındaki dondurulmuş yapısal stop (H35/raporlama)
+    hh = np.nan                  # girişten beri en yüksek high (long chandelier) — YALNIZ KAPALI barlar
+    ll = np.nan                  # girişten beri en düşük low (short chandelier)
+    units_rem = 0.0              # partial sonrası kalan ünit (P0/P2/P3: units ile aynı)
+    partial_done = False
+    partial_rec = None           # {"bar","price","units","gross","net","cost_entry","cost_exit"}
+    be_pending = False           # 1R'ye bu barda dokunuldu → BE bar SONUNDA yazılır (sonraki bardan geçerli)
+    be_applied = False
+    trail_moved = False
+    last_stop_mover = "initial"  # "initial" | "breakeven" | "chandelier"
+    exited_bar = -1              # D6: pozisyonun kapandığı bar — aynı barın AÇILIŞINDA yeni giriş YASAK
 
     def _cost(notional: float) -> float:
         return abs(notional) * one_way if exit_cfg.apply_costs_both_sides else 0.0
+
+    # Aşama 7 notu: maliyet oranı TEK yerde etkinleştirilir (flag varsayılan True
+    # → P0/Aşama 6 ile birebir aynı). partial ve _close_trade bu oranı kullanır.
+    one_way_eff = one_way if exit_cfg.apply_costs_both_sides else 0.0
 
     for t in range(n):
         # ---------- 0) maruziyet bayrağı: bar t SIRASINDA pozisyon var mıydı? ----------
@@ -192,39 +220,76 @@ def run_backtest(df: pd.DataFrame, cost: CostModel, *,
         if in_pos:
             exit_px = np.nan
             reason = ""
-            if direction == "long":
-                hit_stop = np.isfinite(stop_px) and low[t] <= stop_px
-                hit_tp = np.isfinite(tp_px) and high[t] >= tp_px
-            else:
-                hit_stop = np.isfinite(stop_px) and high[t] >= stop_px
-                hit_tp = np.isfinite(tp_px) and low[t] <= tp_px
-            timed_out = (t - entry_i) >= exit_cfg.time_stop_bars
-            if hit_stop and hit_tp:
-                # KABUL KRİTERİ 2: aynı barda çakışma -> STOP öncelikli (pesimist)
-                reason, exit_px = "stop", (open_[t] if (direction == "long" and open_[t] < stop_px)
-                                           or (direction == "short" and open_[t] > stop_px)
-                                           else stop_px)
+            long_ = direction == "long"
+            r_unit = abs(entry_px - initial_stop)
+            hit_stop = np.isfinite(cur_stop) and (low[t] <= cur_stop if long_ else high[t] >= cur_stop)
+            hit_tp = (profile in ("P0", "P3")) and np.isfinite(tp_px) \
+                and (high[t] >= tp_px if long_ else low[t] <= tp_px)
+            tp1_px = np.nan
+            hit_partial = False
+            if profile == "P1" and not partial_done and r_unit > 0:
+                tp1_px = (entry_px + exit_cfg.breakeven_trigger_r * r_unit) if long_ \
+                    else (entry_px - exit_cfg.breakeven_trigger_r * r_unit)
+                hit_partial = (high[t] >= tp1_px) if long_ else (low[t] <= tp1_px)
+            timed_out = profile != "P1" and (t - entry_i) >= exit_cfg.time_stop_bars
+            if hit_stop and (hit_tp or hit_partial):
+                # KABUL KRİTERİ 2: aynı barda çakışma -> STOP öncelikli (pesimist).
+                # P1'de partial ÇAKIŞMA barında YAPILMAZ (bar içi yol belirsiz).
+                worse_open = (open_[t] < cur_stop) if long_ else (open_[t] > cur_stop)
+                reason, exit_px = "stop", (open_[t] if worse_open else cur_stop)
             elif hit_stop:
-                gap = (open_[t] < stop_px) if direction == "long" else (open_[t] > stop_px)
-                exit_px = open_[t] if gap else stop_px
-                reason = "stop"
+                gap = (open_[t] < cur_stop) if long_ else (open_[t] > cur_stop)
+                exit_px = open_[t] if gap else cur_stop
+                reason = "chandelier" if last_stop_mover == "chandelier" else "stop"
             elif hit_tp:
-                gap = (open_[t] > tp_px) if direction == "long" else (open_[t] < tp_px)
+                gap = (open_[t] > tp_px) if long_ else (open_[t] < tp_px)
                 exit_px = open_[t] if gap else tp_px
                 reason = "take_profit"
+            elif hit_partial:
+                # P1: 1R'de %50 KISMİ KAPANIŞ. Gap lehimizeyse open'dan (limit fill),
+                # değilse tp1'den. Kalan üniteler runner olarak devam eder; aynı barda
+                # runner için İKİNCİ bir çıkış kontrolü YAPILMAZ (pesimist).
+                better_open = (open_[t] > tp1_px) if long_ else (open_[t] < tp1_px)
+                fill = open_[t] if better_open else tp1_px
+                pu = units_rem * exit_cfg.partial_frac
+                pg = (fill - entry_px) * pu if long_ else (entry_px - fill) * pu
+                c_e_share = abs(entry_px * pu) * one_way_eff
+                c_x = abs(fill * pu) * one_way_eff
+                p_net = pg - c_e_share - c_x
+                equity += p_net                      # realize nakit bu barda işlenir
+                partial_rec = {"bar": int(t), "price": float(fill), "units": float(pu),
+                               "gross": float(pg), "net": float(p_net),
+                               "cost_entry": float(c_e_share), "cost_exit": float(c_x)}
+                units_rem -= pu
+                partial_done = True
+                be_pending = True                    # BE bar SONUNDA yazılır (sonraki bardan geçerli)
             elif timed_out:
                 exit_px = close[t]
                 reason = "time_stop"
             if reason:
-                trades.append(_close_trade(direction, entry_i, entry_px, stop_px, tp_px,
-                                           t, exit_px, reason, units, eq_before, atr_entry,
-                                           one_way, _cost, ts_arr, equity))
+                trades.append(_close_trade(direction, entry_i, entry_px, initial_stop, tp_px,
+                                           t, exit_px, reason, units, units_rem,
+                                           eq_before, atr_entry, one_way_eff, ts_arr,
+                                           partial_rec=partial_rec, profile=profile,
+                                           stop_at_breakeven=bool(be_applied and
+                                                                  abs(cur_stop - entry_px) < 1e-9),
+                                           stop_was_trailed=bool(trail_moved)))
                 equity = trades[-1].equity_after
                 in_pos = False
+                exited_bar = t                       # D6 kilidi: bu barın açılışında yeni giriş YASAK
+            elif profile == "P3" and not be_pending and not be_applied and r_unit > 0:
+                # P3: 1R teması bu barda GÖZLENİR, BE bar sonunda yazılır (sonraki bardan geçerli)
+                touched = (high[t] >= entry_px + exit_cfg.breakeven_trigger_r * r_unit) if long_ \
+                    else (low[t] <= entry_px - exit_cfg.breakeven_trigger_r * r_unit)
+                if touched:
+                    be_pending = True
 
         # ---------- 2) bar t-1'in sinyaline göre bar t AÇILIŞINDA giriş ----------
+        # D6 kilidi (Aşama 6 denetimi): bar t İÇİNDE kapanan pozisyonun ardından
+        # aynı barın AÇILIŞINDA yeni giriş AÇILMAZ (kronolojik olarak imkânsız;
+        # pesimist). Yeni giriş ancak sonraki bir sinyal barıyla mümkün.
         prev = t - 1
-        if (not in_pos) and prev >= 0 and (sig_l[prev] or sig_s[prev]):
+        if (not in_pos) and exited_bar != t and prev >= 0 and (sig_l[prev] or sig_s[prev]):
             want_long = bool(sig_l[prev])
             d = "long" if want_long else "short"
             sp = stop_l[prev] if want_long else stop_s[prev]
@@ -255,24 +320,72 @@ def run_backtest(df: pd.DataFrame, cost: CostModel, *,
                 entry_i = t
                 in_pos = True
                 pos_open[t] = 1
+                # ---- Aşama 7: pozisyon içi durum sıfırla ----
+                cur_stop = float(sp)
+                initial_stop = float(sp)
+                hh = np.nan
+                ll = np.nan
+                units_rem = units
+                partial_done = False
+                partial_rec = None
+                be_pending = False
+                be_applied = False
+                trail_moved = False
+                last_stop_mover = "initial"
 
         # ---------- 3) mark-to-market equity ----------
         if in_pos:
             if direction == "long":
-                unreal = (close[t] - entry_px) * units
+                unreal = (close[t] - entry_px) * units_rem
             else:
-                unreal = (entry_px - close[t]) * units
+                unreal = (entry_px - close[t]) * units_rem
             eq_curve[t] = equity + unreal
         else:
             eq_curve[t] = equity
+
+        # ---------- 4) bar SONU: BE/trailing stop'u bar t+1 için yaz ----------
+        # Nedensellik: güncelleme YALNIZ bar t ve ÖNCESİNİN KAPANMIŞ bilgisiyle
+        # yapılır ve bir SONRAKI barın çıkış kontrolünde geçerli olur (bar içi
+        # sıkılaştırma YOK — bu, look-ahead'i yapısal olarak engeller).
+        if in_pos:
+            long_ = direction == "long"
+            a_t = atr[t] if np.isfinite(atr[t]) and atr[t] > 0 else np.nan
+            if be_pending:
+                moved = (cur_stop < entry_px - 1e-12) if long_ else (cur_stop > entry_px + 1e-12)
+                if moved:
+                    cur_stop = float(entry_px)
+                    last_stop_mover = "breakeven"
+                    trail_moved = True
+                be_applied = True
+                be_pending = False
+            if profile == "P2" or (profile == "P1" and partial_done):
+                if np.isfinite(a_t):
+                    if long_:
+                        hh = high[t] if not np.isfinite(hh) else max(hh, high[t])
+                        cand = hh - exit_cfg.chandelier_atr_mult * a_t
+                        if np.isfinite(cand) and cand > cur_stop + 1e-12:
+                            cur_stop = float(cand)
+                            last_stop_mover = "chandelier"
+                            trail_moved = True
+                    else:
+                        ll = low[t] if not np.isfinite(ll) else min(ll, low[t])
+                        cand = ll + exit_cfg.chandelier_atr_mult * a_t
+                        if np.isfinite(cand) and cand < cur_stop - 1e-12:
+                            cur_stop = float(cand)
+                            last_stop_mover = "chandelier"
+                            trail_moved = True
 
     # ---------- veri sonunda açık pozisyon: zorunlu kapatma (şeffaf) ----------
     warnings: List[str] = []
     if in_pos:
         t = n - 1
-        trades.append(_close_trade(direction, entry_i, entry_px, stop_px, tp_px,
-                                   t, close[t], "end_of_data", units, eq_before, atr_entry,
-                                   one_way, _cost, ts_arr, equity))
+        trades.append(_close_trade(direction, entry_i, entry_px, initial_stop, tp_px,
+                                   t, close[t], "end_of_data", units, units_rem,
+                                   eq_before, atr_entry, one_way_eff, ts_arr,
+                                   partial_rec=partial_rec, profile=profile,
+                                   stop_at_breakeven=bool(be_applied and
+                                                          abs(cur_stop - entry_px) < 1e-9),
+                                   stop_was_trailed=bool(trail_moved)))
         equity = trades[-1].equity_after
         eq_curve[t] = equity
         warnings.append("Backtest sonunda pozisyon AÇIKTI; son barın kapanışından "
@@ -286,6 +399,10 @@ def run_backtest(df: pd.DataFrame, cost: CostModel, *,
                          config={"time_stop_bars": exit_cfg.time_stop_bars,
                                  "take_profit_r": exit_cfg.take_profit_r,
                                  "same_bar_priority": exit_cfg.same_bar_priority,
+                                 "profile": exit_cfg.profile,
+                                 "partial_frac": exit_cfg.partial_frac,
+                                 "breakeven_trigger_r": exit_cfg.breakeven_trigger_r,
+                                 "chandelier_atr_mult": exit_cfg.chandelier_atr_mult,
                                  "risk_per_trade": risk_per_trade,
                                  "max_leverage": max_leverage,
                                  "allow_short": allow_short,
@@ -301,23 +418,35 @@ def run_backtest(df: pd.DataFrame, cost: CostModel, *,
 
 
 def _close_trade(direction: str, entry_i: int, entry_px: float, stop_px: float,
-                 tp_px: float, t: int, exit_px: float, reason: str, units: float,
-                 eq_before: float, atr_entry: float, one_way: float,
-                 cost_fn, ts_arr, equity: float) -> Trade:
-    """Build a Trade record. Costs are applied to BOTH sides."""
-    if direction == "long":
-        gross = (exit_px - entry_px) * units
-    else:
-        gross = (entry_px - exit_px) * units
-    n_entry = abs(entry_px * units)
-    n_exit = abs(exit_px * units)
+                 tp_px: float, t: int, exit_px: float, reason: str,
+                 units_total: float, units_rem: float,
+                 eq_before: float, atr_entry: float, one_way: float, ts_arr, *,
+                 partial_rec=None, profile: str = "P0",
+                 stop_at_breakeven: bool = False,
+                 stop_was_trailed: bool = False) -> Trade:
+    """Build a Trade record. Costs are applied to BOTH sides.
+
+    Aşama 7: pozisyon başına TEK satır. P1 partial'ında `partial_rec` verilmiştir:
+    gross/net/maliyetler partial + runner bacaklarının TOPLAMIDIR; partial detayı
+    `partial_*` alanlarında raporlanır. `eq_after = eq_before + net` (partial nakdi
+    motor tarafında zaten realize edildiği için tutarlı).
+    """
+    long_ = direction == "long"
+    u_part = float(partial_rec["units"]) if partial_rec else 0.0
+    p_px = float(partial_rec["price"]) if partial_rec else np.nan
+    gross = (exit_px - entry_px) * units_rem if long_ else (entry_px - exit_px) * units_rem
+    r_sum = (exit_px - entry_px) * units_rem if long_ else (entry_px - exit_px) * units_rem
+    if partial_rec:
+        gross += float(partial_rec["gross"])
+        r_sum += (p_px - entry_px) * u_part if long_ else (entry_px - p_px) * u_part
+    n_entry = abs(entry_px * units_total)
+    n_exit = abs(exit_px * units_rem) + (abs(p_px * u_part) if partial_rec else 0.0)
     c_entry = n_entry * one_way
     c_exit = n_exit * one_way
     net = gross - c_entry - c_exit
     risk_per_unit = abs(entry_px - stop_px)
-    r_mult = ((exit_px - entry_px) / risk_per_unit) if direction == "long" and risk_per_unit > 0 \
-        else (((entry_px - exit_px) / risk_per_unit) if risk_per_unit > 0 else np.nan)
-    eq_after = equity + net
+    r_mult = (r_sum / (risk_per_unit * units_total)) if risk_per_unit > 0 and units_total > 0 else np.nan
+    eq_after = eq_before + net
     return Trade(
         direction=direction, signal_bar=entry_i - 1,
         signal_timestamp_utc=str(pd.Timestamp(ts_arr[entry_i - 1])) if entry_i - 1 >= 0 else "",
@@ -326,7 +455,7 @@ def _close_trade(direction: str, entry_i: int, entry_px: float, stop_px: float,
         tp_price=float(tp_px) if np.isfinite(tp_px) else np.nan,
         exit_bar=t, exit_timestamp_utc=str(pd.Timestamp(ts_arr[t])),
         exit_price=float(exit_px), exit_reason=reason, bars_held=int(t - entry_i),
-        units=float(units), notional_entry=float(n_entry), notional_exit=float(n_exit),
+        units=float(units_total), notional_entry=float(n_entry), notional_exit=float(n_exit),
         cost_entry=float(c_entry), cost_exit=float(c_exit),
         cost_total=float(c_entry + c_exit), gross_pnl=float(gross), net_pnl=float(net),
         r_multiple=float(r_mult) if np.isfinite(r_mult) else np.nan,
@@ -335,6 +464,15 @@ def _close_trade(direction: str, entry_i: int, entry_px: float, stop_px: float,
         atr_at_entry=float(atr_entry) if np.isfinite(atr_entry) else np.nan,
         stop_distance_atr=float(risk_per_unit / atr_entry)
         if (atr_entry and np.isfinite(atr_entry) and atr_entry > 0) else np.nan,
+        profile=profile,
+        partial_filled=bool(partial_rec),
+        partial_exit_bar=int(partial_rec["bar"]) if partial_rec else -1,
+        partial_exit_price=float(p_px) if partial_rec else float("nan"),
+        partial_units=float(u_part),
+        partial_gross=float(partial_rec["gross"]) if partial_rec else 0.0,
+        partial_net=float(partial_rec["net"]) if partial_rec else 0.0,
+        stop_at_breakeven=bool(stop_at_breakeven),
+        stop_was_trailed=bool(stop_was_trailed),
     )
 
 
