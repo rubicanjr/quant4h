@@ -7,10 +7,16 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **217/217 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10
+**Test durumu:** **223/223 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 6
 
 ---
+
+## TAMAMLANDI: Aşama 11 — Teslimler + model kartı + watch_only runbook (ARAŞTIRMA-KAPALI)
+
+Özet: Üç bağlayıcı belge üretildi ve test ile kilitlendi (`tests/test_deliverables.py`, 6 test): **(1)** `reports/final_verdict.md` — varlık başına hüküm + ÖLÜM NEDENİ ayrımı (BTC/sepet: **EDGE** — VALID expR negatif; GOLD/SILVER/core: **ÖRNEKLEM** — n<min, edge hükmü verilemez) + protokol günlüğü (split sha `9e1cf2fe…`, seçim dondurma sha `d7282b30…`, **look=1**, TEST yalnız GOLD/SILVER, 12 hücre yalnız TRAIN'de, eşikler `go_no_go` yaml'ı) + MC/duyarlılık kaydı + caveat'ler. **(2)** `models/model_card.md` — sistem NEDİR (katman tablosu) / NE DEĞİLDİR (canlı emir yok · tavsiye yok · **kanıtlanmış edge DEĞİL** · ML değil · tune edilmedi) · watch_only'nin bağlayıcı tanımı · **ml_policy_gate KAPALI** kaydı (gate koşulu "çekirdek OOS'ta GEÇERSE" sağlanmadı; Aşama 10 ancak look'larda GEÇTİ + kullanıcı yetkisiyle açılabilir). **(3)** `ops_runbook.md` — AYLIK sinyal izleme raporu (mevcut script zinciri; **trade/P&L/pozisyon YASAK**, şablon §A1) + ÇEYREKLİK ÖN-KAYITLI yeniden değerlendirme protokolü v1 (**maks 4 look/yıl**, erken look yasak, her look'ta YENİ split ön-kaydı v2/v3… + seçim dosyası arşivi, aynı kilitli eşikler/kümeler/fill kuralları — değişiklik yasağı, TEST look başına 1 kez) + **LOOK LOG'u** (1. kayıt: 2026-09-17, GEÇTİ=0; 2. look ≥2026-12-17) + **protokol ihlali tanımı ve yaptırımı** (ön-kayıtsız look → sayılar HÜKÜMSÜZ + damga + DÜZELTME bloğu) + veri hijyeni (drift BİLGİDİR, frozen'a dokunulmaz) + yeni hipotezler **YENİ PROJE** olarak aynı kapı pipeline'ına girer. **(4)** README §1 kapanış durumuna güncellendi + "Bu repo neyi KANITLADI/KANITLAMADI" bölümü eklendi (yöntem kanıtlandı · edge kanıtlanmadı).
+
+**PROJE STATÜSÜ: ARAŞTIRMA-KAPALI · watch_only.** Sıradaki meşru işler YALNIZ: runbook §A aylık izleme, §B ön-kayıtlı çeyreklik look (2026 hakkı: 3/4 kaldı), §F yeni proje. Aşama 10 (ML) gate KAPALI. Yeniden seçim/tune/"bir bakış daha" YASAK (çoklu-test disiplini, kullanıcı onayı 2026-09-17). Testler: 217 → **223/223**.
 
 ## TAMAMLANDI: Aşama 9 — Walk-forward OOS + TEK seçim noktası + go/no-go (MAHKEME; protokol kilitli uygulandı)
 
@@ -405,7 +411,8 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 - [x] ~~**AŞAMA 8 — Risk modülü**~~ ✅ (2026-09-17 — `risk/limits.py` + `risk/simulator.py` + `scripts/run_risk_report.py` → `reports/stage8_risk.md|json`; tavanlar yalnız girişte; tavansız koşu Aşama 7 P0×A0 ile birebir; bkz. TAMAMLANDI bloğu)
 - [x] ~~**AŞAMA 9 — Robustluk + TEK seçim noktası + go/no-go**~~ ✅ (2026-09-17 — `scripts/run_stage9.py` iki fazlı, seçim `configs/selected_cells.yaml`'a hash'le donduruldu; HÜKÜM: **GEÇTİ=0**, BTC/basket KALDI (VALID sağduyu), GOLD/SILVER/core-agregat ZAYIF (örneklem); hepsi `watch_only`; bkz. TAMAMLANDI bloğu + `reports/stage9_oos_verdict.md`)
 - [ ] **AŞAMA 10 — Opsiyonel ML ikinci onay** ← **YETKİ BEKLİYOR** (`ml_policy.gate`: kural tabanlı çekirdek OOS'ta GEÇMEDİ → gate KAPALI; yetki verilirse kapsam yine de HistGradientBoosting + purged K-fold + embargo olarak hazırlanabilir, ama DEVREYE ALINAMAZ)
-- [ ] **AŞAMA 11 — Çıktılar** ← **YETKİ BEKLİYOR** (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları; Aşama 9 hükmüyle tutarlı "watch_only" kartı)
+- [x] ~~**AŞAMA 11 — Çıktılar**~~ ✅ (2026-09-17 — `reports/final_verdict.md` + `models/model_card.md` + `ops_runbook.md` + README kapanış bölümü; `test_deliverables.py` 6 testle kilitledi)
+- **ARAŞTIRMA-KAPALI (2026-09-17):** Bu repoda sıradaki MEŞRU iş: `ops_runbook.md` §A aylık izleme (trade YOK), §B çeyreklik ÖN-KAYITLI look (2026: 3/4 hak kaldı; en erken ≥2026-12-17), §F yeni hipotez → YENİ PROJE. Aşama 10 (ML) gate KAPALI. Yeniden seçim/tune/ekstra look YASAK.
 
 ### Aşama 1.5'ten bağımsız, bilinen teknik borç
 
@@ -441,7 +448,7 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 | 8 | Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon, ısı) | ✅ **TAMAM** (2026-09-17) — portföy simülatörü + tavanlar; regresyon kilidi OK; 207/207 |
 | 9 | Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) | ✅ **TAMAM** (2026-09-17) — protokol kilitli; **GEÇTİ=0, tümü watch_only**; TEST 1 kez; `reports/stage9_oos_verdict.md` |
 | 10 | Opsiyonel ML ikinci onay (HistGradientBoosting + purged/embargo) | ⬜ **YETKİ BEKLİYOR** — NOT: `ml_policy.gate` = "yalnız kural tabanlı çekirdek OOS'ta GEÇERSE"; Aşama 9'da GEÇTİ=0 → gate şu an KAPALI |
-| 11 | Çıktılar (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları) | ⬜ **YETKİ BEKLİYOR** |
+| 11 | Çıktılar (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları) | ✅ **TAMAM** (2026-09-17) — `reports/final_verdict.md` + `models/model_card.md` + `ops_runbook.md` + README kapanışı · **ARAŞTIRMA-KAPALI / watch_only** · 223/223 |
 
 ## İPTAL EDİLEN / YASAKLANAN KAPSAM (kullanıcı kararı)
 

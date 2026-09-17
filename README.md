@@ -17,10 +17,15 @@ sinyal üretim** sistemi.
 
 | | |
 |---|---|
-| Aşama | **1 ✅ · 1.5 ✅ · 2 ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ TAMAM** |
-| Testler | **167/167 PASS** (+ `backtest` 26) |
+| Proje statüsü | **ARAŞTIRMA-KAPALI · watch_only** (Aşama 11 kapanışı, 2026-09-17) |
+| Aşama | **0–9 ✅ · 11 ✅ TAMAM** · 10 (ML) `ml_policy.gate` KAPALI (Aşama 9: GEÇTİ=0) |
+| Testler | **223/223 PASS** |
+| Aşama 9 OOS hükmü | **GEÇTİ = 0** → BTC **KALDI** (VALID expR −0.32; TEST koşulmadı) · GOLD/SILVER **ZAYIF (örneklem)** · BIST30 sepet **KALDI** (VALID −0.06) · hepsi `watch_only` |
+| Nihai kayıt | `reports/final_verdict.md` (hüküm + protokol günlüğü + look=1) |
+| Model kartı | `models/model_card.md` (NEDİR / NE DEĞİLDİR / watch_only tanımı / ML gate KAPALI) |
+| Operasyon | `ops_runbook.md` (aylık sinyal izleme — trade YOK · çeyreklik ÖN-KAYITLI yeniden değerlendirme, maks 4 look/yıl · look log'u) |
 | Çekirdek portföy | BTC · GOLD · SILVER (hepsi **AMBER**, `usable_for_modelling=True`) |
-| BIST30 hisse sepeti | **28 hisse** (ünivers 30; DSTKF ve TRALT elendi) · ~2.158 4H bar/hisse |
+| BIST30 hisse sepeti | **28 hisse** (ünivers 30; DSTKF ve TRALT elendi) · 1.436 4H bar/hisse (v1.1, ince bar yok) |
 | Bağlam filtresi | `XU030.IS` — trade varlığı DEĞİL, long'lar için filtre |
 | Rejim motoru | **6 durum**: `trend_up/trend_down/range` × `vol_high/vol_normal/vol_low` · fail-closed |
 | XU030 filtresi | BIST30 hisseleri **LONG-ONLY**; yeni long yalnızca XU030 4H kapanış > EMA200 iken |
@@ -31,10 +36,16 @@ sinyal üretim** sistemi.
 | Giriş tetiği | Donchian(20) kırılımı: `close > max(high[t-20..t-1])` — yeni indikatör YOK |
 | İcra | sinyal bar **t kapanışı** → giriş bar **t+1 açılışı** (`execution_price = open[t+1]`) |
 | Cooldown | 3 bar (12 saat); off-by-one sözleşmesi `s → s+4`, ölçülen `min_gap = 4` |
-| Çıkış motoru | dondurulmuş stop + time-stop 90 bar + TP 3R · aynı bar çakışması → **STOP** (pesimist) |
-| Baseline sonuç | **hiçbir varlık buy&hold'u geçemedi**; BTC expR +0,21 (CI95 +0,006…+0,422), SILVER CI 0'ı içeriyor → ayırt edilemez |
-| Sıradaki iş | **AŞAMA 7 — esnek kâr alma** (partial+runner, trailing, breakeven) |
-| Aşama 7 yetkisi | **BEKLİYOR** — kullanıcı "geç" demeden başlanmaz |
+| Çıkış motoru | P0: dondurulmuş stop + time-stop 90 bar + TP 3R · aynı bar çakışması → **STOP** (pesimist) · P1–P3 karşılaştırıldı, SEÇİLMEDİ |
+| Risk katmanı | eşit-risk %0.5 + tavanlar (toplam 6 · BTC 2 · GOLD/SILVER 1 · sepet 3 · metals tek kova · banka 2 · günlük %2/haftalık %5 · 4-kayıp freni) — tavanlar yalnız girişte |
+| Baseline sonuç (in-sample) | **hiçbir varlık buy&hold'u geçemedi**; tavanlar maxDD −%17.7→−%7.8 indirdi |
+| Sıradaki iş | YOK (araştırma-kapalı) — tek yol `ops_runbook.md` §B ön-kayıtlı çeyreklik look veya YENİ PROJE |
+
+### Bu repo neyi KANITLADI / KANITLAMADI
+
+**Kanıtlandı (yöntem):** ön-kayıt → inşa → OOS hüküm kapısı uçtan uca ÇALIŞIYOR: frozen sha256 kilitleri, look-ahead silme testleri, pesimist fill sözleşmesi, H35, tune yasakları (küme dışı ValueError), seçim dondurma + TEST RED kilidi, tek-look disiplini, 223 regresyon testi, tam denetim izi (H1–H45 + D1–D8). İn-sample'da ölçülen hiçbir sonuç OOS'a taşınmadı ve sistem bunu **dürüstçe KALDI/ZAYIF diye raporladı** — pipeline'ın overfit'e karşı direnci bizzat kendi çıktısıyla doğrulandı.
+
+**Kanıtlanmadı (edge):** bu kural seti, bu varlıklarda, bu dönemde (2024–2026 tek yönlü boğa; TEST 159 gün; metaller 2.4 yıl) ölçülebilir bir edge ÜRETMEDİ. BTC ve sepet için OOS beklenen değer negatif; metaller için örneklem hüküm vermeye yetmiyor. **Sistem para kazanıyor DENEMEZ; kaybediyor da DENEMEZ** (GOLD/SILVER) veya **ölçülen dönemde edge gösteremedi** (BTC/sepet). Devamı yalnız runbook'taki ön-kayıtlı look'larla mümkün.
 
 Ayrıntı ve tüm kayıtlı teşhisler için → **[`PROGRESS.md`](PROGRESS.md)**
 Onaylanmış kullanıcı kararları için → **[`configs/user_decisions.yaml`](configs/user_decisions.yaml)**
