@@ -7,10 +7,31 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **207/207 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15
+**Test durumu:** **217/217 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10
 
 ---
+
+## TAMAMLANDI: Aşama 9 — Walk-forward OOS + TEK seçim noktası + go/no-go (MAHKEME; protokol kilitli uygulandı)
+
+Özet: `scripts/run_stage9.py` İKİ fazlı: `--phase select` (yalnız TRAIN; 12 kilitli hücre {P0..P3}×{A0..A2}; argmax TRAIN expR; n<50 → SEÇİM YOK, a-priori `P0xA0`) → seçim `configs/selected_cells.yaml`'a **frozen sha256 ile DONDURULARAK** yazılır; `--phase verdict` dosya yoksa/hash bozuksa/policy uyuşmazsa TEST'i **REDDER** (exit 2, test ile kilitli). VALID sağduyu: expR<0 veya CI üstü<0 → **KALDI, TEST KOŞULMAZ**. OOS havuzu = VALID+TEST; eşikler `go_no_go` (n≥100 core/150 basket · expR>0 · CI altı>0 · PF≥1.2 · maxDD≤%25). Pencereler ön-kayıtlı `used` blokları (purge 30 + embargo 12 düşülmüş); trade atfı GİRİŞ zamanına; gap'e düşen girişler dışlandı (BTC 2 · GOLD 2 · SILVER 2 · basket 14). Rapor: `reports/stage9_oos_verdict.md|json`.
+
+### Aşama 9 HÜKÜM TABLOSU (TEST 1 KEZ koşuldu; seçim hiç dokunmadı)
+
+| varlık | hücre | seçim | TRAIN | VALID | TEST | OOS | **HÜKÜM** | mod |
+|---|---|---|---|---|---|---|---|---|
+| BTC | `P2xA2` | **YAPILDI** (n=175, expR +0.2913) | +0.2913 | n=7, **−0.3207** ❌ | **KOŞULMADI** | — | **KALDI** | watch_only |
+| GOLD | `P0xA0` | YOK (TRAIN n=12 <50 → ZAYIF) | +0.4334 | n=6, +1.3579 ✅ | n=10, +0.3430 | n=16 <100 | **ZAYIF (örneklem)** | watch_only |
+| SILVER | `P0xA0` | YOK (TRAIN n=13 <50) | — | n=8, +0.9021 ✅ | n=11, −0.2790 | n=19 <100 | **ZAYIF (örneklem)** | watch_only |
+| BIST30 sepet | `P0xA0` | YOK (TRAIN n=0 — 500 bar rejim ısınması, BIST grid'inde ≈250 iş günü, TRAIN penceresinin TAMAMI) | — | n=74, **−0.0569** ❌ | **KOŞULMADI** | — | **KALDI** | watch_only |
+| CORE agregat | (üye hücreleri) | — | — | — | — | n=42 <100 | **ZAYIF (örneklem)** | watch_only |
+| PORTFÖY-sepet | — | — | — | — | — | n=74 <150 + üye KALDI | **KALDI** | watch_only |
+
+**SONUÇ: GEÇTİ = 0 → paper/observe adayı YOK; tüm varlıklar `watch_only` (edge hükmü verilmedi).** Bu hüküm Aşama 1c/6/7'nin tüm uyarılarıyla tutarlıdır: TEST pencereleri kısa (BTC 159 gün), dönem tek yönlü, örneklem yetersiz. Monte Carlo (OOS dizileri, B=1000, seed 42): P(maxDD>%25)=0.00, P(ruin<%50)=0.00 — küçük örneklemde bu bir GÜVENLİK KANITI DEĞİLDİR, dağılım bilgisidir. Duyarlılık: BTC seçili `P2xA2` (+0.2913) − en iyi komşu `P3xA2` (+0.2739) = +0.0174 → **overfit sivrilik bayrağı YOK** (gradyan yumuşak). MC/ruin tanımları raporda belgeli.
+
+Dürüst notlar: (1) verdict fazı, portföy-sepet SATIR etiketi düzeltmesi için 1 kez yeniden üretildi — TEST sayıları deterministik ve birebir aynıdır (TEST'e ikinci şans VERİLMEDİ; BTC/basket TEST'i hiç koşulmadı). (2) KALDI üyeler (BTC, basket) core/basket agregatlarına YALNIZ VALID trade'leriyle dahil; gerekçeye işlendi. (3) **Onaylı senkron:** `max_open_positions` balanced 3→6 (`user_decisions.yaml` active+preset VE `config.py` — Aşama 8 direktifi). (4) Tek fold; çok katlı walk-fold ve daha uzun metaller geçmişi (2.4 yıl limiti) güç artırmadan sonuç değişmez — veri genişletme (ücretli/kurumsal kaynak) ancak kullanıcı kararıyla.
+
+Testler: 207 → **217/217** (+10 `test_stage9.py`: pencere sırası/boşluklar, atama ayrıklığı, seçim argmax+min50+tie-break, sağduyu kuralları, go/no-go eşikleri, MC determinizmi, komşu/overfit, **dondurma RED kilidi**, teslimat artefakt hash tutarlılığı, yaml-config senkronu). Sırada: Aşama 10 (opsiyonel ML — GEÇTİ=0 olduğu için `ml_policy.gate` gereği DEVREYE GİREMEZ) ve Aşama 11 (çıktılar/model kartı) — İKİSİ DE YETKİ BEKLİYOR.
 
 ## TAMAMLANDI: Aşama 8 — Risk modülü + portföy simülatörü (tavanlı vs tavansız, IN-SAMPLE)
 
@@ -382,15 +403,9 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
       `stop_valid_long/short`, `non_tradable`, `return_valid`.
 
 - [x] ~~**AŞAMA 8 — Risk modülü**~~ ✅ (2026-09-17 — `risk/limits.py` + `risk/simulator.py` + `scripts/run_risk_report.py` → `reports/stage8_risk.md|json`; tavanlar yalnız girişte; tavansız koşu Aşama 7 P0×A0 ile birebir; bkz. TAMAMLANDI bloğu)
-- [ ] **AŞAMA 9 — Robustluk + TEK seçim noktası** ← **YETKİ BEKLİYOR**
-      Kapsam: walk-forward (ön-kayıtlı split'ler v1.1: BTC 18.044/716/958 ·
-      GOLD-SILVER 1.733/716/958 · basket 437/395/436), parametre duyarlılığı
-      (kilitli aday kümeleri: TS {60,90,120} × TP {2R,3R,4R} × buffer {0.5,1.0,1.5}
-      × profil {P0..P3} × anchor {A0..A2}), Monte Carlo; SEÇİM YALNIZ CORE
-      (BTC/GOLD/SILVER), hisseler yalnız OOS raporlanır; go/no-go eşikleri
-      (`user_decisions.yaml → go_no_go`) burada uygulanır; TEST seti YALNIZ 1 KEZ.
-      Hazır girdi: `reports/stage7_exit_grid.json` (mimari grid), `reports/stage8_risk.json`
-      (risk katmanı), `engine.py` + `simulator.py` (P0 dışı profiller de motor seviyesinde hazır).
+- [x] ~~**AŞAMA 9 — Robustluk + TEK seçim noktası + go/no-go**~~ ✅ (2026-09-17 — `scripts/run_stage9.py` iki fazlı, seçim `configs/selected_cells.yaml`'a hash'le donduruldu; HÜKÜM: **GEÇTİ=0**, BTC/basket KALDI (VALID sağduyu), GOLD/SILVER/core-agregat ZAYIF (örneklem); hepsi `watch_only`; bkz. TAMAMLANDI bloğu + `reports/stage9_oos_verdict.md`)
+- [ ] **AŞAMA 10 — Opsiyonel ML ikinci onay** ← **YETKİ BEKLİYOR** (`ml_policy.gate`: kural tabanlı çekirdek OOS'ta GEÇMEDİ → gate KAPALI; yetki verilirse kapsam yine de HistGradientBoosting + purged K-fold + embargo olarak hazırlanabilir, ama DEVREYE ALINAMAZ)
+- [ ] **AŞAMA 11 — Çıktılar** ← **YETKİ BEKLİYOR** (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları; Aşama 9 hükmüyle tutarlı "watch_only" kartı)
 
 ### Aşama 1.5'ten bağımsız, bilinen teknik borç
 
@@ -424,9 +439,9 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 | 6d | Aşama 6 denetimi (şartname + go/no-go + sapma listesi + basket attrs) | ✅ **TAMAM** — 173/173, D1–D8 bulguları onay bekliyor |
 | 7 | Stop / esnek kâr alma (partial+runner, trailing, breakeven, time-stop) | ✅ **TAMAM** (2026-09-17) — grid 4 profil × 3 anchor × 4 varlık, IN-SAMPLE, **SEÇİM YOK** (Aşama 9); P0×A0 regresyon kilidi OK; D6 çözüldü; 192/192 |
 | 8 | Risk modülü (pozisyon boyutu, günlük/haftalık limit, korelasyon, ısı) | ✅ **TAMAM** (2026-09-17) — portföy simülatörü + tavanlar; regresyon kilidi OK; 207/207 |
-| 9 | Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) | ⬜ **YETKİ BEKLİYOR** |
-| 10 | Opsiyonel ML ikinci onay (HistGradientBoosting + purged/embargo) | ⬜ |
-| 11 | Çıktılar (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları) | ⬜ |
+| 9 | Robustluk (walk-forward, parametre duyarlılığı, Monte Carlo) | ✅ **TAMAM** (2026-09-17) — protokol kilitli; **GEÇTİ=0, tümü watch_only**; TEST 1 kez; `reports/stage9_oos_verdict.md` |
+| 10 | Opsiyonel ML ikinci onay (HistGradientBoosting + purged/embargo) | ⬜ **YETKİ BEKLİYOR** — NOT: `ml_policy.gate` = "yalnız kural tabanlı çekirdek OOS'ta GEÇERSE"; Aşama 9'da GEÇTİ=0 → gate şu an KAPALI |
+| 11 | Çıktılar (raporlar, model kartı, kullanım kılavuzu, güvenlik kuralları) | ⬜ **YETKİ BEKLİYOR** |
 
 ## İPTAL EDİLEN / YASAKLANAN KAPSAM (kullanıcı kararı)
 

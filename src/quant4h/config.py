@@ -119,7 +119,10 @@ RISK_PROFILES: Dict[str, RiskProfile] = {
     ),
     "balanced": RiskProfile(
         name="balanced", risk_per_trade=0.005, max_daily_loss=0.02,
-        max_weekly_loss=0.05, max_open_positions=3, max_correlation=0.70,
+        # max_open_positions 3→6: Aşama 8 direktifi (2026-09-17) — user_decisions.yaml
+        # senkronu; varlık-bazlı tavanlar risk/limits.py RiskLimits'te (BTC 2, GOLD 1,
+        # SILVER 1, sepet 3, toplam 6).
+        max_weekly_loss=0.05, max_open_positions=6, max_correlation=0.70,
         max_leverage=2.0, max_portfolio_heat=0.015, max_consecutive_losses=4,
         loss_streak_risk_multiplier=0.5, model_threshold=0.58,
         min_signal_score=0.60, max_gross_exposure=1.00, max_exposure_per_asset=0.40,

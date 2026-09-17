@@ -1,0 +1,295 @@
+stage: 9
+phase: select
+policy_version: '1.1'
+generated_at_utc: '2026-09-17T11:59:55.336566+00:00'
+selection_rule: argmax TRAIN expR; 12 kilitli hücre {P0..P3}×{A0..A2}; TRAIN n < 50
+  -> seçim YOK, a-priori P0xA0
+min_train_trades_for_selection: 50
+risk_profile:
+  name: balanced
+  risk_per_trade: 0.005
+assets:
+  BTC:
+    selected_cell: P2xA2
+    selection_made: true
+    default_used: false
+    selection_note: argmax TRAIN expR = +0.2913 (P2xA2)
+    train_n_trades: 175
+    train_expR: 0.2913
+    train_grid:
+      P0xA0:
+        n_trades: 172
+        expectancy_r: 0.1934
+        profit_factor_net: 1.2774
+      P0xA1:
+        n_trades: 174
+        expectancy_r: 0.1759
+        profit_factor_net: 1.2313
+      P0xA2:
+        n_trades: 175
+        expectancy_r: 0.2194
+        profit_factor_net: 1.2853
+      P1xA0:
+        n_trades: 143
+        expectancy_r: 0.1586
+        profit_factor_net: 1.2301
+      P1xA1:
+        n_trades: 146
+        expectancy_r: 0.1267
+        profit_factor_net: 1.1533
+      P1xA2:
+        n_trades: 148
+        expectancy_r: 0.2212
+        profit_factor_net: 1.3447
+      P2xA0:
+        n_trades: 172
+        expectancy_r: 0.2509
+        profit_factor_net: 1.9088
+      P2xA1:
+        n_trades: 174
+        expectancy_r: 0.254
+        profit_factor_net: 1.8694
+      P2xA2:
+        n_trades: 175
+        expectancy_r: 0.2913
+        profit_factor_net: 1.9216
+      P3xA0:
+        n_trades: 172
+        expectancy_r: 0.2268
+        profit_factor_net: 1.4113
+      P3xA1:
+        n_trades: 174
+        expectancy_r: 0.2263
+        profit_factor_net: 1.3925
+      P3xA2:
+        n_trades: 175
+        expectancy_r: 0.2739
+        profit_factor_net: 1.4744
+    frozen_file: data/frozen/btc_4h_frozen.parquet
+    frozen_sha256: aab99f83c7572d84e016cd33b355cd2ad672d1ba7a8cb39e56180197cff41b12
+    windows:
+      train:
+        first_utc: '2017-08-17 04:00:00+00:00'
+        last_utc: '2025-11-13 08:00:00+00:00'
+        n_used: 18045
+      valid:
+        first_utc: '2025-11-27 12:00:00+00:00'
+        last_utc: '2026-03-26 16:00:00+00:00'
+        n_used: 716
+      test:
+        first_utc: '2026-04-09 20:00:00+00:00'
+        last_utc: '2026-09-16 08:00:00+00:00'
+        n_used: 958
+  GOLD:
+    selected_cell: P0xA0
+    selection_made: false
+    default_used: true
+    selection_note: 'SEÇİM YOK: hiçbir hücrede TRAIN trade >= 50 değil (ZAYIF)'
+    train_n_trades: 12
+    train_expR: 0.4334
+    train_grid:
+      P0xA0:
+        n_trades: 12
+        expectancy_r: 0.4334
+        profit_factor_net: 2.43
+      P0xA1:
+        n_trades: 13
+        expectancy_r: 0.3052
+        profit_factor_net: 1.5374
+      P0xA2:
+        n_trades: 13
+        expectancy_r: 0.3206
+        profit_factor_net: 1.6893
+      P1xA0:
+        n_trades: 8
+        expectancy_r: 0.5
+        profit_factor_net: 2.7038
+      P1xA1:
+        n_trades: 11
+        expectancy_r: 0.1339
+        profit_factor_net: 1.1494
+      P1xA2:
+        n_trades: 12
+        expectancy_r: 0.2471
+        profit_factor_net: 1.5227
+      P2xA0:
+        n_trades: 12
+        expectancy_r: 0.2692
+        profit_factor_net: 3.2293
+      P2xA1:
+        n_trades: 13
+        expectancy_r: 0.2048
+        profit_factor_net: 1.9256
+      P2xA2:
+        n_trades: 13
+        expectancy_r: 0.2261
+        profit_factor_net: 2.0438
+      P3xA0:
+        n_trades: 12
+        expectancy_r: 0.4762
+        profit_factor_net: 3.3035
+      P3xA1:
+        n_trades: 13
+        expectancy_r: 0.3821
+        profit_factor_net: 1.8707
+      P3xA2:
+        n_trades: 13
+        expectancy_r: 0.3561
+        profit_factor_net: 1.9851
+    frozen_file: data/frozen/gold_4h_frozen.parquet
+    frozen_sha256: f7d53a8ead743a7b15157f09ad6dc9d50694e283f9e6ea95ba617c7b289efecc
+    windows:
+      train:
+        first_utc: '2024-04-24 02:00:00+00:00'
+        last_utc: '2025-06-19 14:00:00+00:00'
+        n_used: 1733
+      valid:
+        first_utc: '2025-07-10 18:00:00+00:00'
+        last_utc: '2026-01-02 15:00:00+00:00'
+        n_used: 716
+      test:
+        first_utc: '2026-01-26 03:00:00+00:00'
+        last_utc: '2026-09-16 06:00:00+00:00'
+        n_used: 958
+  SILVER:
+    selected_cell: P0xA0
+    selection_made: false
+    default_used: true
+    selection_note: 'SEÇİM YOK: hiçbir hücrede TRAIN trade >= 50 değil (ZAYIF)'
+    train_n_trades: 13
+    train_expR: -0.3529
+    train_grid:
+      P0xA0:
+        n_trades: 13
+        expectancy_r: -0.3529
+        profit_factor_net: 0.3635
+      P0xA1:
+        n_trades: 13
+        expectancy_r: -0.3914
+        profit_factor_net: 0.3604
+      P0xA2:
+        n_trades: 13
+        expectancy_r: -0.3732
+        profit_factor_net: 0.3688
+      P1xA0:
+        n_trades: 11
+        expectancy_r: -0.2725
+        profit_factor_net: 0.5257
+      P1xA1:
+        n_trades: 11
+        expectancy_r: -0.2377
+        profit_factor_net: 0.575
+      P1xA2:
+        n_trades: 12
+        expectancy_r: -0.1951
+        profit_factor_net: 0.6011
+      P2xA0:
+        n_trades: 13
+        expectancy_r: -0.172
+        profit_factor_net: 0.3201
+      P2xA1:
+        n_trades: 13
+        expectancy_r: -0.1717
+        profit_factor_net: 0.3716
+      P2xA2:
+        n_trades: 13
+        expectancy_r: -0.1928
+        profit_factor_net: 0.3203
+      P3xA0:
+        n_trades: 13
+        expectancy_r: -0.3007
+        profit_factor_net: 0.3971
+      P3xA1:
+        n_trades: 13
+        expectancy_r: -0.3145
+        profit_factor_net: 0.4065
+      P3xA2:
+        n_trades: 13
+        expectancy_r: -0.2815
+        profit_factor_net: 0.3844
+    frozen_file: data/frozen/silver_4h_frozen.parquet
+    frozen_sha256: 1df18551a0d2bb0ef5b745d0b6e5a5cd493c53c98ad3239130acadc300541fbd
+    windows:
+      train:
+        first_utc: '2024-04-24 02:00:00+00:00'
+        last_utc: '2025-06-19 14:00:00+00:00'
+        n_used: 1733
+      valid:
+        first_utc: '2025-07-10 18:00:00+00:00'
+        last_utc: '2026-01-02 15:00:00+00:00'
+        n_used: 716
+      test:
+        first_utc: '2026-01-26 03:00:00+00:00'
+        last_utc: '2026-09-16 06:00:00+00:00'
+        n_used: 958
+  BIST30_BASKET:
+    selected_cell: P0xA0
+    selection_made: false
+    default_used: true
+    selection_note: 'SEÇİM YOK: hiçbir hücrede TRAIN trade >= 50 değil (ZAYIF)'
+    train_n_trades: 0
+    train_expR: null
+    train_grid:
+      P0xA0:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P0xA1:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P0xA2:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P1xA0:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P1xA1:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P1xA2:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P2xA0:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P2xA1:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P2xA2:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P3xA0:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P3xA1:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+      P3xA2:
+        n_trades: 0
+        expectancy_r: null
+        profit_factor_net: null
+    frozen_file: data/frozen/bist30_basket_4h_frozen.parquet
+    frozen_sha256: 218de18b6158581ff5895040ed95f67e8babbc97fe76ecc34c545e6ad5f4c521
+    windows:
+      train:
+        first_utc: '2023-10-27 07:00:00+00:00'
+        last_utc: '2024-09-13 07:00:00+00:00'
+        n_used: 437
+      valid:
+        first_utc: '2024-11-14 07:00:00+00:00'
+        last_utc: '2025-08-29 11:00:00+00:00'
+        n_used: 395
+      test:
+        first_utc: '2025-10-30 11:00:00+00:00'
+        last_utc: '2026-09-16 07:00:00+00:00'
+        n_used: 436

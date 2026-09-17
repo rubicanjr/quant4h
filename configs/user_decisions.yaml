@@ -211,7 +211,10 @@ risk:
     risk_per_trade: 0.005          # %0.5
     max_daily_loss: 0.02
     max_weekly_loss: 0.05
-    max_open_positions: 3
+    max_open_positions: 6        # SENKRON 2026-09-17 (Aşama 8 direktifi, kullanıcı onayı):
+                                 # portföy TOPLAM eşzamanlı tavanı 6; varlık-bazlı tavanlar
+                                 # (BTC 2 · GOLD 1 · SILVER 1 · sepet 3) risk/limits.py'de.
+                                 # Eski değer 3 (Stage 0) — Aşama 8'de supersede edilmişti.
     max_correlation: 0.70          # << GOLD|SILVER = 0.768 BU LİMİTİ AŞIYOR
     max_leverage: 2.0
     max_portfolio_heat: 0.015
@@ -223,7 +226,7 @@ risk:
     max_exposure_per_asset: 0.40
   presets:
     conservative: {risk_per_trade: 0.0025, max_daily_loss: 0.01,  max_weekly_loss: 0.025, max_open_positions: 2, max_correlation: 0.55, max_leverage: 1.0, model_threshold: 0.62}
-    balanced:     {risk_per_trade: 0.005,  max_daily_loss: 0.02,  max_weekly_loss: 0.05,  max_open_positions: 3, max_correlation: 0.70, max_leverage: 2.0, model_threshold: 0.58}
+    balanced:     {risk_per_trade: 0.005,  max_daily_loss: 0.02,  max_weekly_loss: 0.05,  max_open_positions: 6, max_correlation: 0.70, max_leverage: 2.0, model_threshold: 0.58}   # max_open_positions 3→6: Aşama 8 direktifi senkronu (2026-09-17)
     aggressive:   {risk_per_trade: 0.01,   max_daily_loss: 0.035, max_weekly_loss: 0.08,  max_open_positions: 4, max_correlation: 0.80, max_leverage: 3.0, model_threshold: 0.55}
   correlation_buckets:
     # ONAY: 2026-09-16 — kullanıcı öneriyi kabul etti.

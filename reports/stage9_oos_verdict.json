@@ -1,0 +1,355 @@
+{
+  "generated_at_utc": "2026-09-17T12:04:38.485979+00:00",
+  "stage": 9,
+  "protocol": "kilitli (direktif 2026-09-17): se\u00e7im TRAIN'de TEK nokta; VALID sa\u011fduyu; TEST saf rapor 1 KEZ; OOS havuzu = VALID+TEST",
+  "policy_version": "1.1",
+  "selected_cells_file": "configs/selected_cells.yaml",
+  "thresholds": {
+    "min_trades_core": 100,
+    "min_trades_basket": 150,
+    "pf_min": 1.2,
+    "dd_max": 0.25,
+    "ci_lower_gt": 0.0,
+    "expR_gt": 0.0
+  },
+  "assets": {
+    "BTC": {
+      "selected_cell": "P2xA2",
+      "selection_made": true,
+      "default_used": false,
+      "train_n_trades": 175,
+      "train_expR": 0.2913,
+      "valid": {
+        "n_trades": 7,
+        "expectancy_r": -0.3207,
+        "expR_ci95": [
+          -0.4628,
+          -0.1729
+        ],
+        "prob_expR_positive": 0.0,
+        "profit_factor_net": 0.0,
+        "win_rate": 0.0,
+        "max_dd_path_frac": -0.013148,
+        "net_pnl_total": -1401.47
+      },
+      "valid_sanity_ok": false,
+      "valid_sanity_note": "VALID expR -0.3207 < 0 -> KALDI (TEST ko\u015fulmaz)",
+      "gap_excluded_trades": 2,
+      "test": null,
+      "test_note": "KO\u015eULMADI (protokol md.3: TEST ikinci \u015fans de\u011fil)",
+      "oos_pool": null,
+      "verdict": "KALDI",
+      "mode": "watch_only",
+      "verdict_reasons": [
+        "VALID expR -0.3207 < 0 -> KALDI (TEST ko\u015fulmaz)"
+      ],
+      "sensitivity": {
+        "cell": "P2xA2",
+        "neighbors_train": {
+          "P1xA2": {
+            "n_trades": 148,
+            "expectancy_r": 0.2212,
+            "profit_factor_net": 1.3447
+          },
+          "P3xA2": {
+            "n_trades": 175,
+            "expectancy_r": 0.2739,
+            "profit_factor_net": 1.4744
+          },
+          "P2xA1": {
+            "n_trades": 174,
+            "expectancy_r": 0.254,
+            "profit_factor_net": 1.8694
+          }
+        },
+        "overfit_flag": false,
+        "note": "se\u00e7ili +0.2913 \u2212 en iyi kom\u015fu +0.2739 = +0.0174"
+      }
+    },
+    "GOLD": {
+      "selected_cell": "P0xA0",
+      "selection_made": false,
+      "default_used": true,
+      "train_n_trades": 12,
+      "train_expR": 0.4334,
+      "valid": {
+        "n_trades": 6,
+        "expectancy_r": 1.3579,
+        "expR_ci95": [
+          0.1624,
+          2.5534
+        ],
+        "prob_expR_positive": 0.991,
+        "profit_factor_net": 6.9508,
+        "win_rate": 0.6667,
+        "max_dd_path_frac": -0.00655,
+        "net_pnl_total": 3993.47
+      },
+      "valid_sanity_ok": true,
+      "valid_sanity_note": "VALID sa\u011fduyu GE\u00c7T\u0130",
+      "gap_excluded_trades": 2,
+      "test": {
+        "n_trades": 10,
+        "expectancy_r": 0.343,
+        "expR_ci95": [
+          -0.5091,
+          1.3712
+        ],
+        "prob_expR_positive": 0.754,
+        "profit_factor_net": 1.5728,
+        "win_rate": 0.4,
+        "max_dd_path_frac": -0.008075,
+        "net_pnl_total": 1376.19
+      },
+      "oos_pool": {
+        "n_trades": 16,
+        "expectancy_r": 0.7236,
+        "expR_ci95": [
+          -0.0112,
+          1.5256
+        ],
+        "prob_expR_positive": 0.972,
+        "profit_factor_net": 2.747,
+        "win_rate": 0.5,
+        "max_dd_path_frac": -0.008075,
+        "net_pnl_total": 5369.66
+      },
+      "min_trades": 100,
+      "verdict": "ZAYIF (\u00f6rneklem)",
+      "mode": "watch_only",
+      "verdict_reasons": [
+        "OOS trade 16 < min 100 -> edge h\u00fckm\u00fc VER\u0130LMEZ"
+      ],
+      "monte_carlo": {
+        "n_trades": 16,
+        "B": 1000,
+        "seed": 42,
+        "maxDD_p05": -0.0248,
+        "maxDD_p50": -0.0123,
+        "maxDD_p95": -0.0055,
+        "prob_maxDD_worse_than_25pct": 0.0,
+        "prob_ruin_equity_below_50pct": 0.0
+      },
+      "sensitivity": {
+        "cell": "P0xA0",
+        "neighbors_train": {
+          "P1xA0": {
+            "n_trades": 8,
+            "expectancy_r": 0.5,
+            "profit_factor_net": 2.7038
+          },
+          "P0xA1": {
+            "n_trades": 13,
+            "expectancy_r": 0.3052,
+            "profit_factor_net": 1.5374
+          }
+        },
+        "overfit_flag": false,
+        "note": "se\u00e7ili +0.4334 \u2212 en iyi kom\u015fu +0.5000 = -0.0666"
+      }
+    },
+    "SILVER": {
+      "selected_cell": "P0xA0",
+      "selection_made": false,
+      "default_used": true,
+      "train_n_trades": 13,
+      "train_expR": -0.3529,
+      "valid": {
+        "n_trades": 8,
+        "expectancy_r": 0.9021,
+        "expR_ci95": [
+          -0.1228,
+          1.9178
+        ],
+        "prob_expR_positive": 0.944,
+        "profit_factor_net": 3.144,
+        "win_rate": 0.625,
+        "max_dd_path_frac": -0.010668,
+        "net_pnl_total": 3408.06
+      },
+      "valid_sanity_ok": true,
+      "valid_sanity_note": "VALID sa\u011fduyu GE\u00c7T\u0130",
+      "gap_excluded_trades": 2,
+      "test": {
+        "n_trades": 11,
+        "expectancy_r": -0.279,
+        "expR_ci95": [
+          -0.8598,
+          0.3019
+        ],
+        "prob_expR_positive": 0.156,
+        "profit_factor_net": 0.5305,
+        "win_rate": 0.3636,
+        "max_dd_path_frac": -0.022721,
+        "net_pnl_total": -1690.18
+      },
+      "oos_pool": {
+        "n_trades": 19,
+        "expectancy_r": 0.2183,
+        "expR_ci95": [
+          -0.3683,
+          0.8863
+        ],
+        "prob_expR_positive": 0.757,
+        "profit_factor_net": 1.331,
+        "win_rate": 0.4737,
+        "max_dd_path_frac": -0.022721,
+        "net_pnl_total": 1717.88
+      },
+      "min_trades": 100,
+      "verdict": "ZAYIF (\u00f6rneklem)",
+      "mode": "watch_only",
+      "verdict_reasons": [
+        "OOS trade 19 < min 100 -> edge h\u00fckm\u00fc VER\u0130LMEZ"
+      ],
+      "monte_carlo": {
+        "n_trades": 19,
+        "B": 1000,
+        "seed": 42,
+        "maxDD_p05": -0.0448,
+        "maxDD_p50": -0.021,
+        "maxDD_p95": -0.0104,
+        "prob_maxDD_worse_than_25pct": 0.0,
+        "prob_ruin_equity_below_50pct": 0.0
+      },
+      "sensitivity": {
+        "cell": "P0xA0",
+        "neighbors_train": {
+          "P1xA0": {
+            "n_trades": 11,
+            "expectancy_r": -0.2725,
+            "profit_factor_net": 0.5257
+          },
+          "P0xA1": {
+            "n_trades": 13,
+            "expectancy_r": -0.3914,
+            "profit_factor_net": 0.3604
+          }
+        },
+        "overfit_flag": false,
+        "note": "se\u00e7ili -0.3529 \u2212 en iyi kom\u015fu -0.2725 = -0.0804"
+      }
+    },
+    "BIST30_BASKET": {
+      "selected_cell": "P0xA0",
+      "selection_made": false,
+      "default_used": true,
+      "train_n_trades": 0,
+      "train_expR": null,
+      "valid": {
+        "n_trades": 74,
+        "expectancy_r": -0.0569,
+        "expR_ci95": [
+          -0.3323,
+          0.2379
+        ],
+        "prob_expR_positive": 0.336,
+        "profit_factor_net": 0.7008,
+        "win_rate": 0.3919,
+        "max_dd_path_frac": -0.103538,
+        "net_pnl_total": -6903.87
+      },
+      "valid_sanity_ok": false,
+      "valid_sanity_note": "VALID expR -0.0569 < 0 -> KALDI (TEST ko\u015fulmaz)",
+      "gap_excluded_trades": 14,
+      "test": null,
+      "test_note": "KO\u015eULMADI (protokol md.3: TEST ikinci \u015fans de\u011fil)",
+      "oos_pool": null,
+      "verdict": "KALDI",
+      "mode": "watch_only",
+      "verdict_reasons": [
+        "VALID expR -0.0569 < 0 -> KALDI (TEST ko\u015fulmaz)"
+      ],
+      "sensitivity": {
+        "cell": "P0xA0",
+        "neighbors_train": {
+          "P1xA0": {
+            "n_trades": 0,
+            "expectancy_r": null,
+            "profit_factor_net": null
+          },
+          "P0xA1": {
+            "n_trades": 0,
+            "expectancy_r": null,
+            "profit_factor_net": null
+          }
+        },
+        "overfit_flag": false,
+        "note": "se\u00e7ili h\u00fccre TRAIN expR yok"
+      }
+    }
+  },
+  "portfolio": {
+    "core_aggregate": {
+      "metrics": {
+        "n_trades": 42,
+        "expectancy_r": 0.321,
+        "expR_ci95": [
+          -0.1112,
+          0.7807
+        ],
+        "prob_expR_positive": 0.923,
+        "profit_factor_net": 1.5883,
+        "win_rate": 0.4048,
+        "max_dd_path_frac": -0.03602,
+        "net_pnl_total": 5686.06
+      },
+      "verdict": "ZAYIF (\u00f6rneklem)",
+      "mode": "watch_only",
+      "reasons": [
+        "OOS trade 42 < min 100 -> edge h\u00fckm\u00fc VER\u0130LMEZ",
+        "NOT: BTC VALID sa\u011fduyudan KALDI (TEST ko\u015fulmad\u0131) \u2014 agregaya yaln\u0131z VALID trade'leriyle dahil; \u00fcye h\u00fckm\u00fc agregatla YUMU\u015eATILAMAZ"
+      ],
+      "monte_carlo": {
+        "n_trades": 42,
+        "B": 1000,
+        "seed": 42,
+        "maxDD_p05": -0.0527,
+        "maxDD_p50": -0.026,
+        "maxDD_p95": -0.0142,
+        "prob_maxDD_worse_than_25pct": 0.0,
+        "prob_ruin_equity_below_50pct": 0.0
+      },
+      "note": "BTC+GOLD+SILVER OOS havuzlar\u0131n\u0131n birle\u015fimi (risk katman\u0131 YOK; A\u015fama 8 tavanlar\u0131 ayr\u0131 rapor)"
+    },
+    "basket": {
+      "metrics": {
+        "n_trades": 74,
+        "expectancy_r": -0.0569,
+        "expR_ci95": [
+          -0.3323,
+          0.2379
+        ],
+        "prob_expR_positive": 0.336,
+        "profit_factor_net": 0.7008,
+        "win_rate": 0.3919,
+        "max_dd_path_frac": -0.103538,
+        "net_pnl_total": -6903.87
+      },
+      "verdict": "KALDI",
+      "mode": "watch_only",
+      "reasons": [
+        "\u00fcye VARLIK h\u00fckm\u00fc KALDI (VALID sa\u011fduyu ba\u015far\u0131s\u0131z, TEST ko\u015fulmad\u0131); havuz yaln\u0131z VALID",
+        "OOS trade 74 < min 150 -> edge h\u00fckm\u00fc VER\u0130LMEZ"
+      ],
+      "monte_carlo": {
+        "n_trades": 74,
+        "B": 1000,
+        "seed": 42,
+        "maxDD_p05": -0.1572,
+        "maxDD_p50": -0.0924,
+        "maxDD_p95": -0.0435,
+        "prob_maxDD_worse_than_25pct": 0.0,
+        "prob_ruin_equity_below_50pct": 0.0
+      }
+    }
+  },
+  "caveats": [
+    "TEK fold (\u00f6n-kay\u0131tl\u0131 split v1.1); \u00e7ok katl\u0131 walk-fold A\u015fama 9 sonras\u0131 geni\u015fletme aday\u0131d\u0131r.",
+    "Trade atf\u0131 G\u0130R\u0130\u015e zaman\u0131na g\u00f6re; pencere d\u0131\u015f\u0131nda kapanan \u00e7\u0131k\u0131\u015flar giri\u015f penceresine say\u0131l\u0131r.",
+    "Purge/embargo bo\u015flu\u011funa d\u00fc\u015fen giri\u015fler hi\u00e7bir pencereye say\u0131lmad\u0131 (gap_excluded_trades).",
+    "Sepet survivorship bias ta\u015f\u0131r; metals feed'inde d\u00fc\u015f\u00fck-kalite pencere (2026-01-26..02-06) TEST aral\u0131\u011f\u0131 d\u0131\u015f\u0131nda.",
+    "TEST bu teslimatta 1 KEZ ko\u015fuldu; yeniden ko\u015fum onay gerektirir.",
+    "ZAYIF h\u00fck\u00fcmler edge kan\u0131t\u0131 DE\u011e\u0130LD\u0130R; watch_only = izle, edge iddias\u0131 YOK."
+  ]
+}
