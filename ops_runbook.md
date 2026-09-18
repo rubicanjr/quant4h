@@ -1,6 +1,6 @@
 # ops_runbook.md — quant4h watch_only operasyon el kitabı
 
-*Sürüm: v1 (2026-09-17, kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
+*Sürüm: **v1.1** (2026-09-17: §A komut düzeltmesi — `--start` eklendi + veri çekim/cache politikası; 2026-09 izleme vakaları §A.2'de. v1 2026-09-17 kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
 
 > **KURAL 0:** Bu runbook trade üretmez. Her çıktının üzerinde `watch_only — trade YOK, emir YOK, tavsiye YOK` başlığı bulunur. Sistem edge KANITLAYAMADI (GEÇTİ=0); hiçbir izleme çıktısı "sistem çalışıyor/kazanıyor" şeklinde YORUMLANAMAZ.
 
@@ -13,12 +13,22 @@
 **Ne zaman:** her ayın ilk iş günü (veri tazeliği QC'den geçtikten sonra).
 
 **Adımlar (mevcut script'ler — YENİ kod yazılmaz):**
-1. `python3 -W ignore scripts/run_data_qc.py --assets BTC GOLD SILVER BIST30 --timeframe 4h --min-rows 1500` → QC kararı RED olan varlık varsa rapor **YAYIMLANMAZ** (fail-closed), sorun notu düşülür. (H14: resample→adjust→QC tek komutta; `run_adjust.py` ayrıca ÇALIŞTIRILMAZ.)
+1. `python3 -W ignore scripts/run_data_qc.py --assets BTC GOLD SILVER BIST30 --start 2017-08-17 --timeframe 4h --min-rows 1500` → QC kararı RED olan varlık varsa rapor **YAYIMLANMAZ** (fail-closed), sorun notu düşülür. (H14: resample→adjust→QC tek komutta; `run_adjust.py` ayrıca ÇALIŞTIRILMAZ.)
+   **Veri çekim politikası (v1.1):** `--start 2017-08-17` ZORUNLUDUR — eksikse Binance adaptörü yalnız son ~1.000 barı çeker ve BTC raw cache'ini KIRPAR (2026-09 vakası). Varsayılan mod cache'lidir; ayın İLK canlı çekimi `--no-cache --start 2017-08-17` ile YALNIZ 1 KEZ yapılır, **aynı gün ikinci `--no-cache` YASAK** (Yahoo rate-limit → geçici RED üretir; 2026-09 vakası). Çekim başarısızsa taze cache'e dönülür ve sapma notuna yazılır. Raw cache üzerine yazılması normaldir (yeni snapshot); **frozen snapshot'lara asla dokunulmaz** — koşu sonrası `register_splits.py --check` EXIT 0 + drift BİLGİ notu doğrulanır.
 2. `run_regime_report.py` → `run_levels_report.py` → `run_momentum_report.py` → `run_signal_report.py` (sıra bağlayıcı; zincir kolonları bir öncekine dayanır).
 3. Elle derleme (rapor şablonu §A1): son 30 günün ham/final sinyal sayaçları (strict/capped/cooldown_only akışları), rejim dağılımı, XU030 bağlam durumu, `rejected_no_valid_stop` ve `non_tradable` sayaçları, veri kesintisi/roll adayları.
 4. `git` hijyeni: aylık rapor `reports/monitor/YYYY-MM.md` olarak commit edilir (patch senkron kuralı PROGRESS'te).
+5. **Restore (v1.1, ZORUNLU SIRA):** aylık raporun sayıları derlendikten SONRA `git checkout -- data/ reports/` ile canlı drift ve ara raporlar checkpoint durumuna geri alınır (`reports/monitor/` HARİÇ — o ayın artefaktıdır). Gerekçe: (a) repoda "commit'li veri == commit'li rapor" tutarlılığı; (b) **drift varken test suite KOŞULMAZ** — `test_splits.py` determinizm testi frozen snapshot'ı canlı verinin üzerine yazar (live==frozen iken no-op, drift altında DESTRÜKTİF; 2026-09 vakasında sha kilidi yakaladı, teknik borç kayıtlı: test tmp dizine alınmalı, onay bekliyor); (c) yeni barlar araştırmaya yalnız §B.1 yeni ön-kayıtla girer (H17). Suite ancak restore SONRASI koşulur.
 
 **YASAK:** aylık raporda P&L, "şu sinyali izleseydin kazanç" hesabı, pozisyon önerisi, eşik/parametre değişikliği, sinyallerin kağıt-portföye bağlanması. İhlal = protokol ihlali (bkz. §D).
+
+**Kapsam notu (v1.1):** §A zinciri 4 varlığı (BTC/GOLD/SILVER/XU030) tazeler; 28 hissenin canlı çekimi KAPSAM DIŞIDIR (hisse frame'leri son `run_bist_universe.py` snapshot'ıyla kalır, rapor dipnotunda tazeliği yazılır). Hisse refresh'i ayrı iş + onay gerektirir.
+
+**Aylık koşu log'u:**
+
+| ay | koşu tarihi | QC kararları | olay/sapma | rapor |
+|---|---|---|---|---|
+| 2026-09 | 2026-09-17 | 4× AMBER, 0 ERROR | 2 vaka (eksik `--start` → BTC cache kırpıldı, geri yüklendi; Yahoo rate-limit → geçici RED, aşıldı) — kalıcı hasar YOK, frozen etkilenmedi | `reports/monitor/2026-09.md` |
 
 ### A1) Aylık rapor şablonu (asgari alanlar)
 ```
