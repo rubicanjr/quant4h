@@ -1,0 +1,95 @@
+//@version=5
+// ============================================================================
+// quant4h — watch_only GÖRSELLEŞTİRME EKİ (M9b, 2026-09-18, kullanıcı onaylı)
+//
+// SADECE indicator(): Python pipeline'ının (scripts/export_viz_payload.py)
+// ihraç ettiği marker/seviyeleri ÇİZER. Hesaplama YAPMAZ — hiçbir gösterge,
+// seviye veya sinyal burada YENİDEN ÜRETİLMEZ (drift riski sıfırlanır).
+//
+//   * strategy() YOK · alert/alertcondition YOK · emir/icra temsili YOK
+//   * DOĞRULUK KAYNAĞI DEĞİLDİR (UNTESTED-VIZ): kaynak = repo
+//     (reports/*.md · data/processed/* · configs/*). Bkz. TEST_PLAN.md
+//   * watch_only: trade YOK, emir YOK, tavsiye YOK (Aşama 9: GEÇTİ=0)
+//
+// KURULUM (M9c — bölge ameliyatı KALDIRILDI, hata modu kapatıldı):
+//   1) python3 -W ignore scripts/export_viz_payload.py --month YYYY-MM
+//   2) viz/quant4h_viz_<ASSET>_YYYY-MM.pine dosyasını aç (payload GÖMÜLÜ, TAM dosya)
+//   3) TradingView Pine editöründe YENİ sekme → dosyanın TÜMÜNÜ yapıştır → kaydet
+//   4) Grafiğe ekle (4H, ilgili sembol) · TEST_PLAN.md parite listesini uygula
+//   payload_*.txt yalnız REFERANSTIR — DOĞRUDAN YAPIŞTIRMAYIN (M9c vakası:
+//   başlık yorumları `payloadMeta =` satırına karışır; çok varlık bloğu
+//   duplicate-declaration verir).
+//   HATA MODLARI: 'end of line without line continuation' → txt başlığı
+//   assignment satırına karışmış; 'duplicate declaration' → birden fazla varlık
+//   bloğu yapıştırılmış. İKİSİNİN DE ÇÖZÜMÜ: hazır <ASSET>.pine dosyasını kullanın.
+//
+// Sadelik kuralı (user_decisions → simplicity_rules): mum + EMA200 + yapısal
+// seviyeler (maks 3 öğe). M9b spesifikasyonu sinyal marker'larını ayrıca
+// ister; üçü de input anahtarıyla KAPATILABİLİR (varsayılan: ihtiyacınız
+// kadarını açık bırakın — kural ihlalinde sorumluluk kullanıcıdadır).
+// ============================================================================
+indicator("quant4h watch_only viz [UNTESTED-VIZ]", overlay = true, max_labels_count = 500, max_lines_count = 500)
+
+show_ema     = input.bool(true, "EMA200 (ihraç edilen seri)", group = "quant4h")
+show_levels  = input.bool(true, "Yapısal seviyeler (swing/Donchian/stop)", group = "quant4h")
+show_markers = input.bool(true, "Sinyal marker'ları (capped, KARAR barı)", group = "quant4h")
+
+// ---------------------------------------------------------------------------
+// ---- PAYLOAD-BEGIN (export_viz_payload.py — otomatik; elle düzenlemeyin)
+payloadMeta = "BTC · 2026-09 · 93 bar · capped P0xA0 · final sinyal: 1 · son bar 2026-09-16 08:00 UTC · UNTESTED-VIZ — dogruluk kaynagi DEGIL"
+payloadOK   = true
+ts        = array.from<int>(1788220800000, 1788235200000, 1788249600000, 1788264000000, 1788278400000, 1788292800000, 1788307200000, 1788321600000, 1788336000000, 1788350400000, 1788364800000, 1788379200000, 1788393600000, 1788408000000, 1788422400000, 1788436800000, 1788451200000, 1788465600000, 1788480000000, 1788494400000, 1788508800000, 1788523200000, 1788537600000, 1788552000000, 1788566400000, 1788580800000, 1788595200000, 1788609600000, 1788624000000, 1788638400000, 1788652800000, 1788667200000, 1788681600000, 1788696000000, 1788710400000, 1788724800000, 1788739200000, 1788753600000, 1788768000000, 1788782400000, 1788796800000, 1788811200000, 1788825600000, 1788840000000, 1788854400000, 1788868800000, 1788883200000, 1788897600000, 1788912000000, 1788926400000, 1788940800000, 1788955200000, 1788969600000, 1788984000000, 1788998400000, 1789012800000, 1789027200000, 1789041600000, 1789056000000, 1789070400000, 1789084800000, 1789099200000, 1789113600000, 1789128000000, 1789142400000, 1789156800000, 1789171200000, 1789185600000, 1789200000000, 1789214400000, 1789228800000, 1789243200000, 1789257600000, 1789272000000, 1789286400000, 1789300800000, 1789315200000, 1789329600000, 1789344000000, 1789358400000, 1789372800000, 1789387200000, 1789401600000, 1789416000000, 1789430400000, 1789444800000, 1789459200000, 1789473600000, 1789488000000, 1789502400000, 1789516800000, 1789531200000, 1789545600000)
+ema200    = array.from<float>(71292.88, 71365.91, 71432.91, 71497.44, 71555.30, 71613.85, 71673.05, 71730.77, 71781.49, 71836.29, 71891.07, 71945.29, 72002.63, 72058.95, 72117.55, 72209.40, 72304.38, 72393.60, 72477.74, 72559.13, 72645.35, 72712.85, 72783.31, 72851.74, 72918.71, 72986.28, 73052.18, 73119.38, 73185.40, 73251.53, 73318.96, 73383.50, 73448.53, 73510.90, 73573.77, 73641.12, 73700.38, 73757.07, 73813.42, 73863.25, 73918.00, 73969.69, 74018.81, 74063.22, 74106.67, 74154.40, 74197.10, 74239.48, 74283.25, 74332.94, 74382.61, 74424.54, 74462.45, 74500.70, 74538.79, 74574.34, 74606.84, 74633.14, 74658.29, 74677.30, 74699.34, 74724.53, 74747.53, 74777.22, 74802.19, 74826.30, 74850.60, 74874.67, 74899.36, 74924.05, 74945.85, 74969.06, 74991.18, 75012.44, 75030.15, 75051.09, 75073.31, 75090.91, 75115.84, 75143.46, 75169.66, 75203.57, 75241.17, 75270.50, 75294.45, 75310.72, 75326.93, 75338.73, 75347.16, 75350.12, 75354.83, 75358.93, 75360.98)
+stopLong  = array.from<float>(76176.77, 76184.10, 76178.14, 76171.56, 76119.59, 76131.21, 76116.58, 76146.01, 75535.44, 75535.88, 75553.93, 75579.18, 75416.66, 75399.84, 75419.56, 75231.72, 75221.42, 75196.25, 75218.35, 75241.99, 75249.26, 75129.60, 75174.99, 75227.77, 75283.98, 77727.02, 77781.66, 77825.11, 77849.95, 77889.67, 77924.84, 77939.42, 77971.80, 77965.45, 77987.55, 77970.37, 77957.10, 78514.24, 78546.44, 78526.66, 78533.43, 78539.55, 78534.81, 77978.16, 77976.66, 77934.69, 77937.43, 77972.14, 77988.92, 76923.87, 76899.68, 76835.51, 76835.22, 76850.56, 76862.80, 76869.90, 76884.82, 76845.68, 76848.20, 76840.23, 76863.74, 76879.03, 76878.17, 75500.61, 75484.78, 75516.38, 75571.87, 75204.24, 75255.03, 75293.68, 75322.15, 75360.68, 75396.89, 75424.20, 75419.94, 75415.09, 75439.64, 75423.92, 75816.02, 75828.02, 75820.29, 75780.96, 75656.84, 75604.21, 75617.93, 75611.91, 75630.27, 75574.58, 75463.05, 75450.22, 75470.58, 75506.17, 74118.70)
+swingLow  = array.from<float>(77000.00, 77000.00, 77000.00, 77000.00, 77000.00, 77000.00, 77000.00, 77000.00, 76420.00, 76420.00, 76420.00, 76420.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 79233.00, 79233.00, 79233.00, 79233.00, 79233.00, 79233.00, 78680.00, 78680.00, 78680.00, 78680.00, 78680.00, 78680.00, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 76464.00, 76464.00, 76464.00, 76464.00, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76500.00, 76500.00, 76500.00, 76500.00, 76388.72, 76388.72, 76388.72, 76388.72, 76388.72, 76388.72, 76388.72, 76388.72, 76388.72, 76388.72, 74967.97)
+swingHigh = array.from<float>(79400.00, 79400.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 79250.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 80200.00, 80200.00, 80200.00, 80200.00, 80200.00, 80200.00, 80200.00, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 77505.67, 79600.00, 79600.00, 79600.00, 79600.00, 79600.00, 79600.00)
+donHigh   = array.from<float>(79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79400.00, 79250.00, 79250.00, 79250.00, 81370.33, 81790.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 82300.00, 81427.75, 81423.03, 81423.03, 81350.00, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80559.99, 80443.99, 79926.04, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79760.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79890.00, 79600.00, 79600.00, 79600.00, 79600.00, 79600.00, 79600.00, 79600.00, 79600.00, 79600.00)
+donLow    = array.from<float>(76888.00, 77000.00, 77000.00, 77000.00, 77000.00, 76420.00, 76420.00, 76420.00, 76420.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76264.00, 76611.67, 76950.56, 76968.00, 76968.00, 77101.01, 77478.00, 77896.07, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78660.00, 78680.00, 78680.00, 78179.98, 78179.98, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 77620.01, 76676.07, 76676.07, 76464.00, 76464.00, 76464.00, 76464.00, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76046.58, 76388.72, 76388.72, 76388.72, 76388.72, 75605.00, 74967.97, 74967.97, 74967.97, 74967.97)
+sigLong   = array.from<int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+sigShort  = array.from<int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+sigPrice  = array.from<float>(na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, 81755.41, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na)
+// ---- PAYLOAD-END
+// ---------------------------------------------------------------------------
+
+hasPayload = payloadOK and array.size(ts) > 1
+
+// bar.time -> payload indeksi (payload <= ~250 satir: dogrusal arama yeterli)
+idx = -1
+if hasPayload
+    for i = 0 to array.size(ts) - 1
+        if array.get(ts, i) == time
+            idx := i
+            break
+
+f_val(array<float> a) =>
+    hasPayload and idx >= 0 ? array.get(a, idx) : na
+
+emaVal      = f_val(ema200)
+stopVal     = f_val(stopLong)
+swLowVal    = f_val(swingLow)
+swHighVal   = f_val(swingHigh)
+donHighVal  = f_val(donHigh)
+donLowVal   = f_val(donLow)
+sigL        = hasPayload and idx >= 0 ? array.get(sigLong, idx) : 0
+sigS        = hasPayload and idx >= 0 ? array.get(sigShort, idx) : 0
+sigPx       = f_val(sigPrice)
+
+plot(show_ema ? emaVal : na,            "EMA200 (ihraç)",        color = color.new(color.orange, 0),  linewidth = 2)
+plot(show_levels ? stopVal : na,        "stop_long (yapısal)",   color = color.new(color.red, 20),      linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? swLowVal : na,       "swing_low (onaylı)",    color = color.new(color.green, 45),    linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? swHighVal : na,      "swing_high (onaylı)",   color = color.new(color.teal, 45),     linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? donHighVal : na,     "donchian_high(20)",     color = color.new(color.gray, 55),     linewidth = 1, style = plot.style_circles)
+plot(show_levels ? donLowVal : na,      "donchian_low(20)",      color = color.new(color.gray, 55),     linewidth = 1, style = plot.style_circles)
+
+// Marker'lar KARAR barının KAPANIŞINDA çizilir (sinyal barı = t; icra open[t+1]
+// PİNE'DA GÖSTERİLMEZ — icra temsili yoktur).
+plotshape(show_markers and sigL == 1 ? sigPx : na, "LONG kararı (capped)",  shape.triangleup,   location.absolute, color.new(color.green, 0), size = size.small)
+plotshape(show_markers and sigS == 1 ? sigPx : na, "SHORT kararı (capped)", shape.triangledown, location.absolute, color.new(color.red, 0),   size = size.small)
+
+// ---- bilgi tablosu (her zaman görünür) ----
+var table infoTbl = table.new(position.top_right, 1, 4, border_width = 1)
+if barstate.islastconfirmedhistory
+    table.cell(infoTbl, 0, 0, "quant4h watch_only — UNTESTED-VIZ", text_color = color.white, bgcolor = color.new(color.black, 20), text_size = size.small)
+    table.cell(infoTbl, 0, 1, hasPayload ? payloadMeta : "⚠ " + payloadMeta, text_color = hasPayload ? color.silver : color.yellow, bgcolor = color.new(color.black, 40), text_size = size.tiny)
+    table.cell(infoTbl, 0, 2, "Doğruluk kaynağı DEĞİLDİR · kaynak: repo (reports/data)", text_color = color.silver, bgcolor = color.new(color.black, 40), text_size = size.tiny)
+    table.cell(infoTbl, 0, 3, "trade YOK · emir YOK · tavsiye YOK · icra: open[t+1] (burada gösterilmez)", text_color = color.silver, bgcolor = color.new(color.black, 40), text_size = size.tiny)

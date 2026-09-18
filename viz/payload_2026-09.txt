@@ -1,7 +1,9 @@
-// quant4h viz payload — 2026-09 · üretim: 2026-09-18T19:09:07+00:00Z
+// quant4h viz payload — 2026-09 · üretim: 2026-09-18T19:43:05+00:00Z
+// UYARI: BU TXT'YI PINE'A DOGRUDAN YAPISTIRMAYIN (M9c vakasi: baslik yorumlari
+//   `payloadMeta =` satirina karisir; cok-varlik bloklari duplicate-declaration verir).
+//   HAZIR DOSYA: viz/quant4h_viz_<ASSET>_2026-09.pine -> TAMAMINI kopyala-yapistir.
 // AKIŞ: capped · hücre: P0xA0 (Aşama 9 kilidi) · kaynak: data/processed frame'leri
 // UNTESTED-VIZ — DOĞRULUK KAYNAĞI DEĞİLDİR (kaynak: repo raporları/parquet'leri).
-// KULLANIM: ilgili varlık bloğunu pine/quant4h_viz.pine PAYLOAD bölgesine yapıştırın.
 // watch_only: trade YOK · emir YOK · tavsiye YOK · icra open[t+1] burada gösterilmez.
 
 // ================= BTC =================

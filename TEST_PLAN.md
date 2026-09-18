@@ -10,13 +10,21 @@
 - Payload kaynağı TEK: `scripts/export_viz_payload.py` → capped akış, **P0×A0** (Aşama 9 kilidi), `data/processed` frame'leri.
 - Otomatik test adayları (P3, gelecek maint — R11 batch): pine dosyasında `strategy(`/`alert` yasak-kelime kilidi + payload yapı doğrulaması. Bu patch'te YOK (kapsam dışı).
 
-## 1) Kurulum adımları
+## 1) Kurulum adımları (M9c — hazır dosya akışı; bölge ameliyatı YOK)
 
-1. `python3 -W ignore scripts/export_viz_payload.py --month YYYY-MM` → `viz/payload_YYYY-MM.txt`
-2. Dosyadan ÇİZDİRİLECEK varlığın `PAYLOAD-BEGIN..END` bloğunu kopyala.
-3. TradingView'da `pine/quant4h_viz.pine`'ı aç; boş payload bölgesini (BEGIN..END) kopyaladığın blokla değiştir; kaydet.
-4. Grafiği **4H**'de, ilgili sembolde aç (BTC → `BTCUSDT` (Binance) veya eşleniği; GOLD → `GC1!`/`XAUUSD`; SILVER → `SI1!`/`XAGUSD`; BIST30 → `XU030`).
-5. Aşağıdaki parite listesini uygula (İLK kurulumda ZORUNLU; sonraki aylarda spot-check).
+1. `python3 -W ignore scripts/export_viz_payload.py --month YYYY-MM` → `viz/quant4h_viz_<ASSET>_YYYY-MM.pine` (payload GÖMÜLÜ tam dosya; üretici iç yapısal lint uygular: her tanım TAM 1 kez + strategy/alert yasağı) + `viz/payload_YYYY-MM.txt` (referans).
+2. TradingView Pine editöründe YENİ sekme aç → `<ASSET>.pine` dosyasının **TÜMÜNÜ** kopyala-yapıştır → kaydet.
+3. Grafiği **4H**'de, ilgili sembolde aç (BTC → `BTCUSDT` (Binance) veya eşleniği; GOLD → `GC1!`/`XAUUSD`; SILVER → `SI1!`/`XAGUSD`; BIST30 → `XU030`).
+4. Aşağıdaki parite listesini uygula (İLK kurulumda ZORUNLU; sonraki aylarda spot-check).
+5. `payload_*.txt`'yi DOĞRUDAN yapıştırmayın.
+
+**Hata modları (M9c vakasından öğrenildi):**
+
+| TradingView hatası | kök neden | çözüm |
+|---|---|---|
+| `Syntax error at input 'end of line without line continuation'` (payloadMeta satırında) | txt başlık yorumları `payloadMeta =` satırına karışmış (bölge ameliyatı) | hazır `<ASSET>.pine` dosyasını kullan |
+| duplicate declaration (`payloadMeta`/`ts` zaten tanımlı) | birden fazla varlık bloğu aynı anda yapıştırılmış | hazır `<ASSET>.pine` (tek varlık) kullan |
+| plot/marker görünmüyor ama hata yok | sembol timeframe'i 4H değil veya payload ayı farklı | 4H + aynı ay payload'ı |
 
 > **DÜRÜST NOT (sembol eşleme):** payload Binance spot `BTCUSDT` ve Yahoo `GC=F/SI=F/XU030.IS` verisinden üretilir. TradingView sembolü farklı bir vendor'sa mumlar birebir örtüşmeyebilir; parite kontrolü payload'ı üreten sembolün grafisinde yapılmalıdır. Farklı sembolde kullanım "yaklaşık görselleştirme"dir ve UNTESTED-VIZ etiketiyle kalır.
 
@@ -34,6 +42,7 @@
 | P8 | İcra temsili YOK | — | hiçbir "giriş/çıkış oku", P&L, pozisyon çizgisi YOK |
 | P9 | Boş payload fail-safe | `payloadOK=false` | yalnız uyarı tablosu; çizim YOK; hata YOK |
 | P10 | Banner | — | sağ üstte "UNTESTED-VIZ · doğruluk kaynağı DEĞİLDİR · trade/emir/tavsiye YOK" |
+| P11 | Yapısal bütünlük (otomatik) | `lint_pine()` üreticide | her `<ASSET>.pine`: 12 payload tanımı TAM 1 kez · `strategy(`/`alert(` yok — ihlalde üretici exit 1 |
 
 **Uyuşmazlık bulursan:** Pine grafiği DEĞİL, Python çıktısı esastır. Uyuşmazlığı `reports/cadence/` ya da aylık rapora not düş; pine dosyasını kullanıcı onayı olmadan değiştirme.
 

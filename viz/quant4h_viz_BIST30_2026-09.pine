@@ -35,23 +35,20 @@ show_levels  = input.bool(true, "Yapısal seviyeler (swing/Donchian/stop)", grou
 show_markers = input.bool(true, "Sinyal marker'ları (capped, KARAR barı)", group = "quant4h")
 
 // ---------------------------------------------------------------------------
-// PAYLOAD-BEGIN — bu bölgeyi viz/payload_*.txt'teki ilgili varlık bölümüyle
-// değiştirin. Boş payload ile script YALNIZ uyarı tablosu çizer (fail-safe).
-// ---------------------------------------------------------------------------
-ts        = array.from<int>(0)
-ema200    = array.from<float>(na)
-stopLong  = array.from<float>(na)
-swingLow  = array.from<float>(na)
-swingHigh = array.from<float>(na)
-donHigh   = array.from<float>(na)
-donLow    = array.from<float>(na)
-sigLong   = array.from<int>(0)
-sigShort  = array.from<int>(0)
-sigPrice  = array.from<float>(na)
-payloadMeta = "BOS PAYLOAD — export_viz_payload.py ciktisini buraya yapistirin"
-payloadOK   = false
-// ---------------------------------------------------------------------------
-// PAYLOAD-END
+// ---- PAYLOAD-BEGIN (export_viz_payload.py — otomatik; elle düzenlemeyin)
+payloadMeta = "BIST30 · 2026-09 · 22 bar · capped P0xA0 · final sinyal: 0 · son bar 2026-09-15 11:00 UTC · UNTESTED-VIZ — dogruluk kaynagi DEGIL"
+payloadOK   = true
+ts        = array.from<int>(1788246000000, 1788260400000, 1788332400000, 1788346800000, 1788418800000, 1788433200000, 1788505200000, 1788519600000, 1788764400000, 1788778800000, 1788850800000, 1788865200000, 1788937200000, 1788951600000, 1789023600000, 1789038000000, 1789110000000, 1789124400000, 1789369200000, 1789383600000, 1789455600000, 1789470000000)
+ema200    = array.from<float>(15887.68, 15893.63, 15896.66, 15901.04, 15905.23, 15908.90, 15913.54, 15918.53, 15925.46, 15933.29, 15941.52, 15952.60, 15967.22, 15980.13, 15991.40, 16002.10, 16013.83, 16025.95, 16037.04, 16046.55, 16053.65, 16059.76)
+stopLong  = array.from<float>(16414.54, 16412.78, 16400.86, 16396.72, 16394.77, 16399.18, 15905.28, 15907.71, 15904.49, 15910.94, 15917.34, 15902.03, 15889.85, 15887.46, 15891.95, 15895.39, 15900.46, 15898.99, 15896.66, 16739.34, 16727.16, 16725.94)
+swingLow  = array.from<float>(16610.64, 16610.64, 16610.64, 16610.64, 16610.64, 16610.64, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16959.25, 16959.25, 16959.25)
+swingHigh = array.from<float>(17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17516.10, 17516.10, 17516.10, 17516.10, 17349.00)
+donHigh   = array.from<float>(17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17032.50, 17071.17, 17444.23, 17516.10, 17516.10, 17516.10, 17516.10, 17516.10, 17516.10, 17516.10, 17516.10)
+donLow    = array.from<float>(15998.24, 15998.24, 16129.00, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41, 16120.41)
+sigLong   = array.from<int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+sigShort  = array.from<int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+sigPrice  = array.from<float>(na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na)
+// ---- PAYLOAD-END
 // ---------------------------------------------------------------------------
 
 hasPayload = payloadOK and array.size(ts) > 1

@@ -1,13 +1,18 @@
-"""M9b — TradingView görselleştirme eki için PAYLOAD üretici (watch_only).
+"""M9b/M9c — TradingView görselleştirme eki için PAYLOAD + HAZIR PINE üretici (watch_only).
 
 `pine/quant4h_viz.pine` YALNIZ bu script'in ihraç ettiği değerleri çizer;
 Pine tarafında HİÇBİR şey yeniden hesaplanmaz (drift riski yok). Payload,
 Python'daki TEK doğruluk kaynağından (capped akış, P0×A0, data/processed
 frame'leri) üretilir.
 
-Çıktı: `viz/payload_YYYY-MM.txt` — her varlık için PAYLOAD-BEGIN/END bloğu.
-Kullanıcı ilgili bloğu kopyalayıp pine dosyasındaki boş payload bölgesiyle
-değiştirir (TEST_PLAN.md adım 2-4).
+Çıktılar (`viz/`):
+  * `quant4h_viz_<ASSET>_<YYYY-MM>.pine`  ← **KULLANIN BUNU**: şablon + payload
+    GÖMÜLÜ TAM dosya. TradingView'da yeni indikatör sekmesi aç → dosyanın
+    TÜMÜNÜ kopyala-yapıştır → kaydet → grafiğe ekle. Bölge ameliyatı YOK.
+  * `payload_YYYY-MM.txt` — birleşik referans dökümü (4 varlık); DOĞRUDAN
+    PINE'A YAPIŞTIRMAYIN (M9c vakası: txt başlık yorumları `payloadMeta =`
+    satırına karışıp 'end of line without line continuation' hatası verdi;
+    dört varlık bloğu birlikte yapıştırılınca duplicate-declaration hatası verdi).
 
 Bu bir GÖRSELLEŞTİRME aracıdır: UNTESTED-VIZ (Pine derlemesi/paritesi otomatik
 doğrulanmaz; TEST_PLAN.md manuel kontrol listesine bakın). Doğruluk kaynağı
@@ -21,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 from typing import List, Optional
 
@@ -37,6 +43,38 @@ ROOT = G.ROOT
 DEFAULT_ASSETS = ("BTC", "GOLD", "SILVER", "BIST30")
 BEGIN = "// ---- PAYLOAD-BEGIN (export_viz_payload.py — otomatik; elle düzenlemeyin)"
 END = "// ---- PAYLOAD-END"
+TEMPLATE = os.path.join(ROOT, "pine", "quant4h_viz.pine")
+DECL_NAMES = ["ts", "ema200", "stopLong", "swingLow", "swingHigh", "donHigh",
+              "donLow", "sigLong", "sigShort", "sigPrice", "payloadMeta", "payloadOK"]
+
+
+def lint_pine(txt: str) -> None:
+    """M9c yapısal lint: her payload tanımı TAM 1 kez; strategy()/alert() YASAK.
+    Yasak-kelime taraması YALNIZ KOD satırlarında yapılır (yorumlar soyulur —
+    H29/H33 deseni; şablonun kendi belge yorumları 'strategy() YOK' der)."""
+    lines = txt.splitlines()
+    for name in DECL_NAMES:
+        n = sum(1 for l in lines if re.match(rf"^{re.escape(name)}\s*=", l))
+        if n != 1:
+            raise RuntimeError(f"pine lint HATA: '{name}' bildirim sayısı {n} (beklenen 1) — "
+                               f"bölge birleştirme/paste hatası")
+    code = [l for l in lines if not l.lstrip().startswith("//")]
+    joined = "\n".join(code)
+    if "strategy(" in joined or re.search(r"^\s*alert\(", joined, re.M) or "alertcondition(" in joined:
+        raise RuntimeError("pine lint HATA: strategy()/alert()/alertcondition() YASAK (M9b sınırı)")
+
+
+def assemble_pine(asset_block: str) -> str:
+    """Şablonun boş payload bölgesini (BEGIN..END dahil) TEK varlık bloğuyla
+    değiştirir → TradingView'a OLDUĞU GİBİ yapıştırılabilir TAM dosya (M9c)."""
+    with open(TEMPLATE, encoding="utf-8") as fh:
+        tpl = fh.read().splitlines()
+    i0 = next(i for i, l in enumerate(tpl) if "PAYLOAD-BEGIN" in l)
+    i1 = next(i for i, l in enumerate(tpl) if i > i0 and "PAYLOAD-END" in l)
+    out = tpl[:i0] + asset_block.rstrip("\n").splitlines() + tpl[i1 + 1:]
+    txt = "\n".join(out) + "\n"
+    lint_pine(txt)
+    return txt
 
 
 def _pine_floats(vals) -> str:
@@ -118,21 +156,28 @@ def main() -> int:
     sections: List[str] = []
     header = [
         f"// quant4h viz payload — {tag} · üretim: {pd.Timestamp.utcnow().isoformat(timespec='seconds')}Z",
+        "// UYARI: BU TXT'YI PINE'A DOGRUDAN YAPISTIRMAYIN (M9c vakasi: baslik yorumlari",
+        "//   `payloadMeta =` satirina karisir; cok-varlik bloklari duplicate-declaration verir).",
+        f"//   HAZIR DOSYA: viz/quant4h_viz_<ASSET>_{tag}.pine -> TAMAMINI kopyala-yapistir.",
         "// AKIŞ: capped · hücre: P0xA0 (Aşama 9 kilidi) · kaynak: data/processed frame'leri",
         "// UNTESTED-VIZ — DOĞRULUK KAYNAĞI DEĞİLDİR (kaynak: repo raporları/parquet'leri).",
-        "// KULLANIM: ilgili varlık bloğunu pine/quant4h_viz.pine PAYLOAD bölgesine yapıştırın.",
         "// watch_only: trade YOK · emir YOK · tavsiye YOK · icra open[t+1] burada gösterilmez.",
         "",
     ]
     ok = 0
+    os.makedirs(args.out, exist_ok=True)
     for key in args.assets:
         sec = export_asset(key, args.timeframe, month_start, month_end)
         if sec is None:
             print(f"  [{key}] frame yok — atlandı")
             continue
         sections.append(f"// ================= {key} =================\n{sec}")
+        pine_txt = assemble_pine(sec)
+        ppath = os.path.join(args.out, f"quant4h_viz_{key}_{tag}.pine")
+        with open(ppath, "w", encoding="utf-8") as fh:
+            fh.write(pine_txt)
         ok += 1
-        print(f"  [{key}] payload üretildi")
+        print(f"  [{key}] payload + HAZIR pine: {os.path.relpath(ppath, ROOT)}")
     if not ok:
         print("HATA: hiçbir varlık için payload üretilemedi")
         return 1
@@ -140,7 +185,9 @@ def main() -> int:
     path = os.path.join(args.out, f"payload_{tag}.txt")
     with open(path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(header) + "\n" + "\n".join(sections))
-    print(f"\nçıktı: {os.path.relpath(path, ROOT)} ({ok} varlık)")
+    print(f"\nreferans döküm: {os.path.relpath(path, ROOT)} ({ok} varlık)")
+    print(f"TRADINGVIEW: viz/quant4h_viz_<ASSET>_{tag}.pine dosyasının TÜMÜNÜ yeni "
+          "indikatör sekmesine yapıştırın (bölge ameliyatı YOK).")
     return 0
 
 
