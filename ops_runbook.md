@@ -1,6 +1,6 @@
 # ops_runbook.md — quant4h watch_only operasyon el kitabı
 
-*Sürüm: **v1.3** (2026-09-18, M9b kullanıcı onaylı: §A-cadence BIST slotları v1.1 ızgara kapanışlarına hizalandı 14:00/18:00 + `pine/` görselleştirme eki notu. v1.2 2026-09-17: §B alpha-spending tarifesi + look başına üniverse dondurma + üyelik değişim logu · §A.3b aylık raw-drift hash logu. v1.1 2026-09-17: §A komut düzeltmesi — `--start` eklendi + veri çekim/cache politikası; 2026-09 izleme vakaları §A.2'de. v1 2026-09-17 kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
+*Sürüm: **v1.4** (2026-09-18, M14 kullanıcı onaylı: §A-cadence kural 7 "viz tazeleme". v1.3 2026-09-18: §A-cadence BIST slotları v1.1 ızgara kapanışlarına hizalandı 14:00/18:00 + `pine/` görselleştirme eki notu. v1.2 2026-09-17: §B alpha-spending tarifesi + look başına üniverse dondurma + üyelik değişim logu · §A.3b aylık raw-drift hash logu. v1.1 2026-09-17: §A komut düzeltmesi — `--start` eklendi + veri çekim/cache politikası; 2026-09 izleme vakaları §A.2'de. v1 2026-09-17 kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
 
 > **KURAL 0:** Bu runbook trade üretmez. Her çıktının üzerinde `watch_only — trade YOK, emir YOK, tavsiye YOK` başlığı bulunur. Sistem edge KANITLAYAMADI (GEÇTİ=0); hiçbir izleme çıktısı "sistem çalışıyor/kazanıyor" şeklinde YORUMLANAMAZ.
 
@@ -74,6 +74,11 @@ python3 -W ignore scripts/cadence_4h_status.py --fetch              # canlı çe
 4. **Restore (§A.5 cadence'e uygulanır):** fetch'li koşu sonrası `git checkout -- data/ reports/` (yalnız `reports/cadence/` KORUNUR) + `.state.json → assets` frozen baseline'a sıfırlanır (`last_fetch_utc` korunur — rate kapısı). Bildirim dosyaları günün kanıtı olarak kalır.
 5. **Slot-ızgara hizası (M9b ile ÇÖZÜLDÜ):** BIST30 slotları artık v1.1 ızgara kapanışlarıyla birebir (14:00/18:00); referans mum kuralı aynıdır: "slot anında KAPALI olan son mum" + yaşı açıkça yazılır. Slot tablosu değişikliği kullanıcı onayı gerektirir (`scripts/cadence_4h_status.py → SLOTS_*`).
 6. `reports/cadence/last_fetch.log` yerel operasyon logudur, commit EDİLMEZ (.gitignore).
+7. **Viz tazeleme (M14, 2026-09-18):** her `--fetch`'li cadence/§A koşusu zincirin sonunda
+   `scripts/export_viz_payload.py --month <ay>` ile `viz/quant4h_viz_multi_<AY>.pine`
+   (4 blok gömülü + trade-review dizileri) ve varlık başına hazır `.pine` dosyalarını
+   YENİLER. Manuel: aynı komut. Payload ufku = son --fetch'li koşu; eski dosya = eski veri
+   (pine banner'ında "payload ufku" satırı görünür).
 
 **İlk koşu kanıtı (2026-09-18, 3 dosya):** `2026-09-18_1500.md` (fetch'siz → BAYAT yolu) · `2026-09-18_1900.md` (fetch'li: BTC +14 bar taze, referans yaş 0.0h, canlı final LONG sinyali YAKALANDI — EYLEM yine YOK; aynı fetch'te Yahoo rate-limit → GOLD/SILVER RED+BAYAT satırları dürüstçe basıldı, kapı öncesi koşu) · `2026-09-18_1800.md` (RED kapısı → ⛔ SORUN NOTU, exit 3).
 

@@ -48,6 +48,11 @@ donLow    = array.from<float>(15998.24, 15998.24, 16129.00, 16120.41, 16120.41, 
 sigLong   = array.from<int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 sigShort  = array.from<int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 sigPrice  = array.from<float>(na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na, na)
+trETs  = array.from<int>()
+trEPx  = array.from<float>()
+trXTs  = array.from<int>()
+trXPx  = array.from<float>()
+trR    = array.from<float>()
 // ---- PAYLOAD-END
 // ---------------------------------------------------------------------------
 

@@ -62,6 +62,19 @@
 | İcra | sinyal bar t KAPANIŞI → giriş open[t+1] | kabul kriteri 3 |
 | Grafik öğeleri | mum + EMA200 + yapısal seviyeler (+ M9b marker'ları; hepsi input ile kapatılabilir) | `simplicity_rules.max_chart_elements=3` + M9b direktifi |
 
+## 3b) M14 MULTI v2 kontrol listesi (`viz/quant4h_viz_multi_<AY>.pine`)
+
+| # | kontrol | beklenen |
+|---|---|---|
+| M1 | sembol eşlemesi | BTCUSDT / GC1!·GC=F·XAUUSD / SI1!·SI=F·XAGUSD / XU030 dışında → çizim YOK + "⚠ PAYLOAD YOK" banner'ı |
+| M2 | SADE MOD varsayılan | yalnız ▲ "AL koşulu oluştu (sinyal kaydı)" + ✖ "SAT koşulu (sinyal kaydı)"; EMA/seviyeler toggle-KAPALI |
+| M3 | TRADE-REVIEW toggle | R etiketleri (trade başına, çıkışta) + kümülatif R stepline (scale.none); kaynak = reports/trades_*.csv gömülü diziler; Pine'da hesap YOK |
+| M4 | trade dizisi paritesi | pine giriş-trade sayısı == trades CSV satır sayısı (üretici lint + test_viz_multi) |
+| M5 | BIST30 bloğu | trade-review YOK (boş diziler); banner "trade-review: YOK" |
+| M6 | SABİT banner | UNTESTED-VIZ + watch_only + "doğruluk kaynağı DEĞİL" + payload ufku satırı kapatılamaz |
+| M7 | strategy/alert | kod satırlarında YOK (lint_multi) |
+| M8 | payload ufku | dosya her --fetch'li §A koşusunda yenilenir (runbook §A-cadence kural 7) |
+
 ## 4) UNTESTED-VIZ etiketinin anlamı
 
 Bu ek **hiçbir aşamada** otomatik doğrulanmadı: Pine derleyicisi bu ortamda yok; parite listesi (§2) elle uygulanana kadar çizimlerin doğruluğu **VARSAYILMAZ**. Etiket, pine dosyasının başlığında, payload başlığında ve bilgi tablosunda GÖRÜNÜR olmak zorundadır. Etiket kaldırılırsa bu plan ihlal edilmiş olur.
