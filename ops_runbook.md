@@ -1,6 +1,6 @@
 # ops_runbook.md — quant4h watch_only operasyon el kitabı
 
-*Sürüm: **v1.1** (2026-09-17: §A komut düzeltmesi — `--start` eklendi + veri çekim/cache politikası; 2026-09 izleme vakaları §A.2'de. v1 2026-09-17 kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
+*Sürüm: **v1.2** (2026-09-17, kullanıcı onaylı maint M3: §B alpha-spending tarifesi + look başına üniverse dondurma + üyelik değişim logu · §A.3b aylık raw-drift hash logu. v1.1 2026-09-17: §A komut düzeltmesi — `--start` eklendi + veri çekim/cache politikası; 2026-09 izleme vakaları §A.2'de. v1 2026-09-17 kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
 
 > **KURAL 0:** Bu runbook trade üretmez. Her çıktının üzerinde `watch_only — trade YOK, emir YOK, tavsiye YOK` başlığı bulunur. Sistem edge KANITLAYAMADI (GEÇTİ=0); hiçbir izleme çıktısı "sistem çalışıyor/kazanıyor" şeklinde YORUMLANAMAZ.
 
@@ -17,6 +17,7 @@
    **Veri çekim politikası (v1.1):** `--start 2017-08-17` ZORUNLUDUR — eksikse Binance adaptörü yalnız son ~1.000 barı çeker ve BTC raw cache'ini KIRPAR (2026-09 vakası). Varsayılan mod cache'lidir; ayın İLK canlı çekimi `--no-cache --start 2017-08-17` ile YALNIZ 1 KEZ yapılır, **aynı gün ikinci `--no-cache` YASAK** (Yahoo rate-limit → geçici RED üretir; 2026-09 vakası). Çekim başarısızsa taze cache'e dönülür ve sapma notuna yazılır. Raw cache üzerine yazılması normaldir (yeni snapshot); **frozen snapshot'lara asla dokunulmaz** — koşu sonrası `register_splits.py --check` EXIT 0 + drift BİLGİ notu doğrulanır.
 2. `run_regime_report.py` → `run_levels_report.py` → `run_momentum_report.py` → `run_signal_report.py` (sıra bağlayıcı; zincir kolonları bir öncekine dayanır).
 3. Elle derleme (rapor şablonu §A1): son 30 günün ham/final sinyal sayaçları (strict/capped/cooldown_only akışları), rejim dağılımı, XU030 bağlam durumu, `rejected_no_valid_stop` ve `non_tradable` sayaçları, veri kesintisi/roll adayları.
+3b. **Raw-drift hash logu (v1.2, ZORUNLU):** `data/raw/` altındaki HER ham dosyanın sha256'sı + satır sayısı raporun "Raw hash logu" alanına yazılır ve ÖNCEKİ AYIN raporuyla karşılaştırılır; **değişen her hash için** tek satır: varlık, eski→yeni satır sayısı, çekim tarihi. Bu log, satıcı drift'inin (vendor'ın geçmişi sessizce yeniden yazması) TEK izleme kanalıdır (R04 azaltımı; `data/raw/` artık repoda tracked DEĞİL — M4 kararı, hash izi bu yüzden raporlarda yaşar).
 4. `git` hijyeni: aylık rapor `reports/monitor/YYYY-MM.md` olarak commit edilir (patch senkron kuralı PROGRESS'te).
 5. **Restore (v1.1, ZORUNLU SIRA):** aylık raporun sayıları derlendikten SONRA `git checkout -- data/ reports/` ile canlı drift ve ara raporlar checkpoint durumuna geri alınır (`reports/monitor/` HARİÇ — o ayın artefaktıdır). Gerekçe: (a) repoda "commit'li veri == commit'li rapor" tutarlılığı; (b) **drift varken test suite KOŞULMAZ** — `test_splits.py` determinizm testi frozen snapshot'ı canlı verinin üzerine yazar (live==frozen iken no-op, drift altında DESTRÜKTİF; 2026-09 vakasında sha kilidi yakaladı, teknik borç kayıtlı: test tmp dizine alınmalı, onay bekliyor); (c) yeni barlar araştırmaya yalnız §B.1 yeni ön-kayıtla girer (H17). Suite ancak restore SONRASI koşulur.
 
@@ -38,6 +39,7 @@
 - Sinyal sayaçları (30 gün): ham → final (akış bazında), bastırılan (pozisyon/cooldown)
 - Reddedilen girişler: no_valid_stop / not_tradable / geometry
 - Veri olayları: kesinti penceresi, roll/bad-print adayları, kurumsal aksiyon bayrakları
+- Raw hash logu (v1.2): data/raw/ dosya başına sha256 + satır sayısı · önceki aya göre DEĞİŞENLER (değişim yoksa "yok")
 - Sapma notu: bu ay protokol dışı HİÇBİR şey yapıldı mı? (varsayılan: HAYIR)
 ```
 
@@ -48,10 +50,21 @@
 **Frekans tavanı:** yılda **maksimum 4 look** (çeyreklik). Erken look YASAK (yeni çeyrek kapanmadan veri birikmez). Look hakkı DEVREDİLEMEZ/birikmez (kullanılmayan çeyrek yanar).
 
 **Her look'un ZORUNLU sırası (sıra ihlali = hüküm geçersiz):**
-1. **ÖN-KAYIT (koşudan ÖNCE, commit'li):** `register_splits.py` policy_version ARTIRILARAK (v2, v3, …) YENİ `configs/splits_preregistered.yaml` üretilir; eski sürüm SİLİNMEZ (arşiv geleneği v1.0'daki gibi). Yeni frozen snapshot'lar + sha256'lar yazılır. Look'un kapsamı (hangi varlıklar, hangi hücre kümesi — değişmez: {P0..P3}×{A0..A2}, a-priori hücreler ve önceki look'un seçimi) ve hipotez NOTU ön-kayıt dosyasına işlenir.
+1. **ÖN-KAYIT (koşudan ÖNCE, commit'li):** `register_splits.py` policy_version ARTIRILARAK (v2, v3, …) YENİ `configs/splits_preregistered.yaml` üretilir; eski sürüm SİLİNMEZ (arşiv geleneği v1.0'daki gibi). Yeni frozen snapshot'lar + sha256'lar yazılır. Look'un kapsamı (hangi varlıklar, hangi hücre kümesi — değişmez: {P0..P3}×{A0..A2}, a-priori hücreler ve önceki look'un seçimi) ve hipotez NOTU ön-kayıt dosyasına işlenir. **ÜNİVERSE DONDURMA (v1.2):** `configs/bist30_universe.yaml` sürümü look için doğrulanır ve ön-kayda `universe_version` + dosya sha256'sı yazılır; üyelik DEĞİŞMİŞSE yeni tarih damgalı sürüm eklenir (eski silinmez), **üyelik değişim logu** (çıkan/giren + gerekçe + kaynak) ön-kayda işlenir ve look raporunda "önceki look'la karşılaştırılabilirlik" notu ZORUNLUDUR.
 2. **SEÇİM (yalnız yeni TRAIN):** `run_stage9.py --phase select` → seçim `selected_cells.yaml`'a YENİ hash'lerle dondurulur (eski seçim dosyası `selected_cells.v<N-1>.yaml` olarak arşivlenir, silinmez).
-3. **VERDICT:** `run_stage9.py --phase verdict` — aynı kilitli eşikler (`go_no_go`: n≥100 core/150 basket · expR>0 · CI altı>0 · PF≥1.2 · maxDD≤%25), aynı VALID sağduyu kuralı (negatifse TEST KOŞULMAZ), TEST **bu look'ta 1 kez**.
+3. **VERDICT:** `run_stage9.py --phase verdict` — aynı kilitli eşikler (`go_no_go`: n≥100 core/150 basket · expR>0 · CI altı>0 · PF≥1.2 · maxDD≤%25) ANCAK CI düzeyi aşağıdaki **alpha-spending tarifesine** göre hesaplanır; aynı VALID sağduyu kuralı (negatifse TEST KOŞULMAZ), TEST **bu look'ta 1 kez**.
 4. **LOG (§C) + PROGRESS bloğu + patch** (senkron kuralı).
+
+**ALPHA-SPENDING TARİFESİ (v1.2, bağlayıcı — R03 azaltımı; kullanıcı onayı 2026-09-17):**
+Tekrarlanan OOS bakışları çoklu-test yükü biriktirir; go/no-go'nun "CI altı > 0" koşulundaki güven düzeyi KÜMÜLATİF look sayısıyla SIKILAŞIR (gevşetilmez):
+
+| kümülatif look (§C log'una göre) | bootstrap CI düzeyi |
+|---|---|
+| 1–4 | %95 (mevcut `bootstrap_ci` çıktısı) |
+| 5–8 | **%97.5** |
+| 9+ | **%99** |
+
+Kurallar: (a) look numarası §C log'undan OKUNUR (beyan değil, kayıt); (b) Aşama 9 (2026-09-17) look **#1**'dir ve %95 ile koştu — tutarlı; (c) düzey değişikliği `run_stage9.py`'de kod güncellemesi gerektirir ve look ÖNCESİ commit'lenir (sonradan düzey seçmek YASAK); (d) bu tarife yalnız SIKILAŞTIRIR — `user_decisions.yaml → go_no_go` eşiklerinin gevşetilmesi hiçbir look'ta yapılamaz.
 
 **Eşik/küme DEĞİŞİKLİĞİ YASAĞI:** go/no-go eşikleri, aday kümeleri, fill kuralları ve maliyet modelleri look'lar arasında DEĞİŞTİRİLEMEZ (değişiklik ancak kullanıcı onayı + yeni protokol sürümü v2 ile; eski hükümler yeniden yorumlanamaz).
 
@@ -65,6 +78,8 @@
 | 2 | *(erken: ≥2026-12-17 çeyrek kapanışı)* | v2 (look ÖNCESİ yazılacak) | — | — | — | çeyreklik hak 1/4 |
 
 *Yıllık look sayacı: 2026 → 1/4 kullanıldı (Aşama 9). 2027 takvim yılında sayaç sıfırlanır.*
+
+**Look başına ZORUNLU kayıt alanları (v1.2):** kümülatif look no + uygulanan alpha-spending düzeyi (CI%) · `universe_version` + sha256 (değiştiyse üyelik değişim logu referansı) · ön-kayıt policy sürümü + dosya sha256'sı · seçim dosyası sha256'sı · TEST koşulan varlıklar ve hükümler.
 
 ## D) PROTOKOL İHLALİ TANIMI VE YAPTIRIMI
 

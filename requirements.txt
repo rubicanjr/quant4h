@@ -1,61 +1,74 @@
-# quant4h — doğrulanmış ortam (2026-09-16)
-# Kurulum:  python3 -m pip install -r requirements.txt
-# Not: sürümler bu projenin test edildiği gerçek sürümlerdir. pandas 3.x
-# davranışları (Copy-on-Write, microsecond datetime çözünürlüğü) kodda
-# varsayılır; pandas 2.x ile test EDİLMEDİ.
+# quant4h -- verified environment (2026-09-16; rev 2026-09-17 maint M1)
+# ENCODING: pure ASCII -- Windows cp1254/legacy locale pipelines must not hit
+# UnicodeDecodeError (evidence: local Windows failure 2026-09-17, risk R02).
+# Install:  python3 -m pip install -r requirements.txt
+# Lock:     requirements.lock (full freeze; regenerate with
+#           scripts/make_requirements_lock.py after ANY dependency change)
+# Note: versions below are the exact ones this project was tested with.
+# pandas 3.x behavior (Copy-on-Write, microsecond datetime resolution) is
+# assumed by the code; pandas 2.x is NOT tested.
 
-# --- çekirdek (zorunlu) ---
+# --- core (mandatory) ---
 numpy==2.4.6
 pandas==3.0.5
-pyarrow==25.0.1          # parquet okuma/yazma (raw + interim katmanı)
+pyarrow==25.0.1          # parquet read/write (raw + interim layers)
 PyYAML==6.0.3            # configs/*.yaml
 
-# --- istatistik / ML ---
-scikit-learn==1.9.1      # HistGradientBoosting = LightGBM muadili (bkz. aşağıdaki NOT)
-statsmodels==0.15.0      # walk-forward istatistik testleri, ADF
-scipy>=1.14              # sklearn/statsmodels bağımlılığı
+# --- statistics / ML ---
+scikit-learn==1.9.1      # HistGradientBoosting = LightGBM substitute (see NOT 1)
+statsmodels==0.15.0      # walk-forward stats, ADF
+scipy==1.17.1            # PINNED (was >=1.14; R02) -- sklearn/statsmodels dependency
 
-# --- görselleştirme / raporlama ---
-matplotlib==3.11.2       # temiz grafikler: mum + EMA200 + yapısal seviyeler (maks. 3 öğe)
+# --- visualization / reporting ---
+matplotlib==3.11.2       # clean charts: candles + EMA200 + structural levels (max 3 items)
 
-# --- model açıklanabilirliği (opsiyonel ML katmanı için) ---
+# --- model explainability (optional ML layer) ---
 shap==0.51.0
 
-# --- veri kaynakları ---
+# --- data sources ---
 yfinance==1.7.0          # GC=F, SI=F, XU030.IS, DXY, US10Y, USDTRY, SPX, VIX
-                         # Binance için ayrı paket YOK: adapters.py saf urllib kullanır.
+                         # No separate package for Binance: adapters.py uses pure urllib.
+
+# --- tests / CI (added 2026-09-17, maint M1) ---
+pytest==8.3.3            # CI runs `pytest -q tests/`; the house self-runners
+                         # (python3 tests/test_X.py) remain equally authoritative
+                         # and are what PROGRESS counts refer to.
 
 # ============================================================================
-# NOT 1 — LightGBM / XGBoost BİLEREK LİSTEDE YOK
+# NOT 1 -- LightGBM / XGBoost are DELIBERATELY NOT LISTED
 # ============================================================================
-# Bu ikisi OpenMP çalışma zamanı kütüphanesine (libgomp.so.1) ihtiyaç duyar.
-# Proje ortamında bu kütüphane YOK ve kurulamadı (apt kaynağı erişilemez):
+# Both need the OpenMP runtime library (libgomp.so.1).
+# The original project environment lacked it and apt was unreachable:
 #     OSError: libgomp.so.1: cannot open shared object file
-# Karar: ML gerekirse sklearn.ensemble.HistGradientBoostingClassifier kullanılır
-# (histogram tabanlı, LightGBM ile aynı aile; OpenMP'yi sklearn kendi içinde
-# statik bağladığı için ek sistem paketi gerektirmez ve bu ortamda ÇALIŞIYOR).
-# Kendi makinenizde libgomp varsa şunları ekleyebilirsiniz:
+# Decision: if ML is ever needed, use sklearn.ensemble.HistGradientBoostingClassifier
+# (histogram-based, same family as LightGBM; sklearn statically links its own
+# OpenMP runtime, so no extra system package is required).
+# On your own machine (with libgomp) you may add:
 #     lightgbm==4.5.0
 #     xgboost==2.1.1
 
 # ============================================================================
-# NOT 2 — yfinance kısıtları (veri planlamasını doğrudan etkiler)
+# NOT 2 -- yfinance limits (directly affects data planning)
 # ============================================================================
-# Yahoo chart endpoint'i intraday aralıklarda SERT limitler uygular:
-#     1m            -> en fazla 7 gün
-#     2m/5m/15m/30m -> en fazla 60 gün
-#     1h / 60m      -> en fazla 730 gün   << GOLD, SILVER, BIST30 bununla sınırlı
-#     1d/1wk/1mo    -> tüm geçmiş
-# Ayrıca interval=1h & period=max BOŞ payload döndürür; adapters.py bunu
-# _INTRADAY_MAX_PERIOD ile otomatik olarak 730d'ye düşürür.
-# Yahoo agresif rate-limit uygular (HTTP 429). Bu yüzden:
-#   * ham veriler data/raw/*.parquet altında cache'lenir ve immutable'dır
-#   * scripts/run_data_qc.py --retries N --retry-sleep S ile yeniden dener
+# Yahoo chart endpoint enforces HARD limits on intraday intervals:
+#     1m            -> max 7 days
+#     2m/5m/15m/30m -> max 60 days
+#     1h / 60m      -> max 730 days   << GOLD, SILVER, BIST30 are bound by this
+#     1d/1wk/1mo    -> full history
+# Also interval=1h & period=max returns an EMPTY payload; adapters.py
+# automatically falls back to 730d via _INTRADAY_MAX_PERIOD.
+# Yahoo applies aggressive rate limiting (HTTP 429 / empty responses -- observed
+# 2026-09-17). Therefore:
+#   * raw data is cached under data/raw/*.parquet and treated as immutable
+#   * scripts/run_data_qc.py --retries N --retry-sleep S retries
+#   * raw layer is NOT redistributed in the repo (ToS; see README provenance)
 
 # ============================================================================
-# NOT 3 — test
+# NOT 3 -- test runners
 # ============================================================================
-# pytest zorunlu DEĞİL: tests/test_resample_qc.py kendi çalıştırıcısını içerir.
-#     python3 -W ignore tests/test_resample_qc.py      -> 21/21 beklenir
-# pytest tercih edilirse:
-#     pytest==8.3.3
+# Two equivalent entry points:
+#   1) house self-runners (no pytest needed):
+#        python3 -W ignore tests/test_resample_qc.py     -> 21/21 expected
+#      (PROGRESS "Test durumu" counts refer to these runners)
+#   2) pytest (CI):
+#        pytest -q tests/

@@ -2,6 +2,8 @@
 
 *Üretim: 2026-09-17 · Tür: **SALT-OKUNUR RİSK DENETİMİ** (kod değişikliği YOK, hüküm YOK, tune YOK) · Kapsam: repo taraması + DR tatbikatı + tohum risk listesinin doğrulanması/genişletilmesi · Statü değiştirmez: proje watch_only/araştırma-kapalı.*
 
+> **GÜNCELLEME (2026-09-17, maint-riskfix patch'i — kullanıcı onaylı):** R01 → CI eklendi (`.github/workflows/ci.yml`) · R02 → scipy pin + pytest + `requirements.lock` · R03 → runbook v1.2 alpha-spending tarifesi · R04 → aylık raw-drift hash logu (ara azaltım; fetch-log kodu hâlâ açık) · R05 → look başına üniverse dondurma (§B.1 v1.2) · R06 → kullanıcı kararı: PUBLIC kalır + `data/raw/` untrack + README provenans · R09 → 224/224 senkron (test iğnesiyle). **AÇIK KALAN:** R07 (kadans — CI cron önerisi), R08 (metals kontrat-ay → quant4h-M), R10–R15 (P3 kuyruğu; R11 test matrisi gelecek ayın maint'i).
+
 Ölçekler: **Önem** = gerçekleşirse projeye etkisi (Y/O/D) · **Olasılık** = önlem alınmazsa görülme sıklığı (Y/O/D) · **Öncelik**: P1 (hemen/ilk fırsatta) · P2 (bir sonraki bakım penceresi) · P3 (fırsat buldukça). **Sahip**: K=kullanıcı, A=ajan (onayla), O=ortak.
 
 ---

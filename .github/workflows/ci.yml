@@ -1,0 +1,74 @@
+# quant4h — minimal CI (maint M2, 2026-09-17, kullanici onayli; risk R01)
+# push/PR'da: py3.11 + requirements + pytest -q + house suite + on-kayit/frozen bekçisi.
+# NOT: data/raw/ repoda DEGILDIR (M4 karari — ToS); raw'a bagimli tek test
+# (test_1h_adjclose_trap_is_real_and_documented) zarif SKIP verir, suite yesil kalir.
+# frozen/interim/processed tracked oldugu icin CI'da tam dogrulama mumkundur.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies (pinned)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: pytest -q
+        run: python -m pytest -q tests/
+
+      - name: House self-runners (PROGRESS counts are authoritative)
+        run: |
+          total=0; fail=0
+          for t in tests/test_*.py; do
+            out=$(python -W ignore "$t" | tail -1)
+            echo "$t -> $out"
+            p=$(echo "$out" | sed -E 's#([0-9]+)/([0-9]+) passed#\1#')
+            f=$(echo "$out" | sed -E 's#([0-9]+)/([0-9]+) passed#\2#')
+            total=$((total + p))
+            if [ "$p" != "$f" ]; then fail=$((fail + 1)); fi
+          done
+          echo "HOUSE TOTAL: $total · failing files: $fail"
+          if [ "$fail" -ne 0 ]; then exit 1; fi
+
+      - name: Pre-registration check (register_splits --check)
+        run: python scripts/register_splits.py --check
+
+      - name: Frozen sha256 guard (H17 — explicit)
+        run: |
+          python - <<'PY'
+          import hashlib, sys, yaml
+          doc = yaml.safe_load(open("configs/splits_preregistered.yaml", encoding="utf-8"))
+          entries = list((doc.get("assets") or {}).values())
+          if isinstance(doc.get("bist30_basket"), dict):
+              entries.append(doc["bist30_basket"])
+          bad = []
+          for rec in entries:
+              p = rec["frozen_file"]
+              h = hashlib.sha256(open(p, "rb").read()).hexdigest()
+              if h != rec["frozen_sha256"]:
+                  bad.append((p, h[:12], rec["frozen_sha256"][:12]))
+          if bad:
+              print("FROZEN SHA GUARD FAILED:", bad)
+              sys.exit(1)
+          print(f"FROZEN SHA GUARD OK: {len(entries)}/{len(entries)} snapshot matches pre-registration")
+          PY

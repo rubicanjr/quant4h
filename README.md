@@ -19,7 +19,7 @@ sinyal üretim** sistemi.
 |---|---|
 | Proje statüsü | **ARAŞTIRMA-KAPALI · watch_only** (Aşama 11 kapanışı, 2026-09-17) |
 | Aşama | **0–9 ✅ · 11 ✅ TAMAM** · 10 (ML) `ml_policy.gate` KAPALI (Aşama 9: GEÇTİ=0) |
-| Testler | **223/223 PASS** |
+| Testler | **224/224 PASS** |
 | Aşama 9 OOS hükmü | **GEÇTİ = 0** → BTC **KALDI** (VALID expR −0.32; TEST koşulmadı) · GOLD/SILVER **ZAYIF (örneklem)** · BIST30 sepet **KALDI** (VALID −0.06) · hepsi `watch_only` |
 | Nihai kayıt | `reports/final_verdict.md` (hüküm + protokol günlüğü + look=1) |
 | Model kartı | `models/model_card.md` (NEDİR / NE DEĞİLDİR / watch_only tanımı / ML gate KAPALI) |
@@ -43,7 +43,7 @@ sinyal üretim** sistemi.
 
 ### Bu repo neyi KANITLADI / KANITLAMADI
 
-**Kanıtlandı (yöntem):** ön-kayıt → inşa → OOS hüküm kapısı uçtan uca ÇALIŞIYOR: frozen sha256 kilitleri, look-ahead silme testleri, pesimist fill sözleşmesi, H35, tune yasakları (küme dışı ValueError), seçim dondurma + TEST RED kilidi, tek-look disiplini, 223 regresyon testi, tam denetim izi (H1–H45 + D1–D8). İn-sample'da ölçülen hiçbir sonuç OOS'a taşınmadı ve sistem bunu **dürüstçe KALDI/ZAYIF diye raporladı** — pipeline'ın overfit'e karşı direnci bizzat kendi çıktısıyla doğrulandı.
+**Kanıtlandı (yöntem):** ön-kayıt → inşa → OOS hüküm kapısı uçtan uca ÇALIŞIYOR: frozen sha256 kilitleri, look-ahead silme testleri, pesimist fill sözleşmesi, H35, tune yasakları (küme dışı ValueError), seçim dondurma + TEST RED kilidi, tek-look disiplini, 224 regresyon testi, tam denetim izi (H1–H45 + D1–D8). İn-sample'da ölçülen hiçbir sonuç OOS'a taşınmadı ve sistem bunu **dürüstçe KALDI/ZAYIF diye raporladı** — pipeline'ın overfit'e karşı direnci bizzat kendi çıktısıyla doğrulandı.
 
 **Kanıtlanmadı (edge):** bu kural seti, bu varlıklarda, bu dönemde (2024–2026 tek yönlü boğa; TEST 159 gün; metaller 2.4 yıl) ölçülebilir bir edge ÜRETMEDİ. BTC ve sepet için OOS beklenen değer negatif; metaller için örneklem hüküm vermeye yetmiyor. **Sistem para kazanıyor DENEMEZ; kaybediyor da DENEMEZ** (GOLD/SILVER) veya **ölçülen dönemde edge gösteremedi** (BTC/sepet). Devamı yalnız runbook'taki ön-kayıtlı look'larla mümkün.
 
@@ -387,6 +387,21 @@ bütünlüğü, faz hizalamasına bilinçli olarak tercih edildi.
 ---
 
 ## 7. Veri durumu ve bilinen sınırlar
+
+### 7.0 Veri provenansı ve ToS notu (M4 kararı, 2026-09-17 — kullanıcı onaylı)
+
+- **`data/raw/` repoda DAĞITILMAZ** (git takibinden çıkarıldı): ham katman, vendor
+  kaynaklarından **yerelde** çekilir — Binance spot klines (public API), Yahoo Finance
+  (`yfinance`, resmî olmayan istemci; Yahoo ToS kişisel kullanım, yeniden dağıtım
+  yasak), BIST30 üniversal listesi web kaynaklarından (Investing.com ve diğerleri,
+  `configs/bist30_universe.yaml → sources` içinde erişim tarihleriyle kayıtlı).
+- Ham veriyi yeniden elde etmek: `scripts/run_data_qc.py ... --no-cache --start 2017-08-17`
+  (core 4 varlık) ve `scripts/run_bist_universe.py` (hisseler) — runbook §A politikasıyla.
+- **`data/frozen/`, `data/interim/`, `data/processed/` tekrarlanabilirlik için tracked
+  KALIR** (sha256 kilitli ön-kayıt artefaktları + türetilmiş katmanlar).
+- Repo PUBLIC kalır (kullanıcı kararı 2026-09-17); kod + raporlar + türetilmiş
+  snapshot'lar araştırma kaydıdır, ham vendor verisi yeniden dağıtılmaz.
+- Aylık raw-drift hash logu: `reports/monitor/*.md` (runbook §A.3b).
 
 | Varlık | Enstrüman | Bar | Geçmiş | Kalite | En önemli sınır |
 |---|---|---:|---|---|---|

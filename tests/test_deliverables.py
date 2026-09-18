@@ -73,11 +73,16 @@ def test_runbook_protocol_invariants() -> None:
     for needle in ("watch_only", "trade YOK", "AYLIK SİNYAL İZLEME",
                    "maksimum 4 look", "ÖN-KAYIT", "policy_version",
                    "LOOK LOG", "PROTOKOL İHLALİ", "HÜKÜMSÜZDÜR",
-                   "YENİ PROJE", "erken look YASAK".upper()):
+                   "YENİ PROJE", "erken look YASAK".upper(),
+                   # v1.2 (maint M3, 2026-09-17): alpha-spending + universe + raw-drift
+                   "ALPHA-SPENDING TARİFESİ", "%97.5", "%99",
+                   "ÜNİVERSE DONDURMA", "üyelik değişim logu", "Raw hash logu"):
         assert needle.upper() in doc.upper(), f"runbook'ta yok: {needle!r}"
     # look log ilk kayıt: Aşama 9 hükmüyle tutarlı
     assert "2026-09-17" in doc and "GEÇTİ=0" in doc
     assert "GOLD, SILVER" in doc and "KOŞULMADI" in doc
+    # alpha-spending: look 1-4 %95 bandı Aşama 9 (look #1) ile tutarlı olmalı
+    assert "1–4" in doc and "%95" in doc
 
 
 def test_readme_research_closed_section() -> None:
@@ -85,7 +90,7 @@ def test_readme_research_closed_section() -> None:
     for needle in ("ARAŞTIRMA-KAPALI", "watch_only", "GEÇTİ = 0",
                    "Bu repo neyi KANITLADI", "Kanıtlanmadı (edge)",
                    "final_verdict.md", "model_card.md", "ops_runbook.md",
-                   "223/223"):
+                   "224/224", "Veri provenansı ve ToS notu"):
         assert needle in doc, f"README'de yok: {needle!r}"
 
 
