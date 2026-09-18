@@ -4,16 +4,16 @@ watch_only · trade YOK · emir YOK · tavsiye YOK · hüküm YOK · look hakkı
 Manuel tetiklenir (scheduler YOK — ops_runbook §A-cadence).
 
 Zamanlama (Europe/Istanbul = UTC+3, Türkiye'de DST yok → yıl boyu sabit):
-  * BIST30            : 11:00, 15:00 (4H) + 18:00 (seans sonu 1H)
+  * BIST30            : 14:00, 18:00 (4H kapanışları; 18:00 = seans sonu)
+                        [M9b revizyonu 2026-09-18, kullanıcı onaylı: eski 11:00/15:00
+                        slotları v1.1 ızgara kapanışlarına hizalandı]
   * BTC/GOLD/SILVER   : 03:00, 07:00, 11:00, 15:00, 19:00, 23:00 (4H)
   * Her bildirim: son mum TAMAMLANDIĞINDA (15 dk tolerans).
 
-DÜRÜSTLÜK NOTU (olduğu gibi uygulandı, direktif bağlayıcıdır): BIST30'un
-11:00/15:00 slotları v1.1 ızgarasının 4H kapanışlarıyla (lokal 14:00/18:00)
-ÇAKIŞMAZ. Script hiçbir slot için mum UYDURMAZ: her zaman "slot anında
-KAPALI olan son mum" + yaşını raporlar; uyumsuz slotlarda referans mum bir
-önceki seansın kapanışı olur ve yaş açıkça yazılır (kullanıcı slot revizyonu
-isterse tablo aşağıdaki SLOTS sabitinden değiştirilir — onay gerektirir).
+M9b REVİZYONU (2026-09-18, kullanıcı onaylı): BIST30 slotları v1.1 ızgara
+kapanışlarıyla HIZALANDI (14:00 = 10:00-14:00 mumu, 18:00 = 14:00-18:00 mumu +
+seans sonu). CORE slotları (03-23) değişmedi. Script hiçbir slot için mum
+UYDURMAZ: her zaman "slot anında KAPALI olan son mum" + yaşını raporlar.
 
 Şablon (direktif B): SAĞLIK → REJİM → SEVİYE → MOMENTUM → SİNYAL → EYLEM.
 
@@ -51,8 +51,13 @@ TZ_LOCAL = timezone(timedelta(hours=3), name="Europe/Istanbul (UTC+3, DST yok)")
 GRACE_MIN = 15                     # direktif A.3: mum kapanışı + 15 dk tolerans
 FETCH_GATE_MIN = 200               # --fetch için asgari ara (Yahoo rate-limit dersi, runbook v1.1)
 
-# Slot tabloları (LOKAL saat, direktif A.1/A.2 — birebir)
-SLOTS_BIST = ("11:00", "15:00", "18:00")          # 18:00 = seans sonu (1H kaynak; frame 4H)
+# Slot tabloları (LOKAL saat) — BIST revizyonu M9b (2026-09-18, kullanıcı onaylı):
+# 11:00/15:00 → v1.1 ızgara KAPANIŞLARINA hizalandı: bar etiketleri 07:00/11:00 UTC
+# (= lokal 10:00/14:00 açılış) → kapanışlar lokal **14:00** ve **18:00**.
+# 18:00 aynı zamanda seans sonudur (1H kaynak granularitesi; frame 4H). CORE slotları
+# (03–23) DEĞİŞMEDİ (direktif). Eski 11:00/15:00 BIST bildirimleri (2026-09-18
+# demo dosyaları) tarihî kayıttır; slot tablosu artık kapanışlarla birebir hizalı.
+SLOTS_BIST = ("14:00", "18:00")          # 4H kapanışlar: 10-14 ve 14-18 (18:00 = seans sonu)
 SLOTS_CORE = ("03:00", "07:00", "11:00", "15:00", "19:00", "23:00")
 CORE_ASSETS = ("BTC", "GOLD", "SILVER")
 # frozen (checkpoint) satır sayıları — ilk çalıştırmada "+X bar" referansı
@@ -273,11 +278,6 @@ def build_report(slot_dt: datetime, slot: str, fetch_note: Optional[str],
     L.append("")
     if fetch_note:
         L.append(f"> fetch: {fetch_note}")
-        L.append("")
-    if (slot in SLOTS_BIST) and slot != "18:00":
-        L.append("> ⚠️ DÜRÜSTLÜK NOTU: bu BIST30 slotu v1.1 ızgara kapanışıyla (lokal 14:00/18:00) "
-                 "çakışmıyor; referans mum = slot anında KAPALI olan son mum (yaşı aşağıda). "
-                 "Slot tablosu direktifle birebirdir; revizyon kullanıcı onayı gerektirir.")
         L.append("")
     for a in assets:
         L.extend(asset_section(a, slot_dt, now_utc, st))

@@ -1,6 +1,6 @@
 # ops_runbook.md — quant4h watch_only operasyon el kitabı
 
-*Sürüm: **v1.2** (2026-09-17, kullanıcı onaylı maint M3: §B alpha-spending tarifesi + look başına üniverse dondurma + üyelik değişim logu · §A.3b aylık raw-drift hash logu. v1.1 2026-09-17: §A komut düzeltmesi — `--start` eklendi + veri çekim/cache politikası; 2026-09 izleme vakaları §A.2'de. v1 2026-09-17 kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
+*Sürüm: **v1.3** (2026-09-18, M9b kullanıcı onaylı: §A-cadence BIST slotları v1.1 ızgara kapanışlarına hizalandı 14:00/18:00 + `pine/` görselleştirme eki notu. v1.2 2026-09-17: §B alpha-spending tarifesi + look başına üniverse dondurma + üyelik değişim logu · §A.3b aylık raw-drift hash logu. v1.1 2026-09-17: §A komut düzeltmesi — `--start` eklendi + veri çekim/cache politikası; 2026-09 izleme vakaları §A.2'de. v1 2026-09-17 kullanıcı onaylı) · Statü: **watch_only / araştırma-kapalı** · Bağlayıcı kaynaklar: `PROGRESS.md`, `configs/user_decisions.yaml`, `reports/final_verdict.md`*
 
 > **KURAL 0:** Bu runbook trade üretmez. Her çıktının üzerinde `watch_only — trade YOK, emir YOK, tavsiye YOK` başlığı bulunur. Sistem edge KANITLAYAMADI (GEÇTİ=0); hiçbir izleme çıktısı "sistem çalışıyor/kazanıyor" şeklinde YORUMLANAMAZ.
 
@@ -47,13 +47,15 @@
 
 **Amaç:** watch_only izlemeye mum-kapanışı ritmi kazandırmak. **Trade YOK · emir YOK · tavsiye YOK · hüküm YOK · look hakkı TÜKETMEZ.**
 
-**Slotlar (Europe/Istanbul = UTC+3, DST yok):**
+**Slotlar (Europe/Istanbul = UTC+3, DST yok) — M9b revizyonu (2026-09-18, kullanıcı onaylı): BIST slotları v1.1 ızgara KAPANIŞLARINA hizalandı; CORE değişmedi:**
 
 | grup | slotlar | mum |
 |---|---|---|
-| BIST30 (XU030 bağlam) | 11:00 · 15:00 | 4H |
-| BIST30 | 18:00 | seans sonu (1H kaynak; frame 4H) |
+| BIST30 (XU030 bağlam) | **14:00** | 4H kapanış (10:00–14:00 mumu, etiket 07:00 UTC) |
+| BIST30 | **18:00** | 4H kapanış (14:00–18:00 mumu, etiket 11:00 UTC) + seans sonu (1H kaynak) |
 | BTC · GOLD · SILVER | 03:00 · 07:00 · 11:00 · 15:00 · 19:00 · 23:00 | 4H |
+
+*(Eski 11:00/15:00 BIST slotları v1.1 kapanışlarıyla çakışmıyordu; 2026-09-18 demo dosyaları tarihî kayıttır. 11:00/15:00 artık YALNIZ core slotudur.)*
 
 **Zamanlama:** her bildirim son mum TAMAMLANDIĞINDA (15 dk tolerans). 11:00/15:00 slotları her iki tabloda ortaktır → tek bildirim dosyası iki grubu da içerir.
 
@@ -70,7 +72,7 @@ python3 -W ignore scripts/cadence_4h_status.py --fetch              # canlı çe
 2. **QC RED → bildirim YAYIMLANMAZ**; yerine ⛔ SORUN NOTU üretilir (exit 3) — §A fail-closed kuralının cadence karşılığı.
 3. **BAYAT bayrağı:** referans mumun slot'a yaşı eşiği aşarsa (BTC 6h · metaller/XU030 28h; takvim-duyarsız) bildirim "piyasa durumu İDDİASI içermez" damgasıyla yayımlanır.
 4. **Restore (§A.5 cadence'e uygulanır):** fetch'li koşu sonrası `git checkout -- data/ reports/` (yalnız `reports/cadence/` KORUNUR) + `.state.json → assets` frozen baseline'a sıfırlanır (`last_fetch_utc` korunur — rate kapısı). Bildirim dosyaları günün kanıtı olarak kalır.
-5. **Dürüstlük notu (slot-ızgara hizası):** BIST30 11:00/15:00 slotları v1.1 ızgara kapanışlarıyla (lokal 14:00/18:00) ÇAKIŞMAZ; direktif birebir uygulandı — referans mum "slot anında KAPALI son mum"dur ve yaşı açıkça yazılır. Slot revizyonu kullanıcı onayı gerektirir (`scripts/cadence_4h_status.py → SLOTS_*`).
+5. **Slot-ızgara hizası (M9b ile ÇÖZÜLDÜ):** BIST30 slotları artık v1.1 ızgara kapanışlarıyla birebir (14:00/18:00); referans mum kuralı aynıdır: "slot anında KAPALI olan son mum" + yaşı açıkça yazılır. Slot tablosu değişikliği kullanıcı onayı gerektirir (`scripts/cadence_4h_status.py → SLOTS_*`).
 6. `reports/cadence/last_fetch.log` yerel operasyon logudur, commit EDİLMEZ (.gitignore).
 
 **İlk koşu kanıtı (2026-09-18, 3 dosya):** `2026-09-18_1500.md` (fetch'siz → BAYAT yolu) · `2026-09-18_1900.md` (fetch'li: BTC +14 bar taze, referans yaş 0.0h, canlı final LONG sinyali YAKALANDI — EYLEM yine YOK; aynı fetch'te Yahoo rate-limit → GOLD/SILVER RED+BAYAT satırları dürüstçe basıldı, kapı öncesi koşu) · `2026-09-18_1800.md` (RED kapısı → ⛔ SORUN NOTU, exit 3).

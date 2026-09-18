@@ -18,6 +18,8 @@ BIST30 hisse sepeti (28 hisse, long-only) + GOLD/SILVER (GC=F/SI=F ön-ay, long+
 | Risk | eşit-risk boyutlama (risk/stop-mesafesi, balanced %0.5) · tavanlar: toplam 6, BTC 2, GOLD 1, SILVER 1, sepet 3 · metals TEK kova ≤1×rpt · basket ≤3×rpt · banka ≤2 · günlük %2/haftalık %5 (realized, fail-closed) · 4 ardışık kayıp→20 bar fren · tavanlar YALNIZ girişte | `risk/limits.py`, `risk/simulator.py` |
 | Doğrulama | ön-kayıtlı split'ler (v1.1, frozen sha256) · look-ahead silme testleri her katmanda · 225 regresyon testi · TEST tek look | `scripts/register_splits.py`, `run_stage9.py` |
 
+*Görselleştirme eki (M9b): `pine/quant4h_viz.pine` (yalnız `indicator()`; strategy()/alert YOK) + `scripts/export_viz_payload.py` → `viz/payload_*.txt` — **UNTESTED-VIZ**, doğruluk kaynağı DEĞİLDİR; bkz. `TEST_PLAN.md`.*
+
 ## 2. Bu sistem NE DEĞİLDİR
 
 - **Canlı işlem sistemi DEĞİLDİR** — emir iletim kodu yoktur, olmayacaktır.

@@ -1,0 +1,93 @@
+//@version=5
+// ============================================================================
+// quant4h — watch_only GÖRSELLEŞTİRME EKİ (M9b, 2026-09-18, kullanıcı onaylı)
+//
+// SADECE indicator(): Python pipeline'ının (scripts/export_viz_payload.py)
+// ihraç ettiği marker/seviyeleri ÇİZER. Hesaplama YAPMAZ — hiçbir gösterge,
+// seviye veya sinyal burada YENİDEN ÜRETİLMEZ (drift riski sıfırlanır).
+//
+//   * strategy() YOK · alert/alertcondition YOK · emir/icra temsili YOK
+//   * DOĞRULUK KAYNAĞI DEĞİLDİR (UNTESTED-VIZ): kaynak = repo
+//     (reports/*.md · data/processed/* · configs/*). Bkz. TEST_PLAN.md
+//   * watch_only: trade YOK, emir YOK, tavsiye YOK (Aşama 9: GEÇTİ=0)
+//
+// KURULUM:
+//   1) python3 -W ignore scripts/export_viz_payload.py --month YYYY-MM
+//   2) viz/payload_YYYY-MM.txt içinden ÇİZDİRECEĞİNİZ VARLIĞIN bölümünü kopyala
+//   3) Aşağıdaki PAYLOAD-BEGIN..PAYLOAD-END bölgesini (TradingView Pine
+//      editöründe) o bölümle DEĞİŞTİR  4) Grafiğe ekle (4H, ilgili sembol)
+//   5) TEST_PLAN.md parite kontrol listesini uygula (ilk kurulumda ZORUNLU)
+//
+// Sadelik kuralı (user_decisions → simplicity_rules): mum + EMA200 + yapısal
+// seviyeler (maks 3 öğe). M9b spesifikasyonu sinyal marker'larını ayrıca
+// ister; üçü de input anahtarıyla KAPATILABİLİR (varsayılan: ihtiyacınız
+// kadarını açık bırakın — kural ihlalinde sorumluluk kullanıcıdadır).
+// ============================================================================
+indicator("quant4h watch_only viz [UNTESTED-VIZ]", overlay = true, max_labels_count = 500, max_lines_count = 500)
+
+show_ema     = input.bool(true, "EMA200 (ihraç edilen seri)", group = "quant4h")
+show_levels  = input.bool(true, "Yapısal seviyeler (swing/Donchian/stop)", group = "quant4h")
+show_markers = input.bool(true, "Sinyal marker'ları (capped, KARAR barı)", group = "quant4h")
+
+// ---------------------------------------------------------------------------
+// PAYLOAD-BEGIN — bu bölgeyi viz/payload_*.txt'teki ilgili varlık bölümüyle
+// değiştirin. Boş payload ile script YALNIZ uyarı tablosu çizer (fail-safe).
+// ---------------------------------------------------------------------------
+ts        = array.from<int>(0)
+ema200    = array.from<float>(na)
+stopLong  = array.from<float>(na)
+swingLow  = array.from<float>(na)
+swingHigh = array.from<float>(na)
+donHigh   = array.from<float>(na)
+donLow    = array.from<float>(na)
+sigLong   = array.from<int>(0)
+sigShort  = array.from<int>(0)
+sigPrice  = array.from<float>(na)
+payloadMeta = "BOS PAYLOAD — export_viz_payload.py ciktisini buraya yapistirin"
+payloadOK   = false
+// ---------------------------------------------------------------------------
+// PAYLOAD-END
+// ---------------------------------------------------------------------------
+
+hasPayload = payloadOK and array.size(ts) > 1
+
+// bar.time -> payload indeksi (payload <= ~250 satir: dogrusal arama yeterli)
+idx = -1
+if hasPayload
+    for i = 0 to array.size(ts) - 1
+        if array.get(ts, i) == time
+            idx := i
+            break
+
+f_val(array<float> a) =>
+    hasPayload and idx >= 0 ? array.get(a, idx) : na
+
+emaVal      = f_val(ema200)
+stopVal     = f_val(stopLong)
+swLowVal    = f_val(swingLow)
+swHighVal   = f_val(swingHigh)
+donHighVal  = f_val(donHigh)
+donLowVal   = f_val(donLow)
+sigL        = hasPayload and idx >= 0 ? array.get(sigLong, idx) : 0
+sigS        = hasPayload and idx >= 0 ? array.get(sigShort, idx) : 0
+sigPx       = f_val(sigPrice)
+
+plot(show_ema ? emaVal : na,            "EMA200 (ihraç)",        color = color.new(color.orange, 0),  linewidth = 2)
+plot(show_levels ? stopVal : na,        "stop_long (yapısal)",   color = color.new(color.red, 20),      linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? swLowVal : na,       "swing_low (onaylı)",    color = color.new(color.green, 45),    linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? swHighVal : na,      "swing_high (onaylı)",   color = color.new(color.teal, 45),     linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? donHighVal : na,     "donchian_high(20)",     color = color.new(color.gray, 55),     linewidth = 1, style = plot.style_circles)
+plot(show_levels ? donLowVal : na,      "donchian_low(20)",      color = color.new(color.gray, 55),     linewidth = 1, style = plot.style_circles)
+
+// Marker'lar KARAR barının KAPANIŞINDA çizilir (sinyal barı = t; icra open[t+1]
+// PİNE'DA GÖSTERİLMEZ — icra temsili yoktur).
+plotshape(show_markers and sigL == 1 ? sigPx : na, "LONG kararı (capped)",  shape.triangleup,   location.absolute, color.new(color.green, 0), size = size.small)
+plotshape(show_markers and sigS == 1 ? sigPx : na, "SHORT kararı (capped)", shape.triangledown, location.absolute, color.new(color.red, 0),   size = size.small)
+
+// ---- bilgi tablosu (her zaman görünür) ----
+var table infoTbl = table.new(position.top_right, 1, 4, border_width = 1)
+if barstate.islastconfirmedhistory
+    table.cell(infoTbl, 0, 0, "quant4h watch_only — UNTESTED-VIZ", text_color = color.white, bgcolor = color.new(color.black, 20), text_size = size.small)
+    table.cell(infoTbl, 0, 1, hasPayload ? payloadMeta : "⚠ " + payloadMeta, text_color = hasPayload ? color.silver : color.yellow, bgcolor = color.new(color.black, 40), text_size = size.tiny)
+    table.cell(infoTbl, 0, 2, "Doğruluk kaynağı DEĞİLDİR · kaynak: repo (reports/data)", text_color = color.silver, bgcolor = color.new(color.black, 40), text_size = size.tiny)
+    table.cell(infoTbl, 0, 3, "trade YOK · emir YOK · tavsiye YOK · icra: open[t+1] (burada gösterilmez)", text_color = color.silver, bgcolor = color.new(color.black, 40), text_size = size.tiny)

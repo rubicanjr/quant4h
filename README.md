@@ -318,6 +318,7 @@ quant4h/
 │   ├── processed/               # (Aşama 4+) feature matrisleri
 │   └── external/                # kullanıcının kendi CSV/parquet dökümleri
 ├── docs/                        # mimari, model kartı, kullanım kılavuzu, güvenlik kuralları
+├── pine/ + viz/                 # M9b: TradingView görselleştirme EKİ (UNTESTED-VIZ; doğruluk kaynağı DEĞİL — TEST_PLAN.md)
 ├── reports/                     # qc_report.{md,json}, qc_findings.csv
 ├── scripts/
 │   └── run_data_qc.py           # Aşama 0/1 sürücüsü
