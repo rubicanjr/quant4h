@@ -7,10 +7,14 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **223/223 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 11 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 6
+**Test durumu:** **224/224 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 12 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 6
 
 ---
+
+## TAMAMLANDI: BAKIM — test_splits frozen dokunulmazlığı (2026-09-17, kullanıcı onaylı; incident-3 teknik borcu KAPANDI)
+
+Özet: `tests/test_splits.py` frozen snapshot'a ASLA yazmayacak şekilde düzeltildi — (1) `test_split_is_deterministic` + yeni regresyon testi `test_build_split_never_writes_real_frozen`: `RS.FROZEN_DIR` test süresince TMP'ye yönlendirilir; (2) iki tamper testi (`test_verify_detects_tampered_source`, `test_basket_split_verify_catches_tampering`) gerçek frozen/live yerine **TMP KOPYALAR** + fake yaml'a mutlak yol (`os.path.join(ROOT, abs)=abs`) üzerinde koşar — eski "gerçek dosyayı boz-geri yükle" deseni KALDIRILDI; (3) runner'a **frozen sha256 BEKÇİSİ**: her testin başında ve sonunda, ayrıca suite başında ve sonunda frozen haritası baseline ile karşılaştırılır; değişirse test/suite FAIL. Doğrulama: suite **224/224** (11→12 splits), frozen 5/5 bayt-bayt değişmedi, `register_splits --check` EXIT 0. Kapsam dışına dokunulmadı; Aşama 9 hüküm/seçim artefaktları (selected_cells.yaml, stage9 raporu, frozen'lar) ETKİLENMEDİ.
 
 ## TAMAMLANDI: watch_only aylık izleme 2026-09 (runbook §A) + runbook v1.1 düzeltmesi
 
@@ -420,7 +424,7 @@ Günlük log-getiri korelasyonu: `GOLD|SILVER = +0.768` ⚠️ (risk limitini a�
 
 ### Aşama 1.5'ten bağımsız, bilinen teknik borç
 
-- [ ] **`test_splits.py` determinizm testi frozen'ı DESTRÜKTİF yeniden yazar** (2026-09-17 aylık izlemede kanıtlandı: `RS.build_split("BTC")` çağrıları `_freeze` üzerinden frozen snapshot'ı CANLI dosyayla değiştirir; live==frozen iken no-op, drift altında frozen BOZULUR — sha kilidi yakalar ama suite RED'e düşer). Çözüm (ONAY BEKLİYOR): test `tmp` dizine yönlendirilsin veya `build_split`'e `freeze_dir` parametresi eklensin. Geçici savunma: runbook v1.1 §A.5 restore adımı (drift varken suite koşulmaz).
+- [x] ~~**`test_splits.py` determinizm testi frozen'ı DESTRÜKTİF yeniden yazar**~~ ✅ **ÇÖZÜLDÜ (2026-09-17, kullanıcı onaylı bakım):** `build_split` çağrıları `RS.FROZEN_DIR` tmp yönlendirmesiyle koşuyor; her iki tamper testi TMP KOPYA + fake yaml (mutlak yol) üzerinde; runner'a frozen sha BEKÇİSİ eklendi (her testin başı+sonu, suite başı+sonu); regresyon testi `test_build_split_never_writes_real_frozen` eklendi. Suite 223→**224/224**, frozen 5/5 bayt-bayt değişmedi. Hüküm/seçim etkisi YOK.
 
 - [ ] Roll adaylarının **insan incelemesi**: GOLD 10 + SILVER 6 aday `reports/adjust_evidence.md` §5'te listeli. Kesin çözüm = kontrat ayı kimliği olan bir continuous future kaynağı.
 - [ ] `2026-01-26 .. 2026-02-06` düşük-kalite penceresi için `low_quality_window` bayrağı (şu an yalnızca caveat olarak kayıtlı).
