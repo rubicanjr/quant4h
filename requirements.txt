@@ -72,3 +72,6 @@ pytest==8.3.3            # CI runs `pytest -q tests/`; the house self-runners
 #      (PROGRESS "Test durumu" counts refer to these runners)
 #   2) pytest (CI):
 #        pytest -q tests/
+
+# --- terminal dashboard (M11, 2026-09-18) ---
+rich==15.0.0             # run_dash.py TUI renderer (salt goruntuleme; hesap YOK)

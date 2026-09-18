@@ -7,10 +7,14 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **225/225 PASS**
+**Test durumu:** **230/230 PASS**
 `resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 12 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 7
 
 ---
+
+## TAMAMLANDI: M11-DASH — yerel terminal dashboard (salt renderer, watch_only; 2026-09-18)
+
+Özet: `scripts/run_dash.py` (rich 15.0.0, koyu tema, OpenTerminal-benzeri Layout): **header** (watch_only banner + son güncelleme + QC kararları) · **REJİM/BAĞLAM** (6'lı rejim + long/short_ok + XU030 close-vs-EMA200) · **SEVİYE+MOMENTUM** (swing/Donchian/stop_long + mom σ) · **SİNYAL log'u** (son final sinyaller: ham tetik→kapılar→final + 30g sayaç) · **CADENCE** (son bildirim dosyası + SAĞLIK satırı + slotlar + son fetch/rate kapısı) · **LOOK** (look #2 geri sayımı 2026-12-17 + kota 3/4 + "ön-kayıtsız look ihlal" uyarısı) · footer **EYLEM: YOK sabit**. Modlar: Live TUI (CTRL-C) / `--once` (tek kare, test/CI) / `--fetch` (runbook rate kapısı ≥200 dk, `cadence_4h_status.maybe_fetch` ile TEK kaynak + TAM zincir + QC RED fail-closed uyarısı). **Veri YALNIZ yerel artefaktlar** (processed frame'leri = Python motoru kolonları, qc_report.json, cadence dosyaları); ağ varsayılan KAPALI (`NETWORK_DEFAULT=False`); kendi indikatör/hesabı YOK — salt renderer. Testler `tests/test_dash.py` (5): deterministik panel snapshot'ı (sabit `now` ile bayt-bayt; golden-file YOK — veri restore'larında kırılgan olurdu, sözleşme = determinizm + iğneler) · panel/boundary iğneleri (watch_only/EYLEM/ağ KAPALI dahil) · look geri-sayım matematiği (46 gün / 0 gün) · render'ın state/QC dosyalarına YAN ETKİSİ yok (sha öncesi/sonrası) · fetch yolunun rate kapısına bağlılığı (inspect). Suite **225→230/230** (R09 senkronu: README/model_card/test iğnesi). Kanıt: `--once` render'ı tüm panellerle üretildi (ekran düzeni koyu tema); hüküm/seçim/look etkisi YOK; look hakkı tüketilmedi.
 
 ## TAMAMLANDI: M9c — Pine paste-hatası düzeltmesi: HAZIR dosya akışı (2026-09-18, kullanıcı hata raporu)
 

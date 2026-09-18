@@ -151,7 +151,7 @@ def test_readme_research_closed_section() -> None:
     for needle in ("ARAŞTIRMA-KAPALI", "watch_only", "GEÇTİ = 0",
                    "Bu repo neyi KANITLADI", "Kanıtlanmadı (edge)",
                    "final_verdict.md", "model_card.md", "ops_runbook.md",
-                   "225/225", "Veri provenansı ve ToS notu"):
+                   "230/230", "Veri provenansı ve ToS notu"):
         assert needle in doc, f"README'de yok: {needle!r}"
 
 
