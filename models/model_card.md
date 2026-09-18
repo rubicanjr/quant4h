@@ -1,6 +1,6 @@
 # MODEL KARTI — quant4h (kural tabanlı 4H çekirdek + risk katmanı)
 
-*Sürüm kimliği: repo `rubicanjr/quant4h` · Aşama 11 kapanışı 2026-09-17 · suite 224/224 · statü: **watch_only (araştırma-kapalı)***
+*Sürüm kimliği: repo `rubicanjr/quant4h` · Aşama 11 kapanışı 2026-09-17 · suite 225/225 · statü: **watch_only (araştırma-kapalı)***
 
 ## 1. Bu sistem NEDİR
 
@@ -16,7 +16,7 @@ BIST30 hisse sepeti (28 hisse, long-only) + GOLD/SILVER (GC=F/SI=F ön-ay, long+
 | İcra | sinyal bar t KAPANIŞI → giriş **open[t+1]** · aynı-bar çakışmada **STOP** öncelikli · gap'ler pesimist · maliyet çift taraf (BTC 31bp, metals 20bp, hisse 120bp gidiş-dönüş) · geçerli stopu olmayan pozisyon ASLA açılmaz (H35) | `backtest/engine.py` |
 | Çıkış | P0: dondurulmuş stop + TS90 + TP3R (varsayılan, Aşama 9'da da a-priori) · P1–P3 mimarileri yalnız KARŞILAŞTIRILDI, seçilmedi | `backtest/engine.py`, `ExitConfig` |
 | Risk | eşit-risk boyutlama (risk/stop-mesafesi, balanced %0.5) · tavanlar: toplam 6, BTC 2, GOLD 1, SILVER 1, sepet 3 · metals TEK kova ≤1×rpt · basket ≤3×rpt · banka ≤2 · günlük %2/haftalık %5 (realized, fail-closed) · 4 ardışık kayıp→20 bar fren · tavanlar YALNIZ girişte | `risk/limits.py`, `risk/simulator.py` |
-| Doğrulama | ön-kayıtlı split'ler (v1.1, frozen sha256) · look-ahead silme testleri her katmanda · 224 regresyon testi · TEST tek look | `scripts/register_splits.py`, `run_stage9.py` |
+| Doğrulama | ön-kayıtlı split'ler (v1.1, frozen sha256) · look-ahead silme testleri her katmanda · 225 regresyon testi · TEST tek look | `scripts/register_splits.py`, `run_stage9.py` |
 
 ## 2. Bu sistem NE DEĞİLDİR
 
@@ -62,7 +62,7 @@ ADX · Hurst · HMM · Choppiness · BB-width · Ichimoku · Supertrend · Keltn
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/register_splits.py --check     # ön-kayıt + frozen sha DOĞRULAMA
-for t in tests/test_*.py; do .venv/bin/python -W ignore $t; done   # 224/224 beklenir
+for t in tests/test_*.py; do .venv/bin/python -W ignore $t; done   # 225/225 beklenir
 .venv/bin/python -W ignore scripts/run_stage9.py --phase verdict  # hükmü yeniden üretir (TEST'e YENİ look EKLEMEZ; deterministik)
 ```
 

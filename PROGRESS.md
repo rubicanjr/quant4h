@@ -7,10 +7,14 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **224/224 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 12 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 6
+**Test durumu:** **225/225 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 12 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 7
 
 ---
+
+## TAMAMLANDI: MAINT-HASHFIX / M7 (2026-09-17, kullanıcı onaylı TEK patch — Windows-kırmızı/Linux-yeşil hash vakası)
+
+Özet: maint_riskfix'te M5/M6 olarak anılan satır-sonu/hash normalizasyonu eksik kalmıştı; tamamlandı. **(a)** `.gitattributes` eklendi: `* text=auto eol=lf` + `*.parquet binary` + `*.png binary` — kök çözüm: metinler depoda VE working tree'de LF; binary'de eol dönüşümü asla (Windows CRLF checkout kaynağında kesilir). **(b)** `tests/test_deliverables.py → _sha()` artık içeriği NORMALİZE ediyor (UTF-8 BOM soy + CRLF→LF) sonra sha256; `final_verdict.md`'deki kayıtlı hash'ler LF üzerinden üretildiği için **DOKUNULMADI** (normalizasyon LF dosyada raw hash'i değiştirmez — testle sabit). **(c)** Regresyon testi `test_sha_normalization_crlf_bom_regression`: `selected_cells.yaml` içeriği tmp'ye **CRLF+BOM** ile yazılır → normalize sha == doc/live LF hash (fixture'ın gerçekten CRLF+BOM olduğu ve raw hash'in FARKLI olduğu da assert edilir — test bayatlarsa patlar). **(d)** Hash assert mesajları artık HESAPLANAN ve BEKLENEN değeri birlikte yazıyor. R09 kuplajı korundu: suite 224→**225** (deliverables 6→7) sayacı README/model_card/PROGRESS/test iğnesiyle SENKRON. Kapsam: `.gitattributes` (yeni) + `tests/test_deliverables.py` + doc sayaçları — motor/konfigürasyon/veri DEĞİŞMEDİ, hüküm/seçim etkisi YOK. Not: M4'te untrack edilen `data/raw/` parquet'leri `*.parquet binary` kuralıyla eol dönüşümünden kalıcı olarak korunur (Windows'ta force-add senaryosunda bile).
 
 ## TAMAMLANDI: MAINT-RISKFIX (2026-09-17, kullanıcı onaylı TEK patch — risk sicili azaltımları)
 

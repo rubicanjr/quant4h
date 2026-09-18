@@ -15,6 +15,7 @@ from __future__ import annotations
 import hashlib
 import os
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 
@@ -28,12 +29,20 @@ def _read(rel: str) -> str:
         return fh.read()
 
 
+def _normalize_hash(data: bytes) -> str:
+    """İçerik-normalize sha256 (maint M7): UTF-8 BOM soyulur, CRLF→LF.
+    `final_verdict.md`'deki kayıtlı hash'ler LF içerik üzerinden üretilmiştir
+    (dokunulmaz); normalize okuma testi platform-bağımsız yapar — Windows
+    CRLF checkout'unda da aynı hash çıkar (yerel-kırmızı/CI-yeşil vakasının kökü)."""
+    if data.startswith(b"\xef\xbb\xbf"):
+        data = data[3:]
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
+
+
 def _sha(rel: str) -> str:
-    h = hashlib.sha256()
-    with open(os.path.join(ROOT, rel), "rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    p = os.path.join(ROOT, rel)
+    with open(p, "rb") as fh:
+        return _normalize_hash(fh.read())
 
 
 def test_final_verdict_content_and_live_hashes() -> None:
@@ -42,11 +51,41 @@ def test_final_verdict_content_and_live_hashes() -> None:
                    "ölüm nedeni", "EDGE", "ÖRNEKLEM", "look sayısı (TEST)",
                    "P2xA2", "TEST KOŞULMADI", "bir bakış daha"):
         assert needle in doc, f"final_verdict'te yok: {needle!r}"
-    # belge hash'leri GERÇEK dosyalara bağlı (canlı doğrulama)
+    # belge hash'leri GERÇEK dosyalara bağlı (canlı doğrulama; normalize sha — M7)
     sel_sha = _sha("configs/selected_cells.yaml")
     splits_sha = _sha("configs/splits_preregistered.yaml")
-    assert sel_sha in doc, "selected_cells.yaml sha256 final_verdict'te değil/bayat"
-    assert splits_sha in doc, "splits yaml sha256 final_verdict'te değil/bayat"
+    assert sel_sha in doc, ("selected_cells.yaml sha256 final_verdict'te değil/bayat — "
+                            f"hesaplanan(normalize)={sel_sha} · beklenen=doc'ta kayıtlı "
+                            f"sha256 (LF üzerinden, dokunulmaz)")
+    assert splits_sha in doc, ("splits yaml sha256 final_verdict'te değil/bayat — "
+                               f"hesaplanan(normalize)={splits_sha} · beklenen=doc'ta kayıtlı sha256")
+
+
+def test_sha_normalization_crlf_bom_regression() -> None:
+    """REGRESYON (maint M7): Windows checkout senaryosu — selected_cells.yaml
+    içeriği tmp'ye CRLF + UTF-8 BOM ile yazıldığında NORMALİZE sha256,
+    final_verdict.md'de kayıtlı LF-hash'ine EŞİT olmalı (doc hash'ine dokunulmaz)."""
+    src = os.path.join(ROOT, "configs", "selected_cells.yaml")
+    with open(src, "rb") as fh:
+        raw = fh.read()
+    doc = _read("reports/final_verdict.md")
+    live = _sha("configs/selected_cells.yaml")           # normalize == raw (kaynak LF)
+    assert hashlib.sha256(raw).hexdigest() == live, "kaynak dosya LF değil — beklenmedik durum"
+    assert live in doc, f"doc hash bulunamadı: hesaplanan={live}"
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, "selected_cells.crlf.bom.yaml")
+        crlf = b"\xef\xbb\xbf" + raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+        with open(p, "wb") as fh:
+            fh.write(crlf)
+        with open(p, "rb") as fh:
+            data = fh.read()
+        # fixture gerçekten CRLF+BOM mu (testin kendisi bayatlamasın)
+        assert data.startswith(b"\xef\xbb\xbf") and data.count(b"\r\n") > 100
+        got = _normalize_hash(data)
+        assert got == live, (f"CRLF+BOM normalize sha uyuşmadı — hesaplanan={got} · "
+                             f"beklenen(doc/live LF)={live}")
+        # raw (normalize EDİLMEMİŞ) hash farklıdır → normalizasyon gerçekten şart
+        assert hashlib.sha256(data).hexdigest() != live
 
 
 def test_final_verdict_per_asset_verdicts() -> None:
@@ -90,7 +129,7 @@ def test_readme_research_closed_section() -> None:
     for needle in ("ARAŞTIRMA-KAPALI", "watch_only", "GEÇTİ = 0",
                    "Bu repo neyi KANITLADI", "Kanıtlanmadı (edge)",
                    "final_verdict.md", "model_card.md", "ops_runbook.md",
-                   "224/224", "Veri provenansı ve ToS notu"):
+                   "225/225", "Veri provenansı ve ToS notu"):
         assert needle in doc, f"README'de yok: {needle!r}"
 
 

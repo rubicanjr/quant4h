@@ -1,0 +1,8 @@
+# maint M7 (2026-09-17, kullanici onayli) — satir sonu + binary hijyeni.
+# Amac: Windows checkout'unda CRLF'in metin-hash testlerini kirmasini kokten
+# onlemek (yerel Windows hash testi kirmizi / CI Linux yesil vakasi).
+# Kural: depodaki TUM metinler LF olarak normalize edilir ve working tree'ye
+# LF olarak cikar; binary dosyalarda eol donusumu ASLA yapilmaz.
+* text=auto eol=lf
+*.parquet binary
+*.png binary
