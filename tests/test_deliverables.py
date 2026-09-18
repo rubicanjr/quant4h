@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import subprocess
 import sys
 import tempfile
 
@@ -62,19 +63,33 @@ def test_final_verdict_content_and_live_hashes() -> None:
 
 
 def test_sha_normalization_crlf_bom_regression() -> None:
-    """REGRESYON (maint M7): Windows checkout senaryosu — selected_cells.yaml
-    içeriği tmp'ye CRLF + UTF-8 BOM ile yazıldığında NORMALİZE sha256,
-    final_verdict.md'de kayıtlı LF-hash'ine EŞİT olmalı (doc hash'ine dokunulmaz)."""
-    src = os.path.join(ROOT, "configs", "selected_cells.yaml")
-    with open(src, "rb") as fh:
-        raw = fh.read()
+    """REGRESYON (maint M7 + M8 yeniden tasarım): platform-bağımsız hash zinciri.
+
+    M8 gerekçesi: kaynak içeriğin working-tree'den okunup "kaynak LF" assert
+    edilmesi smudge durumuna bağlıydı — Windows + OneDrive smudge'ında dosya
+    CRLF yazılabiliyor (kanıt: `checkout-index -a -f` sonrası working tree
+    CRLF, `git status` TEMİZ, blob LF). Bu yüzden:
+      (a) kaynak içerik working tree'den DEĞİL **git blob'undan** okunur
+          (`git show HEAD:configs/selected_cells.yaml`, bayt olarak) ve
+          blob sha256 == final_verdict.md kayıtlı hash (LF, dokunulmaz) assert edilir;
+      (b) CRLF+BOM normalizasyon assert'i SENTETİK tmp kopya üzerinde kalır
+          (gerçek regresyon niyeti budur; fixture bayatlarsa test patlar);
+      (c) working-tree smudge durumu assert DEĞİL, INFO rapor satırıdır
+          (canlı dosyanın normalize hash kilidi ayrıca
+          `test_final_verdict_content_and_live_hashes` içindedir).
+    Not: test bir git checkout'ta koşmayı gerektirir (CI'da her zaman geçerli).
+    """
     doc = _read("reports/final_verdict.md")
-    live = _sha("configs/selected_cells.yaml")           # normalize == raw (kaynak LF)
-    assert hashlib.sha256(raw).hexdigest() == live, "kaynak dosya LF değil — beklenmedik durum"
-    assert live in doc, f"doc hash bulunamadı: hesaplanan={live}"
+    # (a) otorite = git blob (smudge'dan bağımsız)
+    blob = subprocess.run(["git", "show", "HEAD:configs/selected_cells.yaml"],
+                          cwd=ROOT, capture_output=True, check=True).stdout
+    blob_sha = hashlib.sha256(blob).hexdigest()
+    assert blob_sha in doc, ("blob sha256 final_verdict'te değil/bayat — "
+                             f"hesaplanan(blob)={blob_sha} · beklenen=doc'ta kayıtlı sha256 (LF)")
+    # (b) sentetik CRLF+BOM kopya (kaynak: blob) → normalize sha == blob/doc hash
     with tempfile.TemporaryDirectory() as td:
         p = os.path.join(td, "selected_cells.crlf.bom.yaml")
-        crlf = b"\xef\xbb\xbf" + raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+        crlf = b"\xef\xbb\xbf" + blob.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
         with open(p, "wb") as fh:
             fh.write(crlf)
         with open(p, "rb") as fh:
@@ -82,10 +97,17 @@ def test_sha_normalization_crlf_bom_regression() -> None:
         # fixture gerçekten CRLF+BOM mu (testin kendisi bayatlamasın)
         assert data.startswith(b"\xef\xbb\xbf") and data.count(b"\r\n") > 100
         got = _normalize_hash(data)
-        assert got == live, (f"CRLF+BOM normalize sha uyuşmadı — hesaplanan={got} · "
-                             f"beklenen(doc/live LF)={live}")
-        # raw (normalize EDİLMEMİŞ) hash farklıdır → normalizasyon gerçekten şart
-        assert hashlib.sha256(data).hexdigest() != live
+        assert got == blob_sha, ("CRLF+BOM normalize sha uyuşmadı — "
+                                 f"hesaplanan={got} · beklenen(blob/doc LF)={blob_sha}")
+        # normalize EDİLMEMİŞ hash farklıdır → normalizasyon gerçekten şart
+        assert hashlib.sha256(data).hexdigest() != blob_sha
+    # (c) working-tree smudge durumu: YALNIZ BİLGİ (assert değil)
+    with open(os.path.join(ROOT, "configs", "selected_cells.yaml"), "rb") as fh:
+        wt = fh.read()
+    eol = "CRLF içeriyor" if b"\r\n" in wt else "saf LF"
+    bom = "BOM var" if wt.startswith(b"\xef\xbb\xbf") else "BOM yok"
+    print(f"INFO  working-tree smudge: {eol} · {bom} · "
+          f"normalize(sha) == blob(sha): {_normalize_hash(wt) == blob_sha}")
 
 
 def test_final_verdict_per_asset_verdicts() -> None:
