@@ -5,3 +5,4 @@ __pycache__/
 .venv/
 *.parquet
 checkpoint.zip
+reports/cadence/last_fetch.log

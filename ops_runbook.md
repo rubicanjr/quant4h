@@ -43,6 +43,38 @@
 - Sapma notu: bu ay protokol dışı HİÇBİR şey yapıldı mı? (varsayılan: HAYIR)
 ```
 
+## A-cadence) 4H MUM KAPANIŞI DURUM BİLDİRİMLERİ (M9, direktif 2026-09-18 — manuel tetik, scheduler YOK)
+
+**Amaç:** watch_only izlemeye mum-kapanışı ritmi kazandırmak. **Trade YOK · emir YOK · tavsiye YOK · hüküm YOK · look hakkı TÜKETMEZ.**
+
+**Slotlar (Europe/Istanbul = UTC+3, DST yok):**
+
+| grup | slotlar | mum |
+|---|---|---|
+| BIST30 (XU030 bağlam) | 11:00 · 15:00 | 4H |
+| BIST30 | 18:00 | seans sonu (1H kaynak; frame 4H) |
+| BTC · GOLD · SILVER | 03:00 · 07:00 · 11:00 · 15:00 · 19:00 · 23:00 | 4H |
+
+**Zamanlama:** her bildirim son mum TAMAMLANDIĞINDA (15 dk tolerans). 11:00/15:00 slotları her iki tabloda ortaktır → tek bildirim dosyası iki grubu da içerir.
+
+**Komut (manuel):**
+```bash
+python3 -W ignore scripts/cadence_4h_status.py                      # en yakın geçmiş slot
+python3 -W ignore scripts/cadence_4h_status.py --slot 15:00 --date 2026-09-18
+python3 -W ignore scripts/cadence_4h_status.py --fetch              # canlı çekim + TAM zincir (rate-kapılı)
+```
+Çıktı: `reports/cadence/YYYY-MM-DD_HHMM.md` (her bildirim ayrı dosya) + stdout. Şablon (direktif B, sabit): **SAĞLIK** (QC + tazelik + X bar) → **REJİM** → **SEVİYE** → **MOMENTUM (σ)** → **SİNYAL** (ham→kapılar→final, capped) → **EYLEM: YOK**.
+
+**Kurallar:**
+1. `--fetch` rate kapısı: son fetch'ten **≥200 dk** geçmeden ÇEKİLMEZ (`reports/cadence/.state.json`; Yahoo rate-limit dersi, runbook v1.1). Fetch = TAM zincir, §A sırasıyla: `run_data_qc --no-cache --start 2017-08-17` → regime → levels → momentum → signal (**M9 demo2 dersi:** yalnız QC frame'leri tazelemez).
+2. **QC RED → bildirim YAYIMLANMAZ**; yerine ⛔ SORUN NOTU üretilir (exit 3) — §A fail-closed kuralının cadence karşılığı.
+3. **BAYAT bayrağı:** referans mumun slot'a yaşı eşiği aşarsa (BTC 6h · metaller/XU030 28h; takvim-duyarsız) bildirim "piyasa durumu İDDİASI içermez" damgasıyla yayımlanır.
+4. **Restore (§A.5 cadence'e uygulanır):** fetch'li koşu sonrası `git checkout -- data/ reports/` (yalnız `reports/cadence/` KORUNUR) + `.state.json → assets` frozen baseline'a sıfırlanır (`last_fetch_utc` korunur — rate kapısı). Bildirim dosyaları günün kanıtı olarak kalır.
+5. **Dürüstlük notu (slot-ızgara hizası):** BIST30 11:00/15:00 slotları v1.1 ızgara kapanışlarıyla (lokal 14:00/18:00) ÇAKIŞMAZ; direktif birebir uygulandı — referans mum "slot anında KAPALI son mum"dur ve yaşı açıkça yazılır. Slot revizyonu kullanıcı onayı gerektirir (`scripts/cadence_4h_status.py → SLOTS_*`).
+6. `reports/cadence/last_fetch.log` yerel operasyon logudur, commit EDİLMEZ (.gitignore).
+
+**İlk koşu kanıtı (2026-09-18, 3 dosya):** `2026-09-18_1500.md` (fetch'siz → BAYAT yolu) · `2026-09-18_1900.md` (fetch'li: BTC +14 bar taze, referans yaş 0.0h, canlı final LONG sinyali YAKALANDI — EYLEM yine YOK; aynı fetch'te Yahoo rate-limit → GOLD/SILVER RED+BAYAT satırları dürüstçe basıldı, kapı öncesi koşu) · `2026-09-18_1800.md` (RED kapısı → ⛔ SORUN NOTU, exit 3).
+
 ## B) ÇEYREKLİK ÖN-KAYITLI YENİDEN DEĞERLENDİRME — PROTOKOL v1
 
 **Amaç:** yeni veri biriktikçe hükmü ÇOKLU-TEST DİSİPLİNİYLE tazelemek. Bu, "bir bakış daha" serbestliği DEĞİL; sayılan, ön-kayıtlı ve loglanan tek yoldur.

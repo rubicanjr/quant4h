@@ -1,0 +1,66 @@
+{
+  "last_fetch_utc": "2026-09-18T17:14:57.994476+00:00",
+  "runs": [
+    {
+      "slot_local": "2026-09-18 15:00:00+03:00",
+      "file": "2026-09-18_1500.md",
+      "groups": [
+        "BIST30",
+        "CORE"
+      ],
+      "generated_utc": "2026-09-18T17:13:12+00:00"
+    },
+    {
+      "slot_local": "2026-09-18 15:00:00+03:00",
+      "file": "2026-09-18_1500.md",
+      "groups": [
+        "BIST30",
+        "CORE"
+      ],
+      "generated_utc": "2026-09-18T17:14:43+00:00"
+    },
+    {
+      "slot_local": "2026-09-18 19:00:00+03:00",
+      "file": "2026-09-18_1900.md",
+      "groups": [
+        "CORE"
+      ],
+      "generated_utc": "2026-09-18T17:14:57+00:00"
+    },
+    {
+      "slot_local": "2026-09-18 19:00:00+03:00",
+      "file": "2026-09-18_1900.md",
+      "groups": [
+        "CORE"
+      ],
+      "generated_utc": "2026-09-18T17:29:36+00:00"
+    },
+    {
+      "slot_local": "2026-09-18 18:00:00+03:00",
+      "file": "2026-09-18_1800.md",
+      "groups": [
+        "BIST30"
+      ],
+      "generated_utc": "2026-09-18T17:30:28+00:00"
+    }
+  ],
+  "assets": {
+    "BTC": {
+      "rows": 19888,
+      "last_ts": "checkpoint baseline (restore 2026-09-18)"
+    },
+    "GOLD": {
+      "rows": 3606,
+      "last_ts": "checkpoint baseline"
+    },
+    "SILVER": {
+      "rows": 3606,
+      "last_ts": "checkpoint baseline"
+    },
+    "BIST30": {
+      "rows": 1435,
+      "last_ts": "checkpoint baseline"
+    }
+  },
+  "note": "M9 demo sonras\u0131 data/ reports/ checkpoint'e restore edildi (runbook \u00a7A-cadence.5); assets baseline'a s\u0131f\u0131rland\u0131, last_fetch_utc ger\u00e7ek fetch tarihini tutar (rate kap\u0131s\u0131 i\u00e7in)."
+}
