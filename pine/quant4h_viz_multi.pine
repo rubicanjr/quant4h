@@ -1,32 +1,27 @@
 //@version=5
 // ============================================================================
-// quant4h — watch_only viz MULTI v2 (M14, 2026-09-18, kullanıcı onaylı)
+// quant4h — watch_only viz MULTI v3 (M21-DESCOPE, 2026-09-18, kullanıcı onaylı)
 //
 // TEK dosya, 4 gömülü payload bloğu + syminfo.ticker eşlemesi:
 //   BTC   -> BTCUSDT (Binance spot)   GOLD -> GC1!/GC=F/XAUUSD
 //   SILVER-> SI1!/SI=F/XAGUSD        BIST30 endeks -> XU030
 // Eşleşmeyen sembolde çizim YOK + "payload yok" banner'ı.
 //
-// SADE MOD VARSAYILAN: yalnız giriş/çıkış marker'ları
-//   ▲ giriş = "AL koşulu oluştu (sinyal kaydı)"   ✖ çıkış = "SAT koşulu (sinyal kaydı)"
-//   (bunlar BACKTEST TRADE KAYITLARIDIR — canlı sinyal/öneri DEĞİLDİR)
-// EMA200/seviyeler input.toggle ile KAPALI-açılır. UNTESTED-VIZ + watch_only
-// banner'ı SABİT (kapatılamaz). strategy() YOK · alert YOK · Pine'da HESAP YOK:
-// trade çiftleri/R etiketleri/kümülatif R Python backtest'inden (capped P0xA0,
-// reports/trades_*.csv) GÖMÜLÜDÜR.
+// M21 DESCOPE: trade-review overlay TAMAMEN KALDIRILDI (trade dizileri,
+// R etiketleri, kümülatif R, TRADE-REVIEW toggle). Trade geçmişi YALNIZ
+// reports/trades_*.csv + reports/*.md + run_dash'ta (PINE_STYLE T14).
 //
-// PAYLOAD UFKU: bu dosya her --fetch'li cadence/§A koşusunda yenilenir
-// (ops_runbook §A-cadence "viz tazeleme"); eski tarihli dosya = eski veri.
+// KALAN: giriş/çıkış marker'ları (▲/✖ = sinyal kaydı) + EMA200 (toggle) +
+// yapısal seviyeler (toggle) + watch_only + UNTESTED-VIZ banner (SABİT).
+//
+// strategy() YOK · alert YOK · Pine'da HESAP YOK (payload Python'dan gömülü).
+// PAYLOAD UFKU: her --fetch'li cadence/§A koşusunda yenilenir; banner'da görünür.
 // DOĞRULUK KAYNAĞI DEĞİLDİR (UNTESTED-VIZ) — kaynak: repo raporları/parquet'leri.
-// BIST30 bloğunda TRADE-REVIEW YOKTUR (endeks trade edilmez; sepet trade'leri
-// hisse bazındadır, tek grafiğe eşlenemez).
 // ============================================================================
-indicator("quant4h watch_only viz MULTI v2 [UNTESTED-VIZ]", overlay = true, max_labels_count = 500, max_lines_count = 100)
+indicator("quant4h watch_only viz MULTI v3 [UNTESTED-VIZ]", overlay = true, max_labels_count = 100, max_lines_count = 100)
 
-simple_mode = input.bool(true,  "SADE MOD: yalniz giris/cikis marker'lari", group = "quant4h")
 show_ema    = input.bool(false, "EMA200 (ihraç seri)", group = "quant4h")
 show_levels = input.bool(false, "Yapisal seviyeler (swing/Donchian/stop)", group = "quant4h")
-show_trades = input.bool(false, "TRADE-REVIEW: R etiketleri + kumilatif R", group = "quant4h")
 
 // ---- sembol eşlemesi ----
 tk     = syminfo.ticker
@@ -36,7 +31,9 @@ isSILV = tk == "SI1!" or tk == "SI=F" or tk == "XAGUSD" or tk == "SILVER"
 isBIST = tk == "XU030" or tk == "XU030.IS"
 active = isBTC ? 0 : isGOLD ? 1 : isSILV ? 2 : isBIST ? 3 : -1
 
-// ==== PAYLOAD-BEGIN (export_viz_payload.py --multi — 4 blok; elle düzenlemeyin)
+// ==== PAYLOAD-BEGIN (export_viz_payload.py — 4 blok; elle düzenlemeyin)
+// M23: payload dizileri MAIN BODY'de TANIMLANMAZ; her dizi kendi
+// fonksiyonunda sabit literaldir (Pine 'main body too long' çözümü, T15).
 // ==== PAYLOAD-END
 
 // ---- master diziler: aktif bloğu ilk barda kopyala ----
@@ -49,81 +46,50 @@ var float[] m_dh   = array.new<float>()
 var float[] m_dl   = array.new<float>()
 var int[]   m_sigL = array.new<int>()
 var int[]   m_sigS = array.new<int>()
-var float[] m_sigPx= array.new<float>()
-var int[]   m_trETs  = array.new<int>()
-var float[] m_trEPx  = array.new<float>()
-var int[]   m_trXTs  = array.new<int>()
-var float[] m_trXPx  = array.new<float>()
-var float[] m_trR    = array.new<float>()
 if barstate.isfirst
     if active == 0
-        m_ts := array.copy(a0_ts)
-        m_ema := array.copy(a0_ema200)
-        m_stop := array.copy(a0_stopLong)
-        m_swl := array.copy(a0_swingLow)
-        m_swh := array.copy(a0_swingHigh)
-        m_dh := array.copy(a0_donHigh)
-        m_dl := array.copy(a0_donLow)
-        m_sigL := array.copy(a0_sigLong)
-        m_sigS := array.copy(a0_sigShort)
-        m_sigPx := array.copy(a0_sigPrice)
-        m_trETs := array.copy(a0_trETs)
-        m_trEPx := array.copy(a0_trEPx)
-        m_trXTs := array.copy(a0_trXTs)
-        m_trXPx := array.copy(a0_trXPx)
-        m_trR := array.copy(a0_trR)
+        m_ts := f_a0_ts()
+        m_ema := f_a0_ema200()
+        m_stop := f_a0_stopLong()
+        m_swl := f_a0_swingLow()
+        m_swh := f_a0_swingHigh()
+        m_dh := f_a0_donHigh()
+        m_dl := f_a0_donLow()
+        m_sigL := f_a0_sigLong()
+        m_sigS := f_a0_sigShort()
     else if active == 1
-        m_ts := array.copy(a1_ts)
-        m_ema := array.copy(a1_ema200)
-        m_stop := array.copy(a1_stopLong)
-        m_swl := array.copy(a1_swingLow)
-        m_swh := array.copy(a1_swingHigh)
-        m_dh := array.copy(a1_donHigh)
-        m_dl := array.copy(a1_donLow)
-        m_sigL := array.copy(a1_sigLong)
-        m_sigS := array.copy(a1_sigShort)
-        m_sigPx := array.copy(a1_sigPrice)
-        m_trETs := array.copy(a1_trETs)
-        m_trEPx := array.copy(a1_trEPx)
-        m_trXTs := array.copy(a1_trXTs)
-        m_trXPx := array.copy(a1_trXPx)
-        m_trR := array.copy(a1_trR)
+        m_ts := f_a1_ts()
+        m_ema := f_a1_ema200()
+        m_stop := f_a1_stopLong()
+        m_swl := f_a1_swingLow()
+        m_swh := f_a1_swingHigh()
+        m_dh := f_a1_donHigh()
+        m_dl := f_a1_donLow()
+        m_sigL := f_a1_sigLong()
+        m_sigS := f_a1_sigShort()
     else if active == 2
-        m_ts := array.copy(a2_ts)
-        m_ema := array.copy(a2_ema200)
-        m_stop := array.copy(a2_stopLong)
-        m_swl := array.copy(a2_swingLow)
-        m_swh := array.copy(a2_swingHigh)
-        m_dh := array.copy(a2_donHigh)
-        m_dl := array.copy(a2_donLow)
-        m_sigL := array.copy(a2_sigLong)
-        m_sigS := array.copy(a2_sigShort)
-        m_sigPx := array.copy(a2_sigPrice)
-        m_trETs := array.copy(a2_trETs)
-        m_trEPx := array.copy(a2_trEPx)
-        m_trXTs := array.copy(a2_trXTs)
-        m_trXPx := array.copy(a2_trXPx)
-        m_trR := array.copy(a2_trR)
+        m_ts := f_a2_ts()
+        m_ema := f_a2_ema200()
+        m_stop := f_a2_stopLong()
+        m_swl := f_a2_swingLow()
+        m_swh := f_a2_swingHigh()
+        m_dh := f_a2_donHigh()
+        m_dl := f_a2_donLow()
+        m_sigL := f_a2_sigLong()
+        m_sigS := f_a2_sigShort()
     else if active == 3
-        m_ts := array.copy(a3_ts)
-        m_ema := array.copy(a3_ema200)
-        m_stop := array.copy(a3_stopLong)
-        m_swl := array.copy(a3_swingLow)
-        m_swh := array.copy(a3_swingHigh)
-        m_dh := array.copy(a3_donHigh)
-        m_dl := array.copy(a3_donLow)
-        m_sigL := array.copy(a3_sigLong)
-        m_sigS := array.copy(a3_sigShort)
-        m_sigPx := array.copy(a3_sigPrice)
-        m_trETs := array.copy(a3_trETs)
-        m_trEPx := array.copy(a3_trEPx)
-        m_trXTs := array.copy(a3_trXTs)
-        m_trXPx := array.copy(a3_trXPx)
-        m_trR := array.copy(a3_trR)
+        m_ts := f_a3_ts()
+        m_ema := f_a3_ema200()
+        m_stop := f_a3_stopLong()
+        m_swl := f_a3_swingLow()
+        m_swh := f_a3_swingHigh()
+        m_dh := f_a3_donHigh()
+        m_dl := f_a3_donLow()
+        m_sigL := f_a3_sigLong()
+        m_sigS := f_a3_sigShort()
 hasPayload = active >= 0 and array.size(m_ts) > 1
-hasTrades  = active >= 0 and active != 3 and array.size(m_trETs) > 0
 
-// ---- seviye/ema indeksi (M9c deseni) ----
+// ---- seviye/ema indeksi ----
 idx = -1
 if hasPayload
     for i = 0 to array.size(m_ts) - 1
@@ -140,45 +106,22 @@ dhVal   = f_val(m_dh)
 dlVal   = f_val(m_dl)
 sigL    = hasPayload and idx >= 0 ? array.get(m_sigL, idx) : 0
 sigS    = hasPayload and idx >= 0 ? array.get(m_sigS, idx) : 0
-sigPx   = f_val(m_sigPx)
 
-plot(show_ema and not simple_mode ? emaVal : na,   "EMA200 (ihraç)",      color = color.new(color.orange, 0), linewidth = 2)
-plot(show_levels and not simple_mode ? stopVal : na, "stop_long",         color = color.new(color.red, 25),   linewidth = 1, style = plot.style_stepline)
-plot(show_levels and not simple_mode ? swlVal : na,  "swing_low",         color = color.new(color.green, 50), linewidth = 1, style = plot.style_stepline)
-plot(show_levels and not simple_mode ? swhVal : na,  "swing_high",        color = color.new(color.teal, 50),  linewidth = 1, style = plot.style_stepline)
-plot(show_levels and not simple_mode ? dhVal : na,   "donchian_high(20)", color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
-plot(show_levels and not simple_mode ? dlVal : na,   "donchian_low(20)",  color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
+plot(show_ema ? emaVal : na,     "EMA200 (ihraç)",      color = color.new(color.orange, 0), linewidth = 2)
+plot(show_levels ? stopVal : na, "stop_long",           color = color.new(color.red, 25),   linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? swlVal : na,  "swing_low",           color = color.new(color.green, 50), linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? swhVal : na,  "swing_high",          color = color.new(color.teal, 50),  linewidth = 1, style = plot.style_stepline)
+plot(show_levels ? dhVal : na,   "donchian_high(20)",   color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
+plot(show_levels ? dlVal : na,   "donchian_low(20)",    color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
 
-// ---- TRADE-REVIEW: giriş/çıkış işaretçileri (sıralı diziler, O(1) amortize) ----
-var int   ePtr = 0
-var int   xPtr = 0
-var float cumR = 0.0
-float entryPx = na
-float exitPx  = na
-float exitR   = na
-if hasTrades
-    if ePtr < array.size(m_trETs) and array.get(m_trETs, ePtr) == time
-        entryPx := array.get(m_trEPx, ePtr)
-        ePtr += 1
-    if xPtr < array.size(m_trXTs) and array.get(m_trXTs, xPtr) == time
-        exitPx := array.get(m_trXPx, xPtr)
-        exitR  := array.get(m_trR, xPtr)
-        cumR  += exitR
-        xPtr  += 1
-plotshape(not na(entryPx) ? entryPx : na, "AL koşulu oluştu (sinyal kaydı)", shape.triangleup, location.absolute, color.new(color.lime, 0), size = size.tiny)
-plotshape(not na(exitPx) ? exitPx : na,  "SAT koşulu (sinyal kaydı)",        shape.xcross,     location.absolute, color.new(color.red, 0),  size = size.tiny)
-if show_trades and not na(exitPx)
-    label.new(bar_index, exitPx, str.tostring(exitR, "#.##") + "R", style = label.style_none, textcolor = color.new(color.silver, 10), size = size.tiny)
-plot(show_trades ? cumR : na, "kümülatif R (trade sırası)", color = color.new(color.aqua, 30), linewidth = 1, style = plot.style_stepline, scale = scale.none)
-
-// ---- sinyal marker'ları (SADE MOD'da gizli) ----
-plotshape(not simple_mode and sigL == 1 ? sigPx : na, "final LONG (capped)",  shape.triangleup,   location.absolute, color.new(color.green, 40), size = size.tiny)
-plotshape(not simple_mode and sigS == 1 ? sigPx : na, "final SHORT (capped)", shape.triangledown, location.absolute, color.new(color.maroon, 40), size = size.tiny)
+// ---- giriş/çıkış marker'ları (SİNYAL kaydı; trade geçmişi DEĞİL) ----
+plotshape(sigL == 1 ? close : na, "AL koşulu oluştu (sinyal kaydı)", shape.triangleup,   location.absolute, color.new(color.lime, 0), size = size.tiny)
+plotshape(sigS == 1 ? close : na, "SAT koşulu (sinyal kaydı)",       shape.xcross,       location.absolute, color.new(color.red, 0),  size = size.tiny)
 
 // ---- SABİT banner ----
 var table bn = table.new(position.top_right, 1, 4, border_width = 1)
 if barstate.islastconfirmedhistory
-    table.cell(bn, 0, 0, "quant4h watch_only MULTI v2 — UNTESTED-VIZ", text_color = color.white, bgcolor = color.new(color.red, 25), text_size = size.small)
-    table.cell(bn, 0, 1, active >= 0 ? "payload: " + (active == 0 ? "BTC" : active == 1 ? "GOLD" : active == 2 ? "SILVER" : "BIST30-endeks") + " · trade-review: " + (hasTrades ? "VAR" : "YOK") : "⚠ PAYLOAD YOK — bu sembol için gömülü payload yok (BTCUSDT/GC1!/SI1!/XU030)", text_color = active >= 0 ? color.silver : color.yellow, bgcolor = color.new(color.black, 40), text_size = size.tiny)
-    table.cell(bn, 0, 2, "trade YOK · emir YOK · tavsiye YOK · marker'lar backtest KAYIDIDIR", text_color = color.silver, bgcolor = color.new(color.black, 40), text_size = size.tiny)
+    table.cell(bn, 0, 0, "quant4h watch_only MULTI v3 — UNTESTED-VIZ", text_color = color.white, bgcolor = color.new(color.red, 25), text_size = size.small)
+    table.cell(bn, 0, 1, active >= 0 ? "payload: " + (active == 0 ? "BTC" : active == 1 ? "GOLD" : active == 2 ? "SILVER" : "BIST30-endeks") : "⚠ PAYLOAD YOK — bu sembol için gömülü payload yok (BTCUSDT/GC1!/SI1!/XU030)", text_color = active >= 0 ? color.silver : color.yellow, bgcolor = color.new(color.black, 40), text_size = size.tiny)
+    table.cell(bn, 0, 2, "trade YOK · emir YOK · tavsiye YOK · marker'lar SİNYAL kaydıdır · trade geçmişi: reports/CSV/dash", text_color = color.silver, bgcolor = color.new(color.black, 40), text_size = size.tiny)
     table.cell(bn, 0, 3, "doğruluk kaynağı DEĞİL · payload ufku: son --fetch'li §A koşusu", text_color = color.silver, bgcolor = color.new(color.black, 40), text_size = size.tiny)

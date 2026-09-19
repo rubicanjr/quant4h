@@ -73,5 +73,8 @@ pytest==8.3.3            # CI runs `pytest -q tests/`; the house self-runners
 #   2) pytest (CI):
 #        pytest -q tests/
 
+# --- excel rapor (M22, 2026-09-18) ---
+openpyxl==3.1.5        # export_trade_report_xlsx.py (salt renderer)
+
 # --- terminal dashboard (M11, 2026-09-18) ---
 rich==15.0.0             # run_dash.py TUI renderer (salt goruntuleme; hesap YOK)

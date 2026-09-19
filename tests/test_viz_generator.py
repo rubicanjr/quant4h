@@ -69,22 +69,27 @@ def test_lint_rules_hold_on_generated() -> None:
 def test_window_default_and_budget() -> None:
     _, out = _gen()
     btc = out["quant4h_viz_BTC_2026-09.pine"]
-    m = re.search(r"^a0_ts\s*=\s*", btc, re.M) or re.search(r"^ts\s*=", btc, re.M)
-    assert m
-    mts = re.search(r"^ts\s*= array\.from<int>\(([^\n]*)\)$", btc, re.M)
+    mts = re.search(r"^f_ts\(\) => array\.from<int>\(([^\n]*)\)$", btc, re.M)
+    assert mts, "ts dizisi bulunamadı"
     n_ts = mts.group(1).count(",") + 1
     assert n_ts == E.DEFAULT_BARS, f"varsayılan pencere {E.DEFAULT_BARS} bar olmalı, {n_ts}"
     assert len(btc.encode("utf-8")) < E.BUDGET_BYTES, "tek dosya bütçeyi aşmış"
     multi = out["quant4h_viz_multi_2026-09.pine"]
+    mm = re.search(r"^f_a0_ts\(\) => array\.from<int>\(([^\n]*)\)$", multi, re.M)
+    n_multi = mm.group(1).count(",") + 1
+    assert 200 <= n_multi <= E.DEFAULT_BARS, f"multi pencere beklenmedik: {n_multi}"
     assert len(multi.encode("utf-8")) < E.BUDGET_BYTES, "multi bütçeyi aşmış"
 
 
-def test_empty_sets_use_array_new() -> None:
+def test_descope_no_trade_arrays_generated() -> None:
     _, out = _gen()
-    multi = out["quant4h_viz_multi_2026-09.pine"]
-    for name in ("trETs", "trEPx", "trXTs", "trXPx", "trR"):
-        assert re.search(rf"^a3_{name}\s*= array\.new<", multi, re.M), f"a3_{name} boş değil mi?"
-    assert not re.search(r"array\.from<[^>]+>\(\s*\)", multi)
+    for name in ("multi", "BTC"):
+        f = out[f"quant4h_viz_{name}_2026-09.pine"] if name != "multi" else out["quant4h_viz_multi_2026-09.pine"]
+        for needle in ("trETs", "trEPx", "trXTs", "trXPx", "label.new", "cumR"):
+            assert needle not in f, f"{name}: descope ihlali {needle}"
+        assert not re.search(r"array\.from<[^>]+>\(\s*\)", f), f"{name}: boş array.from"
+        assert not re.search(r"^[A-Za-z_]\w*\s*=\s*array\.from<", f, re.M), \
+            f"{name}: main body'de dizi literal'i (T15/M23)"
 
 
 def _run_all() -> int:

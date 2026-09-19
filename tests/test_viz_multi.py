@@ -1,9 +1,10 @@
-"""Tests for M14-VIZ2 — multi pine yapısal parite testleri (renderer/üretici tarafı).
+"""Tests for M14/M21 — multi pine yapısal testleri (DESCOPE sonrası).
 
-Pine derlemesi bu ortamda doğrulanamaz (UNTESTED-VIZ); burada ÜRETİCİnin
-yapısal garantileri kilitlenir: 4 gömülü blok × tanım tekilliği, trade dizisi
-paritesi (CSV satır sayısı), sabit banner iğneleri, strategy/alert yasağı,
-BIST30 trade-review YOK, SADE MOD varsayılan toggle'ları.
+M21 ile trade-review overlay KALDIRILDI: trade dizileri (trETs/trEPx/trXTs/
+trXPx/trR), R etiketleri, kümülatif R ve TRADE-REVIEW toggle ÜRETİLMEZ.
+Kalan: giriş/çıkış marker'ları (▲/✖ = sinyal kaydı, close'a çizilir) +
+EMA200/seviyeler toggle'ları + SABİT banner. Trade verisi KAYBEDİLMEDİ:
+kaynak = reports/trades_*.csv (durur).
 
 Run: python3 -W ignore tests/test_viz_multi.py
 """
@@ -11,17 +12,15 @@ from __future__ import annotations
 
 import os
 import re
-import subprocess
 import sys
-import tempfile
-
-import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts"))
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 MULTI = os.path.join(ROOT, "viz", "quant4h_viz_multi_2026-09.pine")
+FUNC = ("ts", "ema200", "stopLong", "swingLow", "swingHigh",
+        "donHigh", "donLow", "sigLong", "sigShort")
 
 
 def _read() -> str:
@@ -33,58 +32,64 @@ def _read() -> str:
 def test_multi_blocks_and_declaration_uniqueness() -> None:
     t = _read()
     for pre in ("a0_", "a1_", "a2_", "a3_"):
-        for name in ("ts", "ema200", "stopLong", "sigLong", "sigPrice",
-                     "trETs", "trEPx", "trXTs", "trXPx", "trR", "payloadOK"):
-            n = len(re.findall(rf"^{re.escape(pre + name)}\s*=", t, re.M))
+        for name in FUNC:
+            n = len(re.findall(rf"^f_{re.escape(pre)}{name}\(\)\s*=>", t, re.M))
+            assert n == 1, f"f_{pre}{name} x{n}"
+        for name in ("payloadMeta", "payloadOK"):
+            n = len(re.findall(rf"^{re.escape(pre)}{name}\s*=", t, re.M))
             assert n == 1, f"{pre}{name} x{n}"
     assert t.count("indicator(") == 1
 
 
-def test_trade_array_parity_with_csv() -> None:
+def test_no_array_literals_in_main_body() -> None:
     t = _read()
-    for pre, key in (("a0_", "BTC"), ("a1_", "GOLD"), ("a2_", "SILVER"), ("a3_", "BIST30")):
-        m_new = re.search(rf"^{pre}trETs  = array\.new<int>\(\)$", t, re.M)
-        m = re.search(rf"^{pre}trETs  = array\.from<int>\((.*?)\)$", t, re.M | re.S)
-        assert m_new or m, f"{pre}trETs yok"
-        n = 0 if m_new else m.group(1).count(",") + 1
-        csv = os.path.join(ROOT, "reports", f"trades_{key}.csv")
-        rows = len(pd.read_csv(csv)) if os.path.exists(csv) else 0
-        assert n == rows, f"{key}: pine {n} != csv {rows}"
+    assert not re.search(r"^[A-Za-z_]\w*\s*=\s*array\.from<", t, re.M), \
+        "M23/T15: dizi literal'i main body'de tanımlanamaz"
+    assert "m_ts := f_a0_ts()" in t and "m_sigS := f_a3_sigShort()" in t
 
 
-def test_fixed_banners_and_simple_mode_defaults() -> None:
+def test_descope_no_trade_review_artifacts() -> None:
+    t = _read()
+    for needle in ("trETs", "trEPx", "trXTs", "trXPx", "trR ", "label.new",
+                   "cumR", "show_trades", "sigPrice"):
+        assert needle not in t, f"descope ihlali: {needle!r} hâlâ üretiliyor"
+    # marker'lar	close'a çizilir (sinyal kaydı)
+    assert "sigL == 1 ? close : na" in t and "sigS == 1 ? close : na" in t
+    assert "AL koşulu oluştu (sinyal kaydı)" in t and "SAT koşulu (sinyal kaydı)" in t
+    # trade verisi kaybedilmedi: kaynak CSV'ler duruyor
+    for k, n in (("BTC", 187), ("GOLD", 30), ("SILVER", 34)):
+        p = os.path.join(ROOT, "reports", f"trades_{k}.csv")
+        assert os.path.exists(p), f"kaynak CSV eksik: {p}"
+        with open(p, encoding="utf-8") as fh:
+            assert sum(1 for _ in fh) - 1 == n, f"{k} CSV satır sayısı değişti"
+
+
+def test_fixed_banners_and_toggle_defaults() -> None:
     t = _read()
     for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "watch_only",
-                   "AL koşulu oluştu (sinyal kaydı)", "SAT koşulu (sinyal kaydı)",
-                   "doğruluk kaynağı DEĞİL", "payload ufku"):
+                   "doğruluk kaynağı DEĞİL", "payload ufku",
+                   "marker'lar SİNYAL kaydıdır"):
         assert needle in t, f"banner iğnesi eksik: {needle}"
-    assert 'simple_mode = input.bool(true' in t, "SADE MOD varsayılan TRUE olmalı"
     assert 'show_ema    = input.bool(false' in t
     assert 'show_levels = input.bool(false' in t
-    assert 'show_trades = input.bool(false' in t, "TRADE-REVIEW toggle'lı, varsayılan kapalı"
+    assert "show_trades" not in t and "simple_mode" not in t
     code = "\n".join(l for l in t.splitlines() if not l.lstrip().startswith("//"))
     assert "strategy(" not in code and "alertcondition(" not in code
     assert not re.search(r"^\s*alert\(", code, re.M)
 
 
-def test_bist30_block_has_no_trade_review() -> None:
+def test_symbol_mapping_and_payload_guard() -> None:
     t = _read()
-    m = re.search(r"^a3_trR    = array\.new<float>\(\)$", t, re.M)
-    assert m, "BIST30 trade-review dizileri BOŞ (array.new) olmalı"
-    assert not re.search(r"array\.from<[^>]+>\(\s*\)", t), "boş array.from KALMIŞ (M15)"
+    for sym in ("BTCUSDT", "GC1!", "GC=F", "XAUUSD", "SI1!", "SI=F", "XAGUSD", "XU030"):
+        assert sym in t, f"sembol eşlemesi eksik: {sym}"
+    assert "active = isBTC ? 0 : isGOLD ? 1 : isSILV ? 2 : isBIST ? 3 : -1" in t
 
 
-def test_exporter_regenerates_multi_deterministically() -> None:
-    with tempfile.TemporaryDirectory() as td:
-        r1 = subprocess.run([sys.executable, "-W", "ignore",
-                             os.path.join(ROOT, "scripts", "export_viz_payload.py"),
-                             "--out", td],
-                            capture_output=True, text=True, cwd=ROOT)
-        assert r1.returncode == 0, r1.stderr[-500:]
-        a = open(os.path.join(td, "quant4h_viz_multi_2026-09.pine"), encoding="utf-8").read()
-        b = _read()
-        # üretim zaman damgası yok → bayt-bayt determinizm
-        assert a == b, "multi pine deterministik değil"
+def test_markers_use_close_not_payload_price() -> None:
+    t = _read()
+    assert "plotshape(sigL == 1 ? close : na" in t
+    assert "plotshape(sigS == 1 ? close : na" in t
+    assert "m_sigPx" not in t and "sigPx" not in t
 
 
 def _run_all() -> int:

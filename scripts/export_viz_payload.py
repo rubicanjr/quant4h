@@ -46,91 +46,81 @@ BEGIN = "// ---- PAYLOAD-BEGIN (export_viz_payload.py — otomatik; elle düzenl
 END = "// ---- PAYLOAD-END"
 TEMPLATE = os.path.join(ROOT, "pine", "quant4h_viz.pine")
 DECL_NAMES = ["ts", "ema200", "stopLong", "swingLow", "swingHigh", "donHigh",
-              "donLow", "sigLong", "sigShort", "sigPrice", "payloadMeta", "payloadOK",
-              "trETs", "trEPx", "trXTs", "trXPx", "trR"]
+              "donLow", "sigLong", "sigShort", "payloadMeta", "payloadOK"]
 TEMPLATE_MULTI = os.path.join(ROOT, "pine", "quant4h_viz_multi.pine")
-TRADE_CSV = {"BTC": "trades_BTC.csv", "GOLD": "trades_GOLD.csv",
-             "SILVER": "trades_SILVER.csv", "BIST30": None}   # endeks trade edilmez
-
-
-def _ms_series(ts_utc: pd.Series) -> List[int]:
-    return ((pd.to_datetime(ts_utc, utc=True) - pd.Timestamp("1970-01-01", tz="UTC"))
-            // pd.Timedelta(milliseconds=1)).astype("int64").tolist()
-
-
-def export_trade_arrays(key: str, prefix: str) -> List[str]:
-    """reports/trades_<KEY>.csv (capped P0xA0 backtest kaydı) → gömülü diziler.
-    Giriş dizisi giriş zamanına, çıkış dizisi ÇIKIŞ zamanına sıralı (işaretçi
-    mantığı O(1) amortize). BIST30/endeks için BOŞ diziler (trade-review YOK)."""
-    csv = TRADE_CSV.get(key)
-    path = os.path.join(ROOT, "reports", csv) if csv else None
-    if path is None or not os.path.exists(path):
-        # M15: Pine `array.from<T>()` (0 arg) GEÇERSİZDİR ("Wrong number of
-        # args: 0"); boş küme her zaman array.new<T>() ile üretilir.
-        return [f"{prefix}trETs  = array.new<int>()",
-                f"{prefix}trEPx  = array.new<float>()",
-                f"{prefix}trXTs  = array.new<int>()",
-                f"{prefix}trXPx  = array.new<float>()",
-                f"{prefix}trR    = array.new<float>()"]
-    df = pd.read_csv(path)
-    de = df.sort_values("entry_timestamp_utc")
-    dx = df.sort_values("exit_timestamp_utc")
-    return [
-        f"{prefix}trETs  = array.from<int>({_pine_ints(_ms_series(de['entry_timestamp_utc']))})",
-        f"{prefix}trEPx  = array.from<float>({_pine_floats(de['entry_price'])})",
-        f"{prefix}trXTs  = array.from<int>({_pine_ints(_ms_series(dx['exit_timestamp_utc']))})",
-        f"{prefix}trXPx  = array.from<float>({_pine_floats(dx['exit_price'])})",
-        f"{prefix}trR    = array.from<float>({_pine_floats(dx['r_multiple'])})",
-    ]
+# endeks trade edilmez
 
 
 BUDGET_BYTES = 90 * 1024   # TradingView kaynak limiti ~100 KB; 10 KB marj — PINE_STYLE.md
 MULTI_MIN_BARS = 120       # multi oto-daraltma alt sınırı
+FUNC_NAMES = ("ts", "ema200", "stopLong", "swingLow", "swingHigh",
+              "donHigh", "donLow", "sigLong", "sigShort")
+ASSIGN_NAMES = ("payloadMeta", "payloadOK")
 
 
 def _lint_common(txt: str, prefixes) -> None:
-    """M15 lint çekirdeği: (1) array.from >=1 arg ZORUNLU, bos kume -> array.new;
-    (2) PAYLOAD-BEGIN/END ciftleri dengeli; (3) from-dizi uzunluklari == ts
-    uzunlugu (array.new bos oldugu icin muaftir); (4) kod satirlarinda
-    strategy(/alert(/alertcondition( YOK."""
+    """Ortak lint (M15/M15b/M15c/M21/M23):
+    (1) array.from >=1 arg ZORUNLU, bos kume -> array.new;
+    (2) T15/M23: dizi literal'i MAIN BODY'de TANIMLANAMAZ (atama biçimi yasak),
+        yalnız fonksiyon govdesinde: `f_<pre><dizi>() => array.from<...>(...)`;
+    (3) PAYLOAD-BEGIN/END ciftleri dengeli;
+    (4) fonksiyon dizi uzunluklari == ts uzunlugu;
+    (5) T11: tipsiz `x = na` YASAK; (6) T13: plot(scale=...) YASAK;
+    (7) T14/descope: trade-review artefaktlari YASAK;
+    (8) strategy(/alert(/alertcondition( YASAK;
+    (9) tanim tekilligi (fonksiyon + meta/OK atamalari)."""
     if re.search(r"array\.from<[^>]+>\(\s*\)", txt):
         raise RuntimeError("lint IHLAL: array.from bos arguman (Pine: 'Wrong number of "
                            "args: 0'); bos kume array.new ile uretilmeli")
+    if re.search(r"^[A-Za-z_]\w*\s*=\s*array\.from<", txt, re.M):
+        raise RuntimeError("lint IHLAL (T15/M23): dizi literal'i main body'de tanimlanamaz; "
+                           "her dizi kendi fonksiyonunda sabit literal olmali")
     if txt.count("PAYLOAD-BEGIN") != txt.count("PAYLOAD-END"):
         raise RuntimeError("lint IHLAL: PAYLOAD-BEGIN/END ciftleri dengesiz")
-    for pre in prefixes:
-        mts = re.search(rf"^{re.escape(pre)}ts\s*= array\.from<int>\(([^\n]*)\)$", txt, re.M)
-        if not mts:
-            continue
-        n_ts = mts.group(1).count(",") + 1
-        for m in re.finditer(rf"^{re.escape(pre)}(\w+)\s*= array\.from<[^>]+>\(([^\n]*)\)$",
-                             txt, re.M):
-            name, body = m.group(1), m.group(2)
-            if name == "ts" or name.startswith("tr"):
-                continue   # trade dizileri bilinçli olarak ts'den farklı uzunluktadır
-            n = body.count(",") + 1
-            if n != n_ts:
-                raise RuntimeError(f"lint IHLAL: {pre}{name} uzunlugu {n} != ts uzunlugu {n_ts}")
-    # T11 (M15b): na atanan her degisken TIP anahtar kelimesiyle tanimlanir
-    # (Pine v5: "Value with NA type cannot be assigned..."); tipsiz `x = na` URETILEMEZ.
     if re.search(r"^[A-Za-z_]\w*\s*=\s*na\s*$", txt, re.M):
         raise RuntimeError("lint IHLAL (T11): tipsiz na atamasi (float/int/bool oneki zorunlu)")
+    if re.search(r"\bplot\([^)\n]*\bscale\s*=", txt):
+        raise RuntimeError("lint IHLAL (T13): plot(scale=...) Pine v5'te yok")
+    for needle in ("trETs", "trEPx", "trXTs", "trXPx", "trR", "label.new", "cumR", "show_trades"):
+        if needle in txt:
+            raise RuntimeError(f"lint IHLAL (T14/descope): '{needle}' uretilemez")
     code = "\n".join(l for l in txt.splitlines() if not l.lstrip().startswith("//"))
     if "strategy(" in code or re.search(r"^\s*alert\(", code, re.M) or "alertcondition(" in code:
         raise RuntimeError("lint IHLAL: strategy()/alert()/alertcondition() YASAK")
+    for pre in prefixes:
+        for name in FUNC_NAMES:
+            n = len(re.findall(rf"^f_{re.escape(pre)}{name}\(\)\s*=>", txt, re.M))
+            if n != 1:
+                raise RuntimeError(f"lint IHLAL: f_{pre}{name} fonksiyonu x{n} (beklenen 1)")
+        for name in ASSIGN_NAMES:
+            n = len(re.findall(rf"^{re.escape(pre)}{name}\s*=", txt, re.M))
+            if n != 1:
+                raise RuntimeError(f"lint IHLAL: {pre}{name} atamasi x{n} (beklenen 1)")
+        mts = re.search(rf"^f_{re.escape(pre)}ts\(\) => array\.from<int>\(([^\n]*)\)$", txt, re.M)
+        if not mts:
+            continue
+        n_ts = mts.group(1).count(",") + 1
+        for m in re.finditer(rf"^f_{re.escape(pre)}(\w+)\(\) => array\.from<[^>]+>\(([^\n]*)\)$",
+                             txt, re.M):
+            name, body = m.group(1), m.group(2)
+            if name == "ts":
+                continue
+            if body.count(",") + 1 != n_ts:
+                raise RuntimeError(f"lint IHLAL: f_{pre}{name} uzunlugu != ts uzunlugu {n_ts}")
 
 
 def lint_pine(txt: str) -> None:
-    """M9c yapısal lint: her payload tanımı TAM 1 kez; strategy()/alert() YASAK.
-    Yasak-kelime taraması YALNIZ KOD satırlarında yapılır (yorumlar soyulur —
-    H29/H33 deseni; şablonun kendi belge yorumları 'strategy() YOK' der)."""
-    lines = txt.splitlines()
-    for name in DECL_NAMES:
-        n = sum(1 for l in lines if re.match(rf"^{re.escape(name)}\s*=", l))
-        if n != 1:
-            raise RuntimeError(f"pine lint HATA: '{name}' bildirim sayısı {n} (beklenen 1) — "
-                               f"bölge birleştirme/paste hatası")
+    """Tek-dosya pine lint'i (M23: fonksiyon-biçimi payload)."""
     _lint_common(txt, [""])
+
+
+def lint_multi(txt: str) -> None:
+    """Multi pine lint'i (M23: 4 blok x fonksiyon-biçimi payload + banner iğneleri)."""
+    _lint_common(txt, ("a0_", "a1_", "a2_", "a3_"))
+    for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "watch_only",
+                   "doğruluk kaynağı DEĞİL", "payload ufku"):
+        if needle not in txt:
+            raise RuntimeError(f"multi lint HATA: banner iğnesi eksik: {needle}")
 
 
 def assemble_pine(asset_block: str) -> str:
@@ -199,18 +189,16 @@ def export_asset(key: str, tf: str, month_start: Optional[pd.Timestamp] = None,
         BEGIN,
         f'{prefix}payloadMeta = "{meta}"',
         f"{prefix}payloadOK   = true",
-        f"{prefix}ts        = array.from<int>({_pine_ints(ms)})",
-        f"{prefix}ema200    = array.from<float>({_pine_floats(d.get('ema_trend'))})",
-        f"{prefix}stopLong  = array.from<float>({_pine_floats(d.get('stop_long'))})",
-        f"{prefix}swingLow  = array.from<float>({_pine_floats(d.get('last_swing_low'))})",
-        f"{prefix}swingHigh = array.from<float>({_pine_floats(d.get('last_swing_high'))})",
-        f"{prefix}donHigh   = array.from<float>({_pine_floats(d.get('donchian_high'))})",
-        f"{prefix}donLow    = array.from<float>({_pine_floats(d.get('donchian_low'))})",
-        f"{prefix}sigLong   = array.from<int>({_pine_ints(sig_l)})",
-        f"{prefix}sigShort  = array.from<int>({_pine_ints(sig_s)})",
-        f"{prefix}sigPrice  = array.from<float>({_pine_floats(sig_px)})",
+        f"f_{prefix}ts() => array.from<int>({_pine_ints(ms)})",
+        f"f_{prefix}ema200() => array.from<float>({_pine_floats(d.get('ema_trend'))})",
+        f"f_{prefix}stopLong() => array.from<float>({_pine_floats(d.get('stop_long'))})",
+        f"f_{prefix}swingLow() => array.from<float>({_pine_floats(d.get('last_swing_low'))})",
+        f"f_{prefix}swingHigh() => array.from<float>({_pine_floats(d.get('last_swing_high'))})",
+        f"f_{prefix}donHigh() => array.from<float>({_pine_floats(d.get('donchian_high'))})",
+        f"f_{prefix}donLow() => array.from<float>({_pine_floats(d.get('donchian_low'))})",
+        f"f_{prefix}sigLong() => array.from<int>({_pine_ints(sig_l)})",
+        f"f_{prefix}sigShort() => array.from<int>({_pine_ints(sig_s)})",
     ]
-    lines += export_trade_arrays(key, prefix)
     lines.append(END)
     return "\n".join(lines) + "\n"
 
@@ -273,7 +261,7 @@ def main() -> int:
             except RuntimeError as e:
                 if "butcesi" not in str(e) or mbars is None or mbars <= MULTI_MIN_BARS:
                     raise
-                mbars //= 2
+                mbars = int(mbars * 0.8)
                 multi_blocks = [export_asset(k, args.timeframe, prefix=f"a{i}_", bars=mbars)
                                 for i, k in enumerate(args.assets)]
                 print(f"  [MULTI] butce icin pencere daraltildi: {mbars} bar/blok")
@@ -297,15 +285,12 @@ def main() -> int:
 
 
 def lint_multi(txt: str) -> None:
-    """M14 lint: 4 blok × 17 tanım TAM 1 kez; kod satırlarında strategy/alert YOK;
-    sabit banner iğneleri mevcut."""
-    lines = txt.splitlines()
-    for pre in ("a0_", "a1_", "a2_", "a3_"):
-        for name in DECL_NAMES:
-            n = sum(1 for l in lines if re.match(rf"^{re.escape(pre + name)}\s*=", l))
-            if n != 1:
-                raise RuntimeError(f"multi lint HATA: '{pre}{name}' x{n} (beklenen 1)")
+    """Multi pine lint'i (M23: 4 blok × fonksiyon-biçimi payload + banner iğneleri)."""
     _lint_common(txt, ("a0_", "a1_", "a2_", "a3_"))
+    for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "watch_only",
+                   "doğruluk kaynağı DEĞİL", "payload ufku"):
+        if needle not in txt:
+            raise RuntimeError(f"multi lint HATA: banner iğnesi eksik: {needle}")
     for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "AL koşulu oluştu (sinyal kaydı)",
                    "SAT koşulu (sinyal kaydı)", "watch_only"):
         if needle not in txt:
@@ -334,15 +319,12 @@ if __name__ == "__main__":
 
 
 def lint_multi(txt: str) -> None:
-    """M14 lint: 4 blok × 17 tanım TAM 1 kez; kod satırlarında strategy/alert YOK;
-    sabit banner iğneleri mevcut."""
-    lines = txt.splitlines()
-    for pre in ("a0_", "a1_", "a2_", "a3_"):
-        for name in DECL_NAMES:
-            n = sum(1 for l in lines if re.match(rf"^{re.escape(pre + name)}\s*=", l))
-            if n != 1:
-                raise RuntimeError(f"multi lint HATA: '{pre}{name}' x{n} (beklenen 1)")
+    """Multi pine lint'i (M23: 4 blok × fonksiyon-biçimi payload + banner iğneleri)."""
     _lint_common(txt, ("a0_", "a1_", "a2_", "a3_"))
+    for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "watch_only",
+                   "doğruluk kaynağı DEĞİL", "payload ufku"):
+        if needle not in txt:
+            raise RuntimeError(f"multi lint HATA: banner iğnesi eksik: {needle}")
     for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "AL koşulu oluştu (sinyal kaydı)",
                    "SAT koşulu (sinyal kaydı)", "watch_only"):
         if needle not in txt:

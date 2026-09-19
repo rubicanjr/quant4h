@@ -7,12 +7,34 @@
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
 **Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **240/240 PASS**
+**Test durumu:** **252/252 PASS**
 `resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 12 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 7
 
 ---
 
-## TAMAMLANDI: M15b (mikro, 2026-09-18, kullanıcı onaylı TEK patch)
+## TAMAMLANDI: M24-AGENT-EVAL (2026-09-18/19, kullanıcı onaylı TEK patch)
+
+Özet: `scripts/run_agent_eval.py` + `tests/eval/test_agent_eval.py` (6 test): son N patch oturumunu 5 kriterle skorlar → `reports/eval/2026-09-19.md`. **FORMAT**: commit konu tek satır + checkpoint öneki · PROGRESS bloğu ≤12 satır · patch/“TEK patch” atfı · suite satırı · DUR vekili (sınır satırı); sohbet satır sayısı repo'da tutulmadığından MANUAL işaretli. **FACTUALITY**: blok dosya yolları `ls` ile VAR (placeholder token muaf) · patch konu == commit konu (normalize) · blok suite x/x. **CONSISTENCY**: R09 çapraz sayaçlar (README==model_card==PROGRESS==iğne) + PROGRESS başlık == canlı suite (252). **REALISM**: cadence BAYAT damgası + QC RED→SORUN NOTU + pine SABİT banner + blok başına dürüst negatif token. **QUALITY**: insan rubric 1-5, LLM-judge YOK; `--quality N` ile PROGRESS'e işlenir:
+<!-- quality-rubric --> Quality rubric (insan): BEKLEMEDE (1-5) — `run_agent_eval.py --quality N`.
+İlk skor kartı (8 oturum): FORMAT 4–6/6 · FACTUALITY 2–4/4 · REALISM 3–4/4 · CONSISTENCY 2/2 ✅. Runbook §A kural 9: aylık pakete skor kartı eklendi. Sınırlar: hüküm/seçim/look YOK. Suite **246→252/252** (R09 senkronu).
+
+## TAMAMLANDI: M23-PINE-BODY (2026-09-18, kullanıcı onaylı TEK patch) (2026-09-18, kullanıcı onaylı TEK patch)
+
+Özet: Pine "The main body of the script is too long" hatası çözüldü: MULTI v3'te 4 blok × ~245 bar payload dizileri main body'de tanımlıydı; artık **her payload dizisi kendi fonksiyonunda** (`f_<blok><dizi>() => array.from<...>(...)`), main body yalnız `barstate.isfirst`'te aktif bloğun fonksiyonlarını çağırır (multi 36 fonksiyon, per-asset 9). Per-asset şablon da aynı biçime geçti (**viz v4**; gelecek pencere büyümelerine dayanıklı). PINE_STYLE **T15** (spec etiketi T13 çakıştı: T13=M15c scale kuralı; T15 olarak kaydedildi) + TEST_PLAN §3b M3c. Üreteç lint'ine "main body'de dizi literal satırı = 0" kontrolü eklendi (atama-biçimi `x = array.from<` RED). Golden'lar yenilendi; test_viz_multi 6 (yeni main-body testi), test_viz_generator 5. Suite **245→246/246** (R09 senkronu). Pencere değişmedi (~245 bar/blok @90 KB). Hüküm/seçim/look YOK.
+
+## TAMAMLANDI: M22-TRADE-XLSX (2026-09-18, kullanıcı onaylı TEK patch) (2026-09-18, kullanıcı onaylı TEK patch)
+
+Özet: `scripts/export_trade_report_xlsx.py` (openpyxl 3.1.5, requirements+lock'a eklendi): `reports/trades_*.csv` → `reports/xlsx/trades_<asset>.xlsx` (BTC 187 · GOLD 30 · SILVER 34 · basket 172 trade). Sayfalar: **TRADES** (başlık zemin+freeze A2+auto-filter+sütun genişlikleri; r_multiple koşullu yeşil/kırmızı; exit_reason renk kodu TP yeşil/stop kırmızı/time_stop amber/eod gri; sayılar 2-4 ondalık; zamanlar `yyyy-mm-dd hh:mm` naive-UTC) · **OZET** (trade sayısı, exit_reason dağılımı, ort/medyan R, win rate, maks ardışık kayıp, cost_total, net expectancy, equity maxDD — başlangıç 100k sabit) · **EGRI** (equity + openpyxl çizgi grafik). İki openpyxl tuzağı yakalandı: tz-aware datetime RED (naive UTC'ye normalize) + EGRI equity satır eşlemesi (i-1→i-2). Testler `tests/test_trade_xlsx.py` (5): sayfa adları+grafik, özetin CSV'den BAĞIMSIZ yeniden hesapla eşleşmesi, determinizm, biçim kilitleri, dağılım satırı. Runbook §A kural 8: aylık pakete xlsx eklendi. Sınırlar: yeni analiz YOK (salt renderer), hüküm/seçim/look YOK. Suite **240→245/245** (R09 senkronu).
+
+## TAMAMLANDI: M21-DESCOPE (2026-09-18, kullanıcı onaylı TEK patch) (2026-09-18, kullanıcı onaylı TEK patch)
+
+Özet: Pine viz indirgendi — trade-review overlay **TAMAMEN** çıkarıldı: trade dizileri (trETs/trEPx/trXTs/trXPx/trR), R etiketleri, kümülatif R, TRADE-REVIEW (ve simple_mode) toggle'ları, sigPrice dizisi ÜRETİLMİYOR; lint T14 bu üretimleri REDDEDER. Kalan: giriş/çıkış marker'ları (▲/✖ = SİNYAL kaydı, `close`'a çizilir) + EMA200 (toggle) + yapısal seviyeler (toggle) + watch_only/UNTESTED-VIZ SABİT banner (multi v3). **Trade verisi kaybı YOK:** kaynak `reports/trades_*.csv` duruyor (test kilitli: 187/30/34 satır). Pencere: overlay kalkınca multi oto-daraltma 187 → **245 bar/blok** (82 KB @90 KB bütçe, 0.8 adımlı); per-asset 750 sabit. NOT: spec tahmini ~350 idi; bağlayıcı olan TV kaynak limiti (~100 KB) — sapma kayıtlı (PINE_STYLE T14, TEST_PLAN §3b M3b). PINE_STYLE **T14** eklendi (spec etiketi T12 çakıştığı için T14 olarak kaydedildi: T12 M15b'de sürüm kuralına verildi). Golden'lar yenilendi; testler descope'a göre yeniden yazıldı (test_viz_multi 5 + test_viz_generator 5). Suite **240/240**. Hüküm/seçim/look etkisi YOK.
+
+## TAMAMLANDI: M15c (mikro, 2026-09-18, kullanıcı hata raporu) (mikro, 2026-09-18, kullanıcı hata raporu)
+
+Özet: Pine v5 hatası "The 'plot' function does not have an argument with the name 'scale'" — multi şablondaki kümülatif R çizgisi `plot(..., scale=scale.none)` kullanıyordu (v4 kalıntısı; overlay indicator'da kendi ölçekli çizgi MÜMKÜN DEĞİL). Çözüm: çizgi KALDIRILDI; kümülatif R bilgi olarak **label metnine** (`"1.2R (Σ3.4R)"`) + **banner ΣR satırına** taşındı (show_trades toggle'ında). PINE_STYLE **T13** + lint kuralı (`plot(..., scale=` üretimi RED); negatif yol doğrulandı. TEST_PLAN §3b M3 güncellendi. Golden'lar yenilendi (test_viz_generator 5/5 bayt-bayt). Suite **240/240**. Hüküm/seçim/look etkisi YOK.
+
+## TAMAMLANDI: M15b (mikro, 2026-09-18, kullanıcı onaylı TEK patch) (mikro, 2026-09-18, kullanıcı onaylı TEK patch)
 
 Özet: **(1)** multi şablonda `entryPx/exitPx/exitR = na` tipsizdi → Pine v5 "Value with NA type cannot be assigned"; artık `float entryPx = na` vb. **(2)** PINE_STYLE **T11**: "na atanan her değişken tip anahtar kelimesiyle (float/int/bool) tanımlanır"; `_lint_common` kuralı eklendi (negatif yol manuel doğrulandı); golden-file'lar yeniden üretildi (`test_viz_generator` bayt-bayt yeşil). **(3)** `//@version=5` **SABİT** (v6 migrasyonu kapsam dışı); TEST_PLAN notu: "PINE VERSION OUTDATED uyarısı kozmetiktir, hata değildir". Suite **240/240** değişmedi. Hüküm/seçim/look etkisi YOK.
 

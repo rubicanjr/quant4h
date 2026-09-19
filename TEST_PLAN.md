@@ -68,7 +68,9 @@
 |---|---|---|
 | M1 | sembol eşlemesi | BTCUSDT / GC1!·GC=F·XAUUSD / SI1!·SI=F·XAGUSD / XU030 dışında → çizim YOK + "⚠ PAYLOAD YOK" banner'ı |
 | M2 | SADE MOD varsayılan | yalnız ▲ "AL koşulu oluştu (sinyal kaydı)" + ✖ "SAT koşulu (sinyal kaydı)"; EMA/seviyeler toggle-KAPALI |
-| M3 | TRADE-REVIEW toggle | R etiketleri (trade başına, çıkışta) + kümülatif R stepline (scale.none); kaynak = reports/trades_*.csv gömülü diziler; Pine'da hesap YOK |
+| M3 | TRADE-REVIEW: **M21 ile KALDIRILDI** — trade dizileri/R etiketi/kümülatif R Pine'da YOK (T14); trade geçmişi yalnız reports/CSV/dash'ta. Kalan marker'lar: ▲/✖ = sinyal kaydı (`close`'a çizilir) |
+| M3c | M23: payload dizileri FONKSİYONLARDA (`f_<blok><dizi>() => array.from<...>`); main body'de dizi literal satırı = 0 (lint). Pencere aynı: ~245 bar/blok @90 KB |
+| M3b | MULTI pencere (M21 sonrası): ~245 bar/blok @90 KB bütçe (oto-daraltma 0.8 adımlı); per-asset 750 sabit. Spec tahmini ~350 idi; bağlayıcı olan TV kaynak limiti (~100 KB) — sapma PROGRESS'e kayıtlı |
 | M4 | trade dizisi paritesi | pine giriş-trade sayısı == trades CSV satır sayısı (üretici lint + test_viz_multi) |
 | M5 | BIST30 bloğu | trade-review YOK (boş diziler); banner "trade-review: YOK" |
 | M6 | SABİT banner | UNTESTED-VIZ + watch_only + "doğruluk kaynağı DEĞİL" + payload ufku satırı kapatılamaz |

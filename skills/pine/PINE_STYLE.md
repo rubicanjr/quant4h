@@ -20,6 +20,9 @@ bootstrap okuma listesine M15 ile eklendi (PROGRESS).*
 | T10 | Türkçe/unicode string literal'ler PINE'da OK ama payload META dışına taşmasın | meta tek satır string; banner sabit | M9b |
 | T11 | tipsiz `na` ataması → Pine v5 "Value with NA type cannot be assigned..." | `float x = na` / `int x = na` / `bool x = na`; üreteç lint'i tipsiz `x = na` satırını REDDEDER | M15b hata raporu (entryPx/exitPx/exitR) |
 | T12 | `//@version=5` SABİTTİR; TV "PINE VERSION OUTDATED" uyarısı KOZMETİKTİR, hata DEĞİL | v6 migrasyonu kapsam dışı; uyarıyı bastırmaya ÇALIŞMA | M15b kullanıcı kararı |
+| T13 | Pine v5 `plot()`'in `scale` argümanı YOK (v4 kalıntısı) → "The 'plot' function does not have an argument with the name 'scale'"; overlay indicator'da kendi ölçekli çizgi MÜMKÜN DEĞİL | kümülatif/metrik çizgileri label metnine (`"1.2R (Σ3.4R)"`) + banner satırına taşınır; lint `plot(..., scale=` üretimi REDDEDER | M15c hata raporu |
+| T15 | Pine "The main body of the script is too long" → payload dizileri main body'de TANIMLANAMAZ | her dizi kendi fonksiyonunda sabit literal: `f_<blok><dizi>() => array.from<...>(...)`; main body yalnız `barstate.isfirst`'te aktif bloğun fonksiyonlarını çağırır; lint atama-biçimi `x = array.from<` satırını REDDEDER ("main body'de dizi literal satırı = 0") | M23 hata raporu |
+| T14 | **trade-review overlay ÜRETME** (M21-DESCOPE): trade dizileri/R etiketi/kümülatif R/TRADE-REVIEW toggle Pine'a GİREMEZ; trade geçmişi YALNIZ `reports/trades_*.csv` + `reports/*.md` + `run_dash`'ta | Pine'da yalnız giriş/çıkış marker'ları (▲/✖ = sinyal kaydı, `close`'a çizilir) + EMA200/seviye toggle'ları + SABİT banner; lint `trETs/label.new/cumR/show_trades` üretimini REDDEDER. Çoklayıcı pencere bütçesi: ~90 KB → ~245 bar/blok (spec tahmini ~350; bağlayıcı olan TV kaynak limitidir) | M21 kullanıcı onayı |
 
 ## 2) Üreteç lint listesi (`export_viz_payload.lint_pine / lint_multi / _lint_common`)
 
