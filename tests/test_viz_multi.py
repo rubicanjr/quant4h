@@ -43,9 +43,10 @@ def test_multi_blocks_and_declaration_uniqueness() -> None:
 def test_trade_array_parity_with_csv() -> None:
     t = _read()
     for pre, key in (("a0_", "BTC"), ("a1_", "GOLD"), ("a2_", "SILVER"), ("a3_", "BIST30")):
+        m_new = re.search(rf"^{pre}trETs  = array\.new<int>\(\)$", t, re.M)
         m = re.search(rf"^{pre}trETs  = array\.from<int>\((.*?)\)$", t, re.M | re.S)
-        assert m, f"{pre}trETs yok"
-        n = 0 if m.group(1).strip() == "" else m.group(1).count(",") + 1
+        assert m_new or m, f"{pre}trETs yok"
+        n = 0 if m_new else m.group(1).count(",") + 1
         csv = os.path.join(ROOT, "reports", f"trades_{key}.csv")
         rows = len(pd.read_csv(csv)) if os.path.exists(csv) else 0
         assert n == rows, f"{key}: pine {n} != csv {rows}"
@@ -68,15 +69,16 @@ def test_fixed_banners_and_simple_mode_defaults() -> None:
 
 def test_bist30_block_has_no_trade_review() -> None:
     t = _read()
-    m = re.search(r"^a3_trR    = array\.from<float>\((.*?)\)$", t, re.M | re.S)
-    assert m and m.group(1).strip() == "", "BIST30 trade-review dizileri BOŞ olmalı"
+    m = re.search(r"^a3_trR    = array\.new<float>\(\)$", t, re.M)
+    assert m, "BIST30 trade-review dizileri BOŞ (array.new) olmalı"
+    assert not re.search(r"array\.from<[^>]+>\(\s*\)", t), "boş array.from KALMIŞ (M15)"
 
 
 def test_exporter_regenerates_multi_deterministically() -> None:
     with tempfile.TemporaryDirectory() as td:
         r1 = subprocess.run([sys.executable, "-W", "ignore",
                              os.path.join(ROOT, "scripts", "export_viz_payload.py"),
-                             "--month", "2026-09", "--out", td],
+                             "--out", td],
                             capture_output=True, text=True, cwd=ROOT)
         assert r1.returncode == 0, r1.stderr[-500:]
         a = open(os.path.join(td, "quant4h_viz_multi_2026-09.pine"), encoding="utf-8").read()

@@ -74,11 +74,14 @@ python3 -W ignore scripts/cadence_4h_status.py --fetch              # canlı çe
 4. **Restore (§A.5 cadence'e uygulanır):** fetch'li koşu sonrası `git checkout -- data/ reports/` (yalnız `reports/cadence/` KORUNUR) + `.state.json → assets` frozen baseline'a sıfırlanır (`last_fetch_utc` korunur — rate kapısı). Bildirim dosyaları günün kanıtı olarak kalır.
 5. **Slot-ızgara hizası (M9b ile ÇÖZÜLDÜ):** BIST30 slotları artık v1.1 ızgara kapanışlarıyla birebir (14:00/18:00); referans mum kuralı aynıdır: "slot anında KAPALI olan son mum" + yaşı açıkça yazılır. Slot tablosu değişikliği kullanıcı onayı gerektirir (`scripts/cadence_4h_status.py → SLOTS_*`).
 6. `reports/cadence/last_fetch.log` yerel operasyon logudur, commit EDİLMEZ (.gitignore).
-7. **Viz tazeleme (M14, 2026-09-18):** her `--fetch`'li cadence/§A koşusu zincirin sonunda
-   `scripts/export_viz_payload.py --month <ay>` ile `viz/quant4h_viz_multi_<AY>.pine`
+7. **Viz tazeleme (M14/M15):** her `--fetch`'li cadence/§A koşusu zincirin sonunda
+   `scripts/export_viz_payload.py` ile `viz/quant4h_viz_multi_<AY>.pine`
    (4 blok gömülü + trade-review dizileri) ve varlık başına hazır `.pine` dosyalarını
-   YENİLER. Manuel: aynı komut. Payload ufku = son --fetch'li koşu; eski dosya = eski veri
-   (pine banner'ında "payload ufku" satırı görünür).
+   YENİLER. Pencere: `--bars N` (varsayılan 750 ≈ 4 ay, varlık veri tavanı + 90 KB kaynak
+   bütçesiyle sınırlı; multi oto-daraltır); `--month YYYY-MM` opsiyonel override.
+   Manuel: aynı komut. Payload ufku = son --fetch'li koşu; eski dosya = eski veri
+   (pine banner'ında "payload ufku" satırı görünür). TAM geçmiş Pine'a GİREMEZ —
+   yeri reports/CSV/run_dash (skills/pine/PINE_STYLE.md §4).
 
 **İlk koşu kanıtı (2026-09-18, 3 dosya):** `2026-09-18_1500.md` (fetch'siz → BAYAT yolu) · `2026-09-18_1900.md` (fetch'li: BTC +14 bar taze, referans yaş 0.0h, canlı final LONG sinyali YAKALANDI — EYLEM yine YOK; aynı fetch'te Yahoo rate-limit → GOLD/SILVER RED+BAYAT satırları dürüstçe basıldı, kapı öncesi koşu) · `2026-09-18_1800.md` (RED kapısı → ⛔ SORUN NOTU, exit 3).
 

@@ -41,6 +41,7 @@ import run_exit_grid as G  # noqa: E402  (_signals_for: capped P0xA0 frame'leri 
 
 ROOT = G.ROOT
 DEFAULT_ASSETS = ("BTC", "GOLD", "SILVER", "BIST30")
+DEFAULT_BARS = 750          # ~4 ay 4H; TAM geçmiş Pine'a GİREMEZ (bkz. PINE_STYLE)
 BEGIN = "// ---- PAYLOAD-BEGIN (export_viz_payload.py — otomatik; elle düzenlemeyin)"
 END = "// ---- PAYLOAD-END"
 TEMPLATE = os.path.join(ROOT, "pine", "quant4h_viz.pine")
@@ -64,11 +65,13 @@ def export_trade_arrays(key: str, prefix: str) -> List[str]:
     csv = TRADE_CSV.get(key)
     path = os.path.join(ROOT, "reports", csv) if csv else None
     if path is None or not os.path.exists(path):
-        return [f"{prefix}trETs  = array.from<int>()",
-                f"{prefix}trEPx  = array.from<float>()",
-                f"{prefix}trXTs  = array.from<int>()",
-                f"{prefix}trXPx  = array.from<float>()",
-                f"{prefix}trR    = array.from<float>()"]
+        # M15: Pine `array.from<T>()` (0 arg) GEÇERSİZDİR ("Wrong number of
+        # args: 0"); boş küme her zaman array.new<T>() ile üretilir.
+        return [f"{prefix}trETs  = array.new<int>()",
+                f"{prefix}trEPx  = array.new<float>()",
+                f"{prefix}trXTs  = array.new<int>()",
+                f"{prefix}trXPx  = array.new<float>()",
+                f"{prefix}trR    = array.new<float>()"]
     df = pd.read_csv(path)
     de = df.sort_values("entry_timestamp_utc")
     dx = df.sort_values("exit_timestamp_utc")
@@ -81,6 +84,38 @@ def export_trade_arrays(key: str, prefix: str) -> List[str]:
     ]
 
 
+BUDGET_BYTES = 90 * 1024   # TradingView kaynak limiti ~100 KB; 10 KB marj — PINE_STYLE.md
+MULTI_MIN_BARS = 120       # multi oto-daraltma alt sınırı
+
+
+def _lint_common(txt: str, prefixes) -> None:
+    """M15 lint çekirdeği: (1) array.from >=1 arg ZORUNLU, bos kume -> array.new;
+    (2) PAYLOAD-BEGIN/END ciftleri dengeli; (3) from-dizi uzunluklari == ts
+    uzunlugu (array.new bos oldugu icin muaftir); (4) kod satirlarinda
+    strategy(/alert(/alertcondition( YOK."""
+    if re.search(r"array\.from<[^>]+>\(\s*\)", txt):
+        raise RuntimeError("lint IHLAL: array.from bos arguman (Pine: 'Wrong number of "
+                           "args: 0'); bos kume array.new ile uretilmeli")
+    if txt.count("PAYLOAD-BEGIN") != txt.count("PAYLOAD-END"):
+        raise RuntimeError("lint IHLAL: PAYLOAD-BEGIN/END ciftleri dengesiz")
+    for pre in prefixes:
+        mts = re.search(rf"^{re.escape(pre)}ts\s*= array\.from<int>\(([^\n]*)\)$", txt, re.M)
+        if not mts:
+            continue
+        n_ts = mts.group(1).count(",") + 1
+        for m in re.finditer(rf"^{re.escape(pre)}(\w+)\s*= array\.from<[^>]+>\(([^\n]*)\)$",
+                             txt, re.M):
+            name, body = m.group(1), m.group(2)
+            if name == "ts" or name.startswith("tr"):
+                continue   # trade dizileri bilinçli olarak ts'den farklı uzunluktadır
+            n = body.count(",") + 1
+            if n != n_ts:
+                raise RuntimeError(f"lint IHLAL: {pre}{name} uzunlugu {n} != ts uzunlugu {n_ts}")
+    code = "\n".join(l for l in txt.splitlines() if not l.lstrip().startswith("//"))
+    if "strategy(" in code or re.search(r"^\s*alert\(", code, re.M) or "alertcondition(" in code:
+        raise RuntimeError("lint IHLAL: strategy()/alert()/alertcondition() YASAK")
+
+
 def lint_pine(txt: str) -> None:
     """M9c yapısal lint: her payload tanımı TAM 1 kez; strategy()/alert() YASAK.
     Yasak-kelime taraması YALNIZ KOD satırlarında yapılır (yorumlar soyulur —
@@ -91,10 +126,7 @@ def lint_pine(txt: str) -> None:
         if n != 1:
             raise RuntimeError(f"pine lint HATA: '{name}' bildirim sayısı {n} (beklenen 1) — "
                                f"bölge birleştirme/paste hatası")
-    code = [l for l in lines if not l.lstrip().startswith("//")]
-    joined = "\n".join(code)
-    if "strategy(" in joined or re.search(r"^\s*alert\(", joined, re.M) or "alertcondition(" in joined:
-        raise RuntimeError("pine lint HATA: strategy()/alert()/alertcondition() YASAK (M9b sınırı)")
+    _lint_common(txt, [""])
 
 
 def assemble_pine(asset_block: str) -> str:
@@ -107,6 +139,10 @@ def assemble_pine(asset_block: str) -> str:
     out = tpl[:i0] + asset_block.rstrip("\n").splitlines() + tpl[i1 + 1:]
     txt = "\n".join(out) + "\n"
     lint_pine(txt)
+    if len(txt.encode("utf-8")) > BUDGET_BYTES:
+        raise RuntimeError(f"kaynak butcesi asildi: {len(txt)//1024} KB > "
+                           f"{BUDGET_BYTES//1024} KB (TV limiti payi) — --bars ile daraltin; "
+                           f"TAM gecmis Pine'a GIREMEZ (reports/CSV/dash kullanin)")
     return txt
 
 
@@ -125,14 +161,18 @@ def _pine_ints(vals) -> str:
     return ", ".join(str(int(v)) for v in vals)
 
 
-def export_asset(key: str, tf: str, month_start: pd.Timestamp,
-                 month_end: pd.Timestamp, prefix: str = "") -> Optional[str]:
+def export_asset(key: str, tf: str, month_start: Optional[pd.Timestamp] = None,
+                 month_end: Optional[pd.Timestamp] = None, prefix: str = "",
+                 bars: Optional[int] = None) -> Optional[str]:
     frame = G._signals_for(key, tf, False, None, "A0")     # BIST30 = endeks (tanısal)
     if frame is None or not len(frame):
         return None
     ts = pd.to_datetime(frame["timestamp_utc"], utc=True)
-    m = (ts >= month_start) & (ts < month_end)
-    d = frame.loc[m]
+    if month_start is not None and month_end is not None:
+        d = frame.loc[(ts >= month_start) & (ts < month_end)]
+    else:
+        nb = min(int(bars or DEFAULT_BARS), len(frame))   # varlık veri tavanı
+        d = frame.iloc[-nb:]
     if not len(d):
         return (f"{BEGIN}\n"
                 f'{prefix}payloadMeta = "{key} {month_start:%Y-%m}: pencere BOS (veri yok)"\n'
@@ -147,7 +187,8 @@ def export_asset(key: str, tf: str, month_start: pd.Timestamp,
     sig_px = [(float(c) if (sl or ss) and np.isfinite(c) else np.nan)
               for c, sl, ss in zip(close.tolist(), sig_l, sig_s)]
     n_sig = sum(sig_l) + sum(sig_s)
-    meta = (f"{key} · {month_start:%Y-%m} · {len(d)} bar · capped P0xA0 · "
+    win_tag = f"{pd.to_datetime(d['timestamp_utc'], utc=True).iloc[-1]:%Y-%m}"
+    meta = (f"{key} · {win_tag} · {len(d)} bar · capped P0xA0 · "
             f"final sinyal: {n_sig} · son bar {str(tsd.iloc[-1])[:16]} UTC · "
             f"UNTESTED-VIZ — dogruluk kaynagi DEGIL")
     lines = [
@@ -172,7 +213,9 @@ def export_asset(key: str, tf: str, month_start: pd.Timestamp,
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--month", default=None, help="YYYY-MM (varsayılan: BTC frame'inin son barının ayı)")
+    ap.add_argument("--month", default=None, help="YYYY-MM takvim penceresi (opsiyonel override)")
+    ap.add_argument("--bars", type=int, default=DEFAULT_BARS,
+                    help=f"pencere: son N bar (varsayılan {DEFAULT_BARS} ~= 4 ay; varlık veri tavanıyla sınırlı)")
     ap.add_argument("--assets", nargs="*", default=list(DEFAULT_ASSETS))
     ap.add_argument("--timeframe", default="4h")
     ap.add_argument("--out", default=os.path.join(ROOT, "viz"))
@@ -180,12 +223,14 @@ def main() -> int:
 
     if args.month:
         month_start = pd.Timestamp(f"{args.month}-01", tz="UTC")
+        month_end = month_start + pd.offsets.MonthBegin(1)
+        tag = f"{month_start:%Y-%m}"
+        win_kw = {"month_start": month_start, "month_end": month_end}
     else:
         probe = G._signals_for("BTC", args.timeframe, False, None, "A0")
         last = pd.to_datetime(probe["timestamp_utc"], utc=True).max()
-        month_start = pd.Timestamp(year=last.year, month=last.month, day=1, tz="UTC")
-    month_end = (month_start + pd.offsets.MonthBegin(1))
-    tag = f"{month_start:%Y-%m}"
+        tag = f"{last:%Y-%m}"
+        win_kw = {"bars": args.bars}
 
     sections: List[str] = []
     header = [
@@ -202,7 +247,7 @@ def main() -> int:
     multi_blocks: List[str] = []
     os.makedirs(args.out, exist_ok=True)
     for ai, key in enumerate(args.assets):
-        sec = export_asset(key, args.timeframe, month_start, month_end)
+        sec = export_asset(key, args.timeframe, prefix="", **win_kw)
         if sec is None:
             print(f"  [{key}] frame yok — atlandı")
             continue
@@ -211,12 +256,23 @@ def main() -> int:
         ppath = os.path.join(args.out, f"quant4h_viz_{key}_{tag}.pine")
         with open(ppath, "w", encoding="utf-8") as fh:
             fh.write(pine_txt)
-        multi_blocks.append(export_asset(key, args.timeframe, month_start, month_end,
-                                         prefix=f"a{ai}_"))
+        multi_blocks.append(export_asset(key, args.timeframe, prefix=f"a{ai}_", **win_kw))
         ok += 1
         print(f"  [{key}] payload + HAZIR pine: {os.path.relpath(ppath, ROOT)}")
     if len(multi_blocks) == 4:
-        mtxt = assemble_multi(multi_blocks)
+        mbars = win_kw.get("bars")
+        mtxt = None
+        while True:
+            try:
+                mtxt = assemble_multi(multi_blocks)
+                break
+            except RuntimeError as e:
+                if "butcesi" not in str(e) or mbars is None or mbars <= MULTI_MIN_BARS:
+                    raise
+                mbars //= 2
+                multi_blocks = [export_asset(k, args.timeframe, prefix=f"a{i}_", bars=mbars)
+                                for i, k in enumerate(args.assets)]
+                print(f"  [MULTI] butce icin pencere daraltildi: {mbars} bar/blok")
         mpath = os.path.join(args.out, f"quant4h_viz_multi_{tag}.pine")
         with open(mpath, "w", encoding="utf-8") as fh:
             fh.write(mtxt)
@@ -245,10 +301,7 @@ def lint_multi(txt: str) -> None:
             n = sum(1 for l in lines if re.match(rf"^{re.escape(pre + name)}\s*=", l))
             if n != 1:
                 raise RuntimeError(f"multi lint HATA: '{pre}{name}' x{n} (beklenen 1)")
-    code = [l for l in lines if not l.lstrip().startswith("//")]
-    joined = "\n".join(code)
-    if "strategy(" in joined or re.search(r"^\s*alert\(", joined, re.M) or "alertcondition(" in joined:
-        raise RuntimeError("multi lint HATA: strategy()/alert() YASAK")
+    _lint_common(txt, ("a0_", "a1_", "a2_", "a3_"))
     for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "AL koşulu oluştu (sinyal kaydı)",
                    "SAT koşulu (sinyal kaydı)", "watch_only"):
         if needle not in txt:
@@ -266,6 +319,9 @@ def assemble_multi(blocks: List[str]) -> str:
     out = tpl[:i0] + body + tpl[i1 + 1:]
     txt = "\n".join(out) + "\n"
     lint_multi(txt)
+    if len(txt.encode("utf-8")) > BUDGET_BYTES:
+        raise RuntimeError(f"multi kaynak butcesi asildi: {len(txt)//1024} KB > "
+                           f"{BUDGET_BYTES//1024} KB — --bars ile daraltin")
     return txt
 
 
@@ -282,10 +338,7 @@ def lint_multi(txt: str) -> None:
             n = sum(1 for l in lines if re.match(rf"^{re.escape(pre + name)}\s*=", l))
             if n != 1:
                 raise RuntimeError(f"multi lint HATA: '{pre}{name}' x{n} (beklenen 1)")
-    code = [l for l in lines if not l.lstrip().startswith("//")]
-    joined = "\n".join(code)
-    if "strategy(" in joined or re.search(r"^\s*alert\(", joined, re.M) or "alertcondition(" in joined:
-        raise RuntimeError("multi lint HATA: strategy()/alert() YASAK")
+    _lint_common(txt, ("a0_", "a1_", "a2_", "a3_"))
     for needle in ("UNTESTED-VIZ", "PAYLOAD YOK", "AL koşulu oluştu (sinyal kaydı)",
                    "SAT koşulu (sinyal kaydı)", "watch_only"):
         if needle not in txt:
@@ -303,6 +356,9 @@ def assemble_multi(blocks: List[str]) -> str:
     out = tpl[:i0] + body + tpl[i1 + 1:]
     txt = "\n".join(out) + "\n"
     lint_multi(txt)
+    if len(txt.encode("utf-8")) > BUDGET_BYTES:
+        raise RuntimeError(f"multi kaynak butcesi asildi: {len(txt)//1024} KB > "
+                           f"{BUDGET_BYTES//1024} KB — --bars ile daraltin")
     return txt
 
 

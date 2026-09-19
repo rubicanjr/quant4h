@@ -81,8 +81,12 @@ def test_sha_normalization_crlf_bom_regression() -> None:
     """
     doc = _read("reports/final_verdict.md")
     # (a) otorite = git blob (smudge'dan bağımsız)
-    blob = subprocess.run(["git", "show", "HEAD:configs/selected_cells.yaml"],
-                          cwd=ROOT, capture_output=True, check=True).stdout
+    try:
+        blob = subprocess.run(["git", "show", "HEAD:configs/selected_cells.yaml"],
+                              cwd=ROOT, capture_output=True, check=True).stdout
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        # git yoksa (zip export vb.) blob kimliği disk dosyasından doğrulanır
+        blob = open(os.path.join(ROOT, "configs", "selected_cells.yaml"), "rb").read()
     blob_sha = hashlib.sha256(blob).hexdigest()
     assert blob_sha in doc, ("blob sha256 final_verdict'te değil/bayat — "
                              f"hesaplanan(blob)={blob_sha} · beklenen=doc'ta kayıtlı sha256 (LF)")
@@ -151,7 +155,7 @@ def test_readme_research_closed_section() -> None:
     for needle in ("ARAŞTIRMA-KAPALI", "watch_only", "GEÇTİ = 0",
                    "Bu repo neyi KANITLADI", "Kanıtlanmadı (edge)",
                    "final_verdict.md", "model_card.md", "ops_runbook.md",
-                   "235/235", "Veri provenansı ve ToS notu"):
+                   "240/240", "Veri provenansı ve ToS notu"):
         assert needle in doc, f"README'de yok: {needle!r}"
 
 

@@ -19,7 +19,7 @@ sinyal üretim** sistemi.
 |---|---|
 | Proje statüsü | **ARAŞTIRMA-KAPALI · watch_only** (Aşama 11 kapanışı, 2026-09-17) |
 | Aşama | **0–9 ✅ · 11 ✅ TAMAM** · 10 (ML) `ml_policy.gate` KAPALI (Aşama 9: GEÇTİ=0) |
-| Testler | **235/235 PASS** |
+| Testler | **240/240 PASS** |
 | Aşama 9 OOS hükmü | **GEÇTİ = 0** → BTC **KALDI** (VALID expR −0.32; TEST koşulmadı) · GOLD/SILVER **ZAYIF (örneklem)** · BIST30 sepet **KALDI** (VALID −0.06) · hepsi `watch_only` |
 | Nihai kayıt | `reports/final_verdict.md` (hüküm + protokol günlüğü + look=1) |
 | Model kartı | `models/model_card.md` (NEDİR / NE DEĞİLDİR / watch_only tanımı / ML gate KAPALI) |
@@ -43,7 +43,7 @@ sinyal üretim** sistemi.
 
 ### Bu repo neyi KANITLADI / KANITLAMADI
 
-**Kanıtlandı (yöntem):** ön-kayıt → inşa → OOS hüküm kapısı uçtan uca ÇALIŞIYOR: frozen sha256 kilitleri, look-ahead silme testleri, pesimist fill sözleşmesi, H35, tune yasakları (küme dışı ValueError), seçim dondurma + TEST RED kilidi, tek-look disiplini, 235 regresyon testi, tam denetim izi (H1–H45 + D1–D8). İn-sample'da ölçülen hiçbir sonuç OOS'a taşınmadı ve sistem bunu **dürüstçe KALDI/ZAYIF diye raporladı** — pipeline'ın overfit'e karşı direnci bizzat kendi çıktısıyla doğrulandı.
+**Kanıtlandı (yöntem):** ön-kayıt → inşa → OOS hüküm kapısı uçtan uca ÇALIŞIYOR: frozen sha256 kilitleri, look-ahead silme testleri, pesimist fill sözleşmesi, H35, tune yasakları (küme dışı ValueError), seçim dondurma + TEST RED kilidi, tek-look disiplini, 240 regresyon testi, tam denetim izi (H1–H45 + D1–D8). İn-sample'da ölçülen hiçbir sonuç OOS'a taşınmadı ve sistem bunu **dürüstçe KALDI/ZAYIF diye raporladı** — pipeline'ın overfit'e karşı direnci bizzat kendi çıktısıyla doğrulandı.
 
 **Kanıtlanmadı (edge):** bu kural seti, bu varlıklarda, bu dönemde (2024–2026 tek yönlü boğa; TEST 159 gün; metaller 2.4 yıl) ölçülebilir bir edge ÜRETMEDİ. BTC ve sepet için OOS beklenen değer negatif; metaller için örneklem hüküm vermeye yetmiyor. **Sistem para kazanıyor DENEMEZ; kaybediyor da DENEMEZ** (GOLD/SILVER) veya **ölçülen dönemde edge gösteremedi** (BTC/sepet). Devamı yalnız runbook'taki ön-kayıtlı look'larla mümkün.
 
@@ -310,6 +310,7 @@ quant4h/
 ├── PROGRESS.md                  # << kaldığın yer. TEK kaynak.
 ├── README.md
 ├── requirements.txt
+├── skills/pine/PINE_STYLE.md    # << Pine üreteci stil/tuzak rehberi (M15; bootstrap okuması)
 ├── configs/
 │   └── user_decisions.yaml      # onaylanmış kullanıcı kararları (bağlayıcı)
 ├── data/
@@ -318,7 +319,10 @@ quant4h/
 │   ├── processed/               # (Aşama 4+) feature matrisleri
 │   └── external/                # kullanıcının kendi CSV/parquet dökümleri
 ├── docs/                        # mimari, model kartı, kullanım kılavuzu, güvenlik kuralları
-├── pine/ + viz/                 # M9b: TradingView görselleştirme EKİ (UNTESTED-VIZ; doğruluk kaynağı DEĞİL — TEST_PLAN.md)
+├── pine/ + viz/                 # M9b/M14: TradingView görselleştirme EKİ (UNTESTED-VIZ; doğruluk kaynağı DEĞİL — TEST_PLAN.md)
+│                                #   M15: pencere --bars (varsayılan 750 ≈ 4 ay); TAM geçmiş
+│                                #   Pine'a GİREMEZ (kaynak/dizi limitleri) — tam geçmişin yeri
+│                                #   reports/CSV/run_dash; bkz. skills/pine/PINE_STYLE.md
 ├── reports/                     # qc_report.{md,json}, qc_findings.csv
 ├── scripts/
 │   └── run_data_qc.py           # Aşama 0/1 sürücüsü

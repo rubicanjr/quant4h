@@ -75,6 +75,13 @@
 | M7 | strategy/alert | kod satırlarında YOK (lint_multi) |
 | M8 | payload ufku | dosya her --fetch'li §A koşusunda yenilenir (runbook §A-cadence kural 7) |
 
+## 3c) M15 pencere/bütçe/golden kuralları
+
+* Pencere: `--bars N` varsayılan **750** (≈4 ay 4H); varlık veri tavanı (`min(N, len(frame))`) ve kaynak bütçesi (`BUDGET_BYTES`=90 KB) ile sınırlı; multi dosya bütçeyi aşarsa **oto-daraltır** (≥120 bar).
+* TAM geçmiş Pine'a GİREMEZ (TV kaynak/dizi limitleri) — tam geçmişin yeri `reports/`, `reports/trades_*.csv`, `scripts/run_dash.py` (PINE_STYLE §4).
+* Golden-file: `tests/fixtures/golden_viz_{multi,BTC}.pine` bayt-bayt eşleşmeli (`test_viz_generator.py`); veri restore'unda bilinçli yenilenir.
+* Lint: array.from ≥1 arg (boş → array.new) · from-dizi uzunluğu == ts (tr* muaf) · strategy(/alert( yok · BEGIN/END dengeli · tanım tekilliği · bütçe.
+
 ## 4) UNTESTED-VIZ etiketinin anlamı
 
 Bu ek **hiçbir aşamada** otomatik doğrulanmadı: Pine derleyicisi bu ortamda yok; parite listesi (§2) elle uygulanana kadar çizimlerin doğruluğu **VARSAYILMAZ**. Etiket, pine dosyasının başlığında, payload başlığında ve bilgi tablosunda GÖRÜNÜR olmak zorundadır. Etiket kaldırılırsa bu plan ihlal edilmiş olur.
