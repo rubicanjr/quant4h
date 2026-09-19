@@ -1,4 +1,4 @@
-// quant4h viz payload — 2026-09 · üretim: 2026-09-19T12:18:44+00:00Z
+// quant4h viz payload — 2026-09 · üretim: 2026-09-19T13:30:02+00:00Z
 // UYARI: BU TXT'YI PINE'A DOGRUDAN YAPISTIRMAYIN (M9c vakasi: baslik yorumlari
 //   `payloadMeta =` satirina karisir; cok-varlik bloklari duplicate-declaration verir).
 //   HAZIR DOSYA: viz/quant4h_viz_<ASSET>_2026-09.pine -> TAMAMINI kopyala-yapistir.

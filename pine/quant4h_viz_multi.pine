@@ -153,9 +153,9 @@ plot(show_levels and not simple_mode ? dlVal : na,   "donchian_low(20)",  color 
 var int   ePtr = 0
 var int   xPtr = 0
 var float cumR = 0.0
-entryPx = na
-exitPx  = na
-exitR   = na
+float entryPx = na
+float exitPx  = na
+float exitR   = na
 if hasTrades
     if ePtr < array.size(m_trETs) and array.get(m_trETs, ePtr) == time
         entryPx := array.get(m_trEPx, ePtr)

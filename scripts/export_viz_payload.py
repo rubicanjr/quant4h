@@ -111,6 +111,10 @@ def _lint_common(txt: str, prefixes) -> None:
             n = body.count(",") + 1
             if n != n_ts:
                 raise RuntimeError(f"lint IHLAL: {pre}{name} uzunlugu {n} != ts uzunlugu {n_ts}")
+    # T11 (M15b): na atanan her degisken TIP anahtar kelimesiyle tanimlanir
+    # (Pine v5: "Value with NA type cannot be assigned..."); tipsiz `x = na` URETILEMEZ.
+    if re.search(r"^[A-Za-z_]\w*\s*=\s*na\s*$", txt, re.M):
+        raise RuntimeError("lint IHLAL (T11): tipsiz na atamasi (float/int/bool oneki zorunlu)")
     code = "\n".join(l for l in txt.splitlines() if not l.lstrip().startswith("//"))
     if "strategy(" in code or re.search(r"^\s*alert\(", code, re.M) or "alertcondition(" in code:
         raise RuntimeError("lint IHLAL: strategy()/alert()/alertcondition() YASAK")

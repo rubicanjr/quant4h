@@ -18,6 +18,8 @@ bootstrap okuma listesine M15 ile eklendi (PROGRESS).*
 | T8 | `strategy()`/`alert()`/`alertcondition()` watch_only ihlalidir | YALNIZ `indicator()`; lint kod satırlarında yasak-kelime taraması (yorumlar soyulur) | M9b/M15 lint |
 | T9 | epoch ms hesabında pandas çözünürlük tuzakları (`astype("int64")` us/ms verir) | `(ts - Timestamp(1970, tz=UTC)) // Timedelta(milliseconds=1)` | M9c vakası |
 | T10 | Türkçe/unicode string literal'ler PINE'da OK ama payload META dışına taşmasın | meta tek satır string; banner sabit | M9b |
+| T11 | tipsiz `na` ataması → Pine v5 "Value with NA type cannot be assigned..." | `float x = na` / `int x = na` / `bool x = na`; üreteç lint'i tipsiz `x = na` satırını REDDEDER | M15b hata raporu (entryPx/exitPx/exitR) |
+| T12 | `//@version=5` SABİTTİR; TV "PINE VERSION OUTDATED" uyarısı KOZMETİKTİR, hata DEĞİL | v6 migrasyonu kapsam dışı; uyarıyı bastırmaya ÇALIŞMA | M15b kullanıcı kararı |
 
 ## 2) Üreteç lint listesi (`export_viz_payload.lint_pine / lint_multi / _lint_common`)
 

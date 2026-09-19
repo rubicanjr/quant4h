@@ -12,7 +12,11 @@
 
 ---
 
-## TAMAMLANDI: M15-PINE-FIX + SKILL (2026-09-18, kullanıcı onaylı TEK patch)
+## TAMAMLANDI: M15b (mikro, 2026-09-18, kullanıcı onaylı TEK patch)
+
+Özet: **(1)** multi şablonda `entryPx/exitPx/exitR = na` tipsizdi → Pine v5 "Value with NA type cannot be assigned"; artık `float entryPx = na` vb. **(2)** PINE_STYLE **T11**: "na atanan her değişken tip anahtar kelimesiyle (float/int/bool) tanımlanır"; `_lint_common` kuralı eklendi (negatif yol manuel doğrulandı); golden-file'lar yeniden üretildi (`test_viz_generator` bayt-bayt yeşil). **(3)** `//@version=5` **SABİT** (v6 migrasyonu kapsam dışı); TEST_PLAN notu: "PINE VERSION OUTDATED uyarısı kozmetiktir, hata değildir". Suite **240/240** değişmedi. Hüküm/seçim/look etkisi YOK.
+
+## TAMAMLANDI: M15-PINE-FIX + SKILL (2026-09-18, kullanıcı onaylı TEK patch) + SKILL (2026-09-18, kullanıcı onaylı TEK patch)
 
 Özet: **(1) HATA düzeltmesi:** üreteç boş trade dizilerini `array.from<T>()` (0 arg) yazıyordu → Pine "Wrong number of args: 0" (12 bulgu); artık `array.new<T>()`; lint kuralı: "array.from ≥1 arg ZORUNLU; boş küme → array.new". **(2) PENCERE:** viz penceresi parametreli `--bars` (varsayılan **750** ≈ 4 ay; varlık veri tavanı `min(N,len)`); üreteçte kaynak bütçesi assert'i (`BUDGET_BYTES`=90 KB, TV ~100 KB limiti payı); multi bütçeyi aşarsa **oto-daraltma** (≥120 bar; kanıt: 750→375→187 bar/blok). TAM geçmiş Pine'a GİREMEZ — yeri reports/CSV/run_dash; README §5 + TEST_PLAN §3c + PINE_STYLE §4'e yazıldı. **(3) GOLDEN-FILE:** `tests/fixtures/golden_viz_{multi,BTC}.pine` + `tests/test_viz_generator.py` (5 test): bayt-bayt golden eşleşmesi, lint kuralları (array.from arg · uzunluk==ts (tr* muaf) · strategy(/alert( yok · BEGIN/END dengeli · boş→array.new), pencere/bütçe. İlk denemede iki regex hatası yakalandı (greedy `.*`+re.S uzunluk kuralını sessiz etkisizleştiriyordu; trade dizileri bilinçli farklı uzunlukta → `tr*` muaf) — düzeltildi. **(4) SKILL:** `skills/pine/PINE_STYLE.md` — T1–T10 tuzak tablosu (kanıtlı vakalardan) + üreteç lint listesi + golden politikası + tam-geçmiş kuralı; README §5'e bootstrap okuma satırı eklendi. Suite **235→240/240** (R09 senkronu). Sınırlar: hüküm/seçim/look etkisi YOK; look hakkı tüketilmedi.
 

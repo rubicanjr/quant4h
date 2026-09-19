@@ -80,7 +80,8 @@
 * Pencere: `--bars N` varsayılan **750** (≈4 ay 4H); varlık veri tavanı (`min(N, len(frame))`) ve kaynak bütçesi (`BUDGET_BYTES`=90 KB) ile sınırlı; multi dosya bütçeyi aşarsa **oto-daraltır** (≥120 bar).
 * TAM geçmiş Pine'a GİREMEZ (TV kaynak/dizi limitleri) — tam geçmişin yeri `reports/`, `reports/trades_*.csv`, `scripts/run_dash.py` (PINE_STYLE §4).
 * Golden-file: `tests/fixtures/golden_viz_{multi,BTC}.pine` bayt-bayt eşleşmeli (`test_viz_generator.py`); veri restore'unda bilinçli yenilenir.
-* Lint: array.from ≥1 arg (boş → array.new) · from-dizi uzunluğu == ts (tr* muaf) · strategy(/alert( yok · BEGIN/END dengeli · tanım tekilliği · bütçe.
+* Lint: array.from ≥1 arg (boş → array.new) · from-dizi uzunluğu == ts (tr* muaf) · strategy(/alert( yok · BEGIN/END dengeli · tanım tekilliği · bütçe · **T11: tipsiz `x = na` YASAK (float/int/bool öneki zorunlu)**.
+* **Pine sürümü:** `//@version=5` SABİTTİR (v6 migrasyonu kapsam dışı, M15b kararı). TradingView'ın "PINE VERSION OUTDATED" uyarısı KOZMETİKTİR, hata değildir; bastırılmaya çalışılmaz.
 
 ## 4) UNTESTED-VIZ etiketinin anlamı
 
