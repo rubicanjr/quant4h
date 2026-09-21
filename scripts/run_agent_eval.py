@@ -44,8 +44,11 @@ def _read(p):
 
 
 def _git(*args) -> str:
-    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
-    return r.stdout.strip()
+    """M26: Windows TR locale (cp1254) çökmesi fix'i — çözümleme HER ZAMAN
+    utf-8 + errors='replace'; _git ASLA None döndürmez."""
+    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True,
+                       text=True, encoding="utf-8", errors="replace")
+    return (r.stdout or "").strip()
 
 
 def sessions(n: int):
@@ -152,7 +155,8 @@ def run_live_suite() -> int:
         import glob
         for t in sorted(glob.glob(os.path.join(ROOT, pat))):
             r = subprocess.run([sys.executable, "-W", "ignore", t], cwd=ROOT,
-                               capture_output=True, text=True)
+                               capture_output=True, text=True,
+                               encoding="utf-8", errors="replace")
             m = re.search(r"(\d+)/(\d+) passed", r.stdout)
             if m:
                 total += int(m.group(1))

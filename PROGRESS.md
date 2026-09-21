@@ -12,7 +12,11 @@
 
 ---
 
-## TAMAMLANDI: M24-AGENT-EVAL (2026-09-18/19, kullanıcı onaylı TEK patch)
+## TAMAMLANDI: M26-EVALFIX (mikro, 2026-09-19, kullanıcı onaylı TEK patch)
+
+Özet: Windows TR locale (cp1254) çökmesi fix'i: `run_agent_eval.py` TÜM subprocess çağrıları `text=True + encoding="utf-8" + errors="replace"`; `_git()` ASLA None döndürmez (`(r.stdout or "").strip()`). Testler (sayı DEĞİŞMEDİ, mevcut 2 test sertleştirildi): cp1254 simülasyonu (`locale.getpreferredencoding` monkeypatch + child `PYTHONIOENCODING=cp1254`) · Türkçe commit mesajlı frozen tmp-repo fixture'da `sessions()` determinizmi · git yoksa gerçek-repo assert'i adaptif atlanır (sandbox tur-head dayanıklılığı). `test_sessions_detected` + `test_report_generation_skip_suite` yeşil. Suite **252/252** değişmedi. Hüküm/seçim/look YOK. Not: origin artık kümülatif commit `6c0c7f4`'te; M26 onun üstünde TEK commit.
+
+## TAMAMLANDI: M24-AGENT-EVAL (2026-09-18/19, kullanıcı onaylı TEK patch) (2026-09-18/19, kullanıcı onaylı TEK patch)
 
 Özet: `scripts/run_agent_eval.py` + `tests/eval/test_agent_eval.py` (6 test): son N patch oturumunu 5 kriterle skorlar → `reports/eval/2026-09-19.md`. **FORMAT**: commit konu tek satır + checkpoint öneki · PROGRESS bloğu ≤12 satır · patch/“TEK patch” atfı · suite satırı · DUR vekili (sınır satırı); sohbet satır sayısı repo'da tutulmadığından MANUAL işaretli. **FACTUALITY**: blok dosya yolları `ls` ile VAR (placeholder token muaf) · patch konu == commit konu (normalize) · blok suite x/x. **CONSISTENCY**: R09 çapraz sayaçlar (README==model_card==PROGRESS==iğne) + PROGRESS başlık == canlı suite (252). **REALISM**: cadence BAYAT damgası + QC RED→SORUN NOTU + pine SABİT banner + blok başına dürüst negatif token. **QUALITY**: insan rubric 1-5, LLM-judge YOK; `--quality N` ile PROGRESS'e işlenir:
 <!-- quality-rubric --> Quality rubric (insan): BEKLEMEDE (1-5) — `run_agent_eval.py --quality N`.

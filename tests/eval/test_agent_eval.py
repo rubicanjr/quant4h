@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import os
 import re
+import subprocess
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src"))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts"))
@@ -67,8 +69,16 @@ def test_report_generation_skip_suite() -> None:
     import subprocess
     r = subprocess.run([sys.executable, "-W", "ignore",
                         os.path.join(E.ROOT, "scripts", "run_agent_eval.py"), "--skip-suite"],
-                       capture_output=True, text=True, cwd=E.ROOT)
+                       capture_output=True, text=True, cwd=E.ROOT,
+                       encoding="utf-8", errors="replace")
     assert r.returncode == 0, r.stderr[-500:]
+    # M26: child cp1254 stdout ile bile ebeveyn çökmez (errors=replace)
+    r2 = subprocess.run([sys.executable, "-W", "ignore",
+                         os.path.join(E.ROOT, "scripts", "run_agent_eval.py"), "--skip-suite"],
+                        capture_output=True, text=True, cwd=E.ROOT,
+                        encoding="utf-8", errors="replace",
+                        env={**os.environ, "PYTHONIOENCODING": "cp1254"})
+    assert r2.returncode == 0, r2.stderr[-500:]
     from datetime import datetime, timezone
     tag = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     p = os.path.join(E.EVAL_DIR, f"{tag}.md")
