@@ -58,6 +58,16 @@ FUNC_NAMES = ("ts", "ema200", "stopLong", "swingLow", "swingHigh",
 ASSIGN_NAMES = ("payloadMeta", "payloadOK")
 
 
+FORBIDDEN = ("ichimoku", "keltner", "donchian", "supertrend", "stoch",
+             "vwap", "renko", "heikin", "parabolic sar")
+
+
+def lint_forbidden(txt: str) -> list:
+    """TEST_PLAN yasak indikatör listesi — pine kaynaginda otomatik kilit (R11)."""
+    low = txt.lower()
+    return [w for w in FORBIDDEN if w in low or f"ta.{w}" in low]
+
+
 def _lint_common(txt: str, prefixes) -> None:
     """Ortak lint (M15/M15b/M15c/M21/M23):
     (1) array.from >=1 arg ZORUNLU, bos kume -> array.new;
@@ -226,7 +236,7 @@ def main() -> int:
 
     sections: List[str] = []
     header = [
-        f"// quant4h viz payload — {tag} · üretim: {pd.Timestamp.utcnow().isoformat(timespec='seconds')}Z",
+        f"// quant4h viz payload — {tag} · üretim: {pd.Timestamp.now(tz='UTC').isoformat(timespec='seconds')}Z",
         "// UYARI: BU TXT'YI PINE'A DOGRUDAN YAPISTIRMAYIN (M9c vakasi: baslik yorumlari",
         "//   `payloadMeta =` satirina karisir; cok-varlik bloklari duplicate-declaration verir).",
         f"//   HAZIR DOSYA: viz/quant4h_viz_<ASSET>_{tag}.pine -> TAMAMINI kopyala-yapistir.",

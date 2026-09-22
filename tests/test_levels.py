@@ -394,7 +394,8 @@ def test_no_forbidden_indicator_in_levels_module() -> None:
     import re
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
                         "src", "quant4h", "features", "levels.py")
-    raw = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
     # Yalnızca ÇALIŞAN KOD taranır: docstring ve yorumlar çıkarılır. Aksi hâlde
     # "yasaklı indikatör yok" diyen bir cümlenin kendisi yasaklı kelimeyi içerir
     # ve test kendi dokümantasyonuna takılır.

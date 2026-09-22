@@ -21,7 +21,7 @@
 indicator("quant4h watch_only viz MULTI v3 [UNTESTED-VIZ]", overlay = true, max_labels_count = 100, max_lines_count = 100)
 
 show_ema    = input.bool(false, "EMA200 (ihraç seri)", group = "quant4h")
-show_levels = input.bool(false, "Yapisal seviyeler (swing/Donchian/stop)", group = "quant4h")
+show_levels = input.bool(false, "Yapisal seviyeler (swing/stop)", group = "quant4h")
 
 // ---- sembol eşlemesi ----
 tk     = syminfo.ticker
@@ -111,8 +111,8 @@ plot(show_ema ? emaVal : na,     "EMA200 (ihraç)",      color = color.new(color
 plot(show_levels ? stopVal : na, "stop_long",           color = color.new(color.red, 25),   linewidth = 1, style = plot.style_stepline)
 plot(show_levels ? swlVal : na,  "swing_low",           color = color.new(color.green, 50), linewidth = 1, style = plot.style_stepline)
 plot(show_levels ? swhVal : na,  "swing_high",          color = color.new(color.teal, 50),  linewidth = 1, style = plot.style_stepline)
-plot(show_levels ? dhVal : na,   "donchian_high(20)",   color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
-plot(show_levels ? dlVal : na,   "donchian_low(20)",    color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
+plot(show_levels ? dhVal : na,   "swing_high(20)",   color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
+plot(show_levels ? dlVal : na,   "swing_low(20)",    color = color.new(color.gray, 60),  linewidth = 1, style = plot.style_circles)
 
 // ---- giriş/çıkış marker'ları (SİNYAL kaydı; trade geçmişi DEĞİL) ----
 plotshape(sigL == 1 ? close : na, "AL koşulu oluştu (sinyal kaydı)", shape.triangleup,   location.absolute, color.new(color.lime, 0), size = size.tiny)

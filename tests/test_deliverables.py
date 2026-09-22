@@ -86,7 +86,8 @@ def test_sha_normalization_crlf_bom_regression() -> None:
                               cwd=ROOT, capture_output=True, check=True).stdout
     except (subprocess.CalledProcessError, FileNotFoundError):
         # git yoksa (zip export vb.) blob kimliği disk dosyasından doğrulanır
-        blob = open(os.path.join(ROOT, "configs", "selected_cells.yaml"), "rb").read()
+        with open(os.path.join(ROOT, "configs", "selected_cells.yaml"), "rb") as fh:
+            blob = fh.read()
     blob_sha = hashlib.sha256(blob).hexdigest()
     assert blob_sha in doc, ("blob sha256 final_verdict'te değil/bayat — "
                              f"hesaplanan(blob)={blob_sha} · beklenen=doc'ta kayıtlı sha256 (LF)")
@@ -155,14 +156,15 @@ def test_readme_research_closed_section() -> None:
     for needle in ("ARAŞTIRMA-KAPALI", "watch_only", "GEÇTİ = 0",
                    "Bu repo neyi KANITLADI", "Kanıtlanmadı (edge)",
                    "final_verdict.md", "model_card.md", "ops_runbook.md",
-                   "252/252", "Veri provenansı ve ToS notu"):
+                   "256/256", "Veri provenansı ve ToS notu"):
         assert needle in doc, f"README'de yok: {needle!r}"
 
 
 def test_verdict_documents_match_stage9_json() -> None:
     import json
-    v = json.load(open(os.path.join(ROOT, "reports", "stage9_oos_verdict.json"),
-                       encoding="utf-8"))
+    with open(os.path.join(ROOT, "reports", "stage9_oos_verdict.json"),
+              encoding="utf-8") as fh:
+        v = json.load(fh)
     doc = _read("reports/final_verdict.md")
     assert v["assets"]["BTC"]["verdict"] == "KALDI" and "BTC" in doc
     assert v["assets"]["GOLD"]["verdict"].startswith("ZAYIF")

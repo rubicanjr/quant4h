@@ -6,3 +6,11 @@ __pycache__/
 *.parquet
 checkpoint.zip
 reports/cadence/last_fetch.log
+
+# EKİM MAINT (M18): viz/ ÜRETİLMİŞ çıktılar izlenmez (üreteç scripts/export_viz_payload.py
+# ve golden fixture’lar tests/fixtures/ tracked kalır)
+viz/*.pine
+viz/payload_*.txt
+
+# patch teslimleri izlenmez (workspace deliverable; repo şişmesin + özyineleme)
+patches/

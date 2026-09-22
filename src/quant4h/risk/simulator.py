@@ -96,7 +96,7 @@ class _Stream:
         self.n = n
         self.ts = pd.to_datetime(df["timestamp_utc"], utc=True)
         self.ts_arr = self.ts.to_numpy()
-        self.ts_int = self.ts_arr.astype("datetime64[ns]").view("int64")
+        self.ts_int = self.ts.to_numpy(dtype="datetime64[ns]").view("int64")
         self.open = pd.to_numeric(df["open"], errors="coerce").to_numpy("float64")
         self.high = pd.to_numeric(df["high"], errors="coerce").to_numpy("float64")
         self.low = pd.to_numeric(df["low"], errors="coerce").to_numpy("float64")

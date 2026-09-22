@@ -116,7 +116,7 @@ def build_evidence_md(evidence: List[Dict[str, Any]], apply_roll_correction: boo
     L: List[str] = []
     L.append("# adjust.py Kanit Tablosu (KARAR 2 & KARAR 3)")
     L.append("")
-    L.append(f"*Uretim: {pd.Timestamp.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}* · "
+    L.append(f"*Uretim: {pd.Timestamp.now(tz='UTC').strftime('%Y-%m-%d %H:%M:%S UTC')}* · "
              f"`apply_roll_correction={apply_roll_correction}` · "
              f"`roll_atr_multiple={roll_atr_multiple}`")
     L.append("")

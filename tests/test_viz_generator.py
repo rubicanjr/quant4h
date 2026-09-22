@@ -27,6 +27,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 
 import export_viz_payload as E  # noqa: E402
 
+def _slurp(p):
+    with open(p, encoding="utf-8") as fh:
+        return fh.read()
+
+
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 FIX = os.path.join(ROOT, "tests", "fixtures")
 GOLD_MULTI = os.path.join(FIX, "golden_viz_multi.pine")
@@ -39,20 +44,19 @@ def _gen() -> str:
                             os.path.join(ROOT, "scripts", "export_viz_payload.py"),
                             "--out", td], capture_output=True, text=True, cwd=ROOT)
         assert r.returncode == 0, r.stderr[-800:]
-        return td, {f: open(os.path.join(td, f), encoding="utf-8").read()
-                    for f in os.listdir(td)}
+        return td, {f: _slurp(os.path.join(td, f)) for f in os.listdir(td)}
 
 
 def test_golden_multi_bytes_match() -> None:
     _, out = _gen()
-    golden = open(GOLD_MULTI, encoding="utf-8").read()
+    golden = _slurp(GOLD_MULTI)
     assert out["quant4h_viz_multi_2026-09.pine"] == golden, \
         "multi pine golden'dan sapmış (üreteç/veri değişimi) — golden'ı bilinçli yenile"
 
 
 def test_golden_btc_bytes_match() -> None:
     _, out = _gen()
-    golden = open(GOLD_BTC, encoding="utf-8").read()
+    golden = _slurp(GOLD_BTC)
     assert out["quant4h_viz_BTC_2026-09.pine"] == golden, \
         "BTC pine golden'dan sapmış — golden'ı bilinçli yenile"
 

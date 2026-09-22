@@ -54,7 +54,10 @@ def test_render_has_no_side_effects_on_state() -> None:
     p_qc = os.path.join(D.ROOT, "reports", "qc_report.json")
 
     def sha(p):
-        return hashlib.sha256(open(p, "rb").read()).hexdigest() if os.path.exists(p) else None
+        if not os.path.exists(p):
+            return None
+        with open(p, "rb") as fh:
+            return hashlib.sha256(fh.read()).hexdigest()
 
     s1, q1 = sha(p_state), sha(p_qc)
     D.render_once(now=FIXED_NOW)

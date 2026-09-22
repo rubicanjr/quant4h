@@ -149,7 +149,8 @@ def test_verdict_rejected_without_frozen_selection() -> None:
             except PermissionError as e:
                 assert "selected_cells.yaml YOK" in str(e)
             # hash'i bozuk dondurma -> RED
-            doc = yaml.safe_load(open(old, "r", encoding="utf-8"))
+            with open(old, "r", encoding="utf-8") as fh:
+                doc = yaml.safe_load(fh)
             doc["assets"]["BTC"]["frozen_sha256"] = "0" * 64
             p = os.path.join(td, "bozuk.yaml")
             with open(p, "w", encoding="utf-8") as fh:
@@ -166,7 +167,8 @@ def test_verdict_rejected_without_frozen_selection() -> None:
 
 def test_delivered_selected_cells_yaml_is_consistent() -> None:
     assert os.path.exists(S9.SELECTED_YAML), "teslimat: selected_cells.yaml yazılmalı"
-    doc = yaml.safe_load(open(S9.SELECTED_YAML, "r", encoding="utf-8"))
+    with open(S9.SELECTED_YAML, "r", encoding="utf-8") as fh:
+        doc = yaml.safe_load(fh)
     wins = S9.load_windows()
     assert str(doc["policy_version"]) == wins["policy_version"]
     for k in S9.ASSET_CLASSES:
@@ -181,8 +183,9 @@ def test_delivered_selected_cells_yaml_is_consistent() -> None:
 
 def test_max_open_positions_synced_yaml_and_config() -> None:
     from quant4h.config import RISK_PROFILES
-    y = yaml.safe_load(open(os.path.join(S9.ROOT, "configs", "user_decisions.yaml"),
-                            encoding="utf-8"))
+    with open(os.path.join(S9.ROOT, "configs", "user_decisions.yaml"),
+              encoding="utf-8") as fh:
+        y = yaml.safe_load(fh)
     assert y["risk"]["active"]["max_open_positions"] == 6
     assert y["risk"]["presets"]["balanced"]["max_open_positions"] == 6
     assert RISK_PROFILES["balanced"].max_open_positions == 6

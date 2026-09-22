@@ -89,7 +89,8 @@ def test_no_forbidden_momentum_indicator() -> None:
     for bad in ("rsi", "macd", "stoch", "mfi", "obv", "cci", "williams", "adx"):
         assert bad not in names, bad
     path = os.path.join(ROOT, "src", "quant4h", "features", "momentum.py")
-    raw = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as fh:
+        raw = fh.read()
     # Yalnızca ÇALIŞAN KOD taranır (docstring'de yasaklı isimlerin ANILMASI serbest)
     import ast
     tree = ast.parse(raw)

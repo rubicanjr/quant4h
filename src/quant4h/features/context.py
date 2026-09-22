@@ -74,7 +74,7 @@ def longs_allowed(stock_4h: pd.DataFrame, index_4h: pd.DataFrame,
     context filter does not apply to BTC / GOLD / SILVER.
     """
     from .regime import REGIME_COLUMNS  # noqa: F401  (dokümantasyon bağı)
-    tf = pd.Timedelta(timeframe.replace("h", "H")) if timeframe.endswith("h") \
+    tf = pd.Timedelta(timeframe) if timeframe.endswith("h") \
         else pd.Timedelta(timeframe)
     # Varsayılan tolerans 120 saat (5 gün): hafta sonu + resmî/dinî tatilleri
     # kapsar. Daha sıkı bir değer (ör. 3 bar) BIST'te kırılgandır çünkü ince

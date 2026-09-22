@@ -1,6 +1,6 @@
 # MODEL KARTI — quant4h (kural tabanlı 4H çekirdek + risk katmanı)
 
-*Sürüm kimliği: repo `rubicanjr/quant4h` · Aşama 11 kapanışı 2026-09-17 · suite 252/252 · statü: **watch_only (araştırma-kapalı)***
+*Sürüm kimliği: repo `rubicanjr/quant4h` · Aşama 11 kapanışı 2026-09-17 · suite 256/256 · statü: **watch_only (araştırma-kapalı)***
 
 ## 1. Bu sistem NEDİR
 
@@ -64,10 +64,20 @@ ADX · Hurst · HMM · Choppiness · BB-width · Ichimoku · Supertrend · Keltn
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/register_splits.py --check     # ön-kayıt + frozen sha DOĞRULAMA
-for t in tests/test_*.py; do .venv/bin/python -W ignore $t; done   # 252/252 beklenir
+for t in tests/test_*.py; do .venv/bin/python -W ignore $t; done   # 256/256 beklenir
 .venv/bin/python -W ignore scripts/run_stage9.py --phase verdict  # hükmü yeniden üretir (TEST'e YENİ look EKLEMEZ; deterministik)
 ```
 
 Veri: `data/frozen/*` sha256 ile kilitli; canlı veri büyürse `drift_report` BİLGİ üretir, ön-kayıt ANCAK policy_version artırılarak yenilenir (eski dosya silinmez).
 
 *Bu kart yatırım tavsiyesi değildir. Geçmiş performans gelecek sonuçların göstergesi değildir.*
+
+## 9. Kapasite notu (M13)
+- **Model kapasitesi:** kural-tabanlı (ML YOK — Aşama 10 kapısı GEÇTİ=0 ile KAPALI).
+  Kapasite artışı = yeni kural/parametre DEĞİL; ancak ön-kayıtlı look döngüsüyle.
+- **Veri/işlem:** 4H barlar; pencere ~5500 bar/varlık; Pine kaynak bütçesi 90 KB
+  (üreteç otomatik daraltır, ~245 bar/blok taban). Tek süreç; GPU gerekmez.
+- **İnsan kapasitesi:** watch_only izleme = aylık §A raporu + manuel kadans
+  bildirimleri; look bütçesi 4/yıl (kalan 3, #2 ≥ 2026-12-17).
+- **Kapasite AŞIMI sayılanlar (yapılamaz):** eşik/parametre değişimi, set dışı
+  grid, erken look, BIST30 ticareti, canlı emir — hepsi fail-closed.

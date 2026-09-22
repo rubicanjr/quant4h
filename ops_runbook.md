@@ -40,6 +40,7 @@
 - Reddedilen girişler: no_valid_stop / not_tradable / geometry
 - Veri olayları: kesinti penceresi, roll/bad-print adayları, kurumsal aksiyon bayrakları
 - Raw hash logu (v1.2): data/raw/ dosya başına sha256 + satır sayısı · önceki aya göre DEĞİŞENLER (değişim yoksa "yok")
+- M13 risk metrikleri: max ardışık kayıp (varlık bazında; son capped trades_<asset>.csv'den) · uyma oranı = bu ayın protokol kontrol listesi geçen madde / toplam madde
 - Sapma notu: bu ay protokol dışı HİÇBİR şey yapıldı mı? (varsayılan: HAYIR)
 ```
 
@@ -98,8 +99,9 @@ python3 -W ignore scripts/cadence_4h_status.py --fetch              # canlı çe
 **Her look'un ZORUNLU sırası (sıra ihlali = hüküm geçersiz):**
 1. **ÖN-KAYIT (koşudan ÖNCE, commit'li):** `register_splits.py` policy_version ARTIRILARAK (v2, v3, …) YENİ `configs/splits_preregistered.yaml` üretilir; eski sürüm SİLİNMEZ (arşiv geleneği v1.0'daki gibi). Yeni frozen snapshot'lar + sha256'lar yazılır. Look'un kapsamı (hangi varlıklar, hangi hücre kümesi — değişmez: {P0..P3}×{A0..A2}, a-priori hücreler ve önceki look'un seçimi) ve hipotez NOTU ön-kayıt dosyasına işlenir. **ÜNİVERSE DONDURMA (v1.2):** `configs/bist30_universe.yaml` sürümü look için doğrulanır ve ön-kayda `universe_version` + dosya sha256'sı yazılır; üyelik DEĞİŞMİŞSE yeni tarih damgalı sürüm eklenir (eski silinmez), **üyelik değişim logu** (çıkan/giren + gerekçe + kaynak) ön-kayda işlenir ve look raporunda "önceki look'la karşılaştırılabilirlik" notu ZORUNLUDUR.
 2. **SEÇİM (yalnız yeni TRAIN):** `run_stage9.py --phase select` → seçim `selected_cells.yaml`'a YENİ hash'lerle dondurulur (eski seçim dosyası `selected_cells.v<N-1>.yaml` olarak arşivlenir, silinmez).
-3. **VERDICT:** `run_stage9.py --phase verdict` — aynı kilitli eşikler (`go_no_go`: n≥100 core/150 basket · expR>0 · CI altı>0 · PF≥1.2 · maxDD≤%25) ANCAK CI düzeyi aşağıdaki **alpha-spending tarifesine** göre hesaplanır; aynı VALID sağduyu kuralı (negatifse TEST KOŞULMAZ), TEST **bu look'ta 1 kez**.
-4. **LOG (§C) + PROGRESS bloğu + patch** (senkron kuralı).
+3. **KIRMIZI-TAKIM NOTU (M19 — go/no-go DEĞERLENDİRMESİNDEN ÖNCE, commit'li):** Bu look'un YANLIŞ OLABİLECEĞİ yollar peşinen yazılır: olası overfitting kanalları, veri/kurumsal-aksiyon şüpheleri, rejim değişikliği, seçim çokluluğu, hayatta kalma yanlılığı. Amaç eşikleri GEVŞETMEK/sonucu savunmak DEĞİL; aksine sonuç ne olursa olsun eşikler (§B.7 + alpha-spending) AYNEN uygulanır. Not rapora birebir kopyalanır.
+4. **VERDICT:** `run_stage9.py --phase verdict` — aynı kilitli eşikler (`go_no_go`: n≥100 core/150 basket · expR>0 · CI altı>0 · PF≥1.2 · maxDD≤%25) ANCAK CI düzeyi aşağıdaki **alpha-spending tarifesine** göre hesaplanır; aynı VALID sağduyu kuralı (negatifse TEST KOŞULMAZ), TEST **bu look'ta 1 kez**.
+5. **LOG (§C) + PROGRESS bloğu + patch** (senkron kuralı). Look raporunda ZORUNLU alanlar (M13): **max ardışık kayıp** (look işlem setinden) + **uyma oranı** (look protokol kontrol listesi: geçen adım / toplam adım) + M19 kırmızı-takım notu.
 
 **ALPHA-SPENDING TARİFESİ (v1.2, bağlayıcı — R03 azaltımı; kullanıcı onayı 2026-09-17):**
 Tekrarlanan OOS bakışları çoklu-test yükü biriktirir; go/no-go'nun "CI altı > 0" koşulundaki güven düzeyi KÜMÜLATİF look sayısıyla SIKILAŞIR (gevşetilmez):

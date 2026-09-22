@@ -88,3 +88,15 @@
 - Secret taraması desen-bazlıdır (bilinen anahtar sızıntısı desenleri); %100 garanti DEĞİLDİR.
 - ToS/lisans notları mühendislik değerlendirmesidir, HUKUKİ TAVSİYE değildir.
 - Bu belge yatırım tavsiyesi değildir; watch_only statüsünü ve Aşama 9 hükmünü (GEÇTİ=0) DEĞİŞTİRMEZ.
+
+## 8. On maddelik çapraz kontrol (M13 — her patch/look/§A döngüsünde)
+1. Suite sayısı dört yerde aynı: README + model_card + PROGRESS başlığı + `test_deliverables` iğnesi.
+2. `register_splits.py --check` EXIT 0; frozen sha256'lar `data/frozen/SHA256SUMS.txt` ile birebir.
+3. `configs/selected_cells.yaml` hücreleri kilitli set içinde (TS/TP/buffer) ve Stage 9 OOS seçimi.
+4. Golden fixture'lar üreteç çıktısıyla byte-eşit (`test_viz_generator`); taahhütlü pine şablonları lint + yasak-kelime temiz (`test_pine_lint`).
+5. `reports/stage9_oos_verdict.json` ↔ `reports/final_verdict.md` ↔ `models/model_card.md` hüküm cümleleri aynı (GEÇTİ=0 → watch_only).
+6. trades CSV ↔ XLSX satır/sayım tutarlı (`test_trade_xlsx`); equity = START_EQ + Σ net_pnl.
+7. Kadans raporu QC RED içeriyorsa ⛔ SORUN NOTU + exit 3 (fail-closed) — rapor normal görünmüyor.
+8. `reports/cadence/.state.json` son_fetch ile ≥200 dk kapısı; aynı gün çift `--no-cache` fetch YOK.
+9. PROGRESS son blok: teslim edilen patch dosyası `patches/` altında var ve temiz klonda `git am` + suite doğrulanmış.
+10. Look-log (§C) satır sayısı = kullanılan look sayısı (1) + bütçe/tarih alanları güncel; ONAY↔TESLİM eşleme tablosu son özetde mevcut.

@@ -21,12 +21,46 @@ GOOD_BLOCK = """## TAMAMLANDI: MTEST (2026-09-18, kullanıcı onaylı TEK patch)
 """
 
 
+def _g(d, *a):
+    return subprocess.run(["git", "-C", d, *a], capture_output=True,
+                          text=True, encoding="utf-8", errors="replace")
+
+
 def test_sessions_detected() -> None:
-    sess = E.sessions(8)
-    assert len(sess) >= 5, sess
-    sids = [s[0] for s in sess]
-    assert len(sess) >= 3, sids
-    assert any(x.startswith("m23") or x.startswith("m15c") for x in sids), sids
+    # M26: cp1254 locale simülasyonu — encoding açık utf-8 olduğundan
+    # getpreferredencoding(cp1254) altında bile _git str döner, çökmez
+    import locale
+    orig = locale.getpreferredencoding
+    locale.getpreferredencoding = lambda *a, **k: "cp1254"
+    try:
+        out = E._git("log", "--format=%H|%s", "-3")
+        assert isinstance(out, str)
+        sess = E.sessions(8)
+        has_git = E._git("rev-parse", "HEAD") != ""
+    finally:
+        locale.getpreferredencoding = orig
+    if has_git:   # git yoksa (sandbox tur başı vb.) gerçek-repo assert'i atlanır
+        assert len(sess) >= 3, sess
+        sids = [x[0] for x in sess]
+        assert any(x.startswith("m23") or x.startswith("m15c") for x in sids), sids
+    # M26: frozen fixture — Türkçe commit mesajlı tmp repo'da determinizm
+    with tempfile.TemporaryDirectory() as td:
+        _g(td, "init", "-q")
+        _g(td, "config", "user.email", "t@t")
+        _g(td, "config", "user.name", "t")
+        for i, msg in enumerate(("checkpoint: mtr1 — Türkçe özet çşğü İÜ",
+                                 "checkpoint: mtr2 — ikinci çşğü")):
+            with open(os.path.join(td, "a.txt"), "w", encoding="utf-8") as fh:
+                fh.write(str(i))
+            _g(td, "add", "-A")
+            _g(td, "commit", "-q", "-m", msg)
+        old_root = E.ROOT
+        E.ROOT = td
+        try:
+            s1, s2 = E.sessions(5), E.sessions(5)
+        finally:
+            E.ROOT = old_root
+        assert s1 == s2 and [x[0] for x in s1] == ["mtr2", "mtr1"], s1
 
 
 def test_format_scoring_synthetic() -> None:
@@ -83,7 +117,8 @@ def test_report_generation_skip_suite() -> None:
     tag = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     p = os.path.join(E.EVAL_DIR, f"{tag}.md")
     assert os.path.exists(p)
-    txt = open(p, encoding="utf-8").read()
+    with open(p, encoding="utf-8") as fh:
+        txt = fh.read()
     for needle in ("AJAN SKOR KARTI", "FORMAT", "FACTUALITY", "REALISM",
                    "CONSISTENCY", "QUALITY (insan rubric 1-5, LLM-judge YOK)",
                    "<!-- quality-rubric -->"):

@@ -79,7 +79,8 @@ def last_cadence() -> Dict[str, str]:
     if not files:
         return {"name": "(bildirim yok)", "saglik": "—", "rejim": "—", "sinyal": "—"}
     p = files[-1]
-    txt = open(p, encoding="utf-8").read()
+    with open(p, encoding="utf-8") as fh:
+        txt = fh.read()
     def grab(tag: str) -> str:
         for line in txt.splitlines():
             if line.startswith(f"- **{tag}"):

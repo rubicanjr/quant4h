@@ -24,6 +24,14 @@ FUNC = ("ts", "ema200", "stopLong", "swingLow", "swingHigh",
 
 
 def _read() -> str:
+    if not os.path.exists(MULTI):
+        # M18 (EKİM MAINT): viz/ çıktıları untracked — test kendi girdisini üretir
+        import subprocess
+        r = subprocess.run([sys.executable, "-W", "ignore",
+                            os.path.join(ROOT, "scripts", "export_viz_payload.py"),
+                            "--out", os.path.join(ROOT, "viz")],
+                           capture_output=True, text=True, cwd=ROOT)
+        assert r.returncode == 0, r.stderr[-800:]
     assert os.path.exists(MULTI), "multi pine yok — export_viz_payload.py koşulmalı"
     with open(MULTI, encoding="utf-8") as fh:
         return fh.read()

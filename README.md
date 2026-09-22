@@ -19,7 +19,7 @@ sinyal üretim** sistemi.
 |---|---|
 | Proje statüsü | **ARAŞTIRMA-KAPALI · watch_only** (Aşama 11 kapanışı, 2026-09-17) |
 | Aşama | **0–9 ✅ · 11 ✅ TAMAM** · 10 (ML) `ml_policy.gate` KAPALI (Aşama 9: GEÇTİ=0) |
-| Testler | **252/252 PASS** |
+| Testler | **256/256 PASS** |
 | Aşama 9 OOS hükmü | **GEÇTİ = 0** → BTC **KALDI** (VALID expR −0.32; TEST koşulmadı) · GOLD/SILVER **ZAYIF (örneklem)** · BIST30 sepet **KALDI** (VALID −0.06) · hepsi `watch_only` |
 | Nihai kayıt | `reports/final_verdict.md` (hüküm + protokol günlüğü + look=1) |
 | Model kartı | `models/model_card.md` (NEDİR / NE DEĞİLDİR / watch_only tanımı / ML gate KAPALI) |

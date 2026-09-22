@@ -26,6 +26,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ASSET = "BTC"
 XLSX = os.path.join(ROOT, "reports", "xlsx", f"trades_{ASSET}.xlsx")
 START_EQ = X.START_EQ
+_wb_close = []
 
 
 def _ozet(wb) -> dict:
@@ -59,13 +60,13 @@ def _recompute() -> dict:
 
 
 def test_sheet_names_and_chart() -> None:
-    wb = load_workbook(XLSX)
+    wb = load_workbook(XLSX); _wb_close.append(wb)
     assert wb.sheetnames == ["TRADES", "OZET", "EGRI"], wb.sheetnames
     assert len(wb["EGRI"]._charts) == 1, "EGRI sayfasında çizgi grafik yok"
 
 
 def test_summary_matches_independent_recompute() -> None:
-    wb = load_workbook(XLSX)
+    wb = load_workbook(XLSX); _wb_close.append(wb)
     oz = _ozet(wb)
     ref = _recompute()
     for k, v in ref.items():
@@ -86,7 +87,7 @@ def test_deterministic_summary_and_sheets() -> None:
 
 
 def test_trades_sheet_formatting_locked() -> None:
-    wb = load_workbook(XLSX)
+    wb = load_workbook(XLSX); _wb_close.append(wb)
     ws = wb["TRADES"]
     assert ws.freeze_panes == "A2"
     assert ws.auto_filter.ref and ws.auto_filter.ref.startswith("A1:")
@@ -111,7 +112,7 @@ def test_trades_sheet_formatting_locked() -> None:
 
 
 def test_exit_reason_distribution_present() -> None:
-    wb = load_workbook(XLSX)
+    wb = load_workbook(XLSX); _wb_close.append(wb)
     ws = wb["OZET"]
     txt = [str(c.value) for row in ws.iter_rows() for c in row if c.value]
     assert any("exit_reason dağılımı" in t for t in txt)
@@ -119,6 +120,12 @@ def test_exit_reason_distribution_present() -> None:
 
 
 def _run_all() -> int:
+    import atexit
+    for w in _wb_close:
+        try:
+            w.close()
+        except Exception:                                    # noqa: BLE001
+            pass
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0
     for fn in fns:

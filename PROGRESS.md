@@ -6,9 +6,17 @@
 
 **Proje:** BIST30 · Altın · Gümüş · BTC — 4H kural tabanlı çekirdek + opsiyonel ML onay filtresi
 **Amaç:** backtest / validasyon / sinyal üretimi / risk yönetimi. **Canlı emir YOK, yatırım tavsiyesi YOK.**
-**Son güncelleme:** 2026-09-17 (UTC)
-**Test durumu:** **252/252 PASS**
-`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 12 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 7
+**Son güncelleme:** 2026-09-22 (UTC)
+**Test durumu:** **256/256 PASS**
+`resample_qc` 21 · `adjust` 14 · `cleaning` 11 · `splits` 12 · `bist_universe` 12 · `regime_context` 14 · `levels` 23 · `momentum` 16 · `signals` 19 · `backtest` 26 · `basket_attrs` 6 · `exit_profiles` 19 · `risk` 15 · `stage9` 10 · `deliverables` 7 · `viz_generator` 5 · `viz_multi` 6 · `dash` 5 · `trade_xlsx` 5 · `agent_eval` 6 · `pine_lint` 4 (YENİ)
+
+---
+
+## TAMAMLANDI: EKİM-MAINT (2026-09-22, kullanıcı onaylı TEK patch + kümülatif)
+
+Özet: (1) **79 uyarı → 0** (normal koşu): `utcnow→now(tz)`, pandas `'H'→'h'` (context.py), simulator tz-astype `to_numpy(dtype=…)`, test/script unclosed handle'lar with-blok, `pytest.ini` hedefli filtre (pandas log RuntimeWarning — sentez sıfırlı seri, zararsız, belgelendi). **R11 kalanı TAMAMLANDI**: `lint_forbidden` + `FORBIDDEN` bu soya GERİ EKLENDİ (M9c'de eklenmiş, kümülatif zincirde KAYBOLMUŞTU — tespit bu birimde) + yeni `tests/test_pine_lint.py` (4 test: üretilmiş per-asset/multi lint temiz · şablon+çıktı yasak-kelime temiz · PAYLOAD işaretleri dengeli). **BULGU-FIX**: şablon plot başlıkları `donchian_high/low(20)` YASAK kelime içeriyordu → `swing_high/low(20)` (görsel etiket; hesap DEĞİŞMEZ) + `(swing/Donchian/stop)`→`(swing/stop)`; golden fixture'lar + committed şablonlar üreteçle yeniden senkron. (2) **PNG snapshot**: `scripts/export_snapshot_pngs.py` → `reports/snapshot/` (equity GOLD/SILVER/BTC/BIST30 + cadence §A şablon örneği; deterministik, 5 PNG). (3) **M10**: `skills/quant4h-ops/SKILL.md` — oturum bootstrap, patch ritmi, ONAY↔TESLİM şablonu, look protokolü özeti, model/oturum değişim protokolü, değişmezler kısayolu. (4) **ONAY↔TESLİM kuralı** SKILL §3 + bu blokta uygulandı (aşağıda). (5) **M13**: runbook §A1 şablonuna max ardışık kayıp + uyma oranı alanları; runbook §B look sırasına M13 zorunlu rapor alanları; model card §9 kapasite notu; `docs/risk_register.md` §8 on maddelik çapraz kontrol. (6) **M18**: `.gitignore` += `viz/*.pine`, `viz/payload_*.txt`, `patches/` + `git rm --cached viz/` (üreteç+golden tracked). SONUÇ-FIX: `tests/test_viz_multi.py` artık `viz/` çıktısını LAZY üretiyor (fresh-clone uyumu; data/ gitignore'da olduğundan clean-clone doğrulaması data kopyasıyla yapılır — runbook geleneği). (7) **M19**: runbook §B adım 3 = go/no-go ÖNCESİ kırmızı-takım notu (eşikler DEĞİŞMEZ; TEST_PLAN B.10 bu soyta runbook'ta). (8) **M25/M27 EKLENMEDİ**: komuttaki karar parantezi `[A ise … B/C ise …]` boş geldi → varsayılan EKLEME; açık ONAY bekliyor. Doğrulama: pytest **256 passed, 0 warning** (ev + TEMİZ KLON am sonrası, data kopyalı) · self-runner 21 dosya OK · `register_splits --check` EXIT 0 · snapshot 5 PNG · pine lint 4/4. R09 sayaç senkronu 252→256 (README + model_card×2 + PROGRESS + deliverables iğnesi). Hüküm/seçim/look etkisi YOK.
+
+**ONAY↔TESLİM eşlemesi:** 1→uyarı temizliği+R11 kilidi+test_pine_lint ✓ · 2→export_snapshot_pngs.py+reports/snapshot/ (5 PNG) ✓ · 3→skills/quant4h-ops/SKILL.md ✓ · 4→SKILL §3 kural + bu blok ✓ · 5→runbook §A1/§B + model_card §9 + risk_register §8 ✓ · 6→.gitignore+untrack viz/ ✓ · 7→runbook §B adım 3 (M19) ✓ · 8→M25/M27 YOK (karar boş; bekleyiş) · sınırlar→temiz klon doğrulama (bu patch) + kümülatif `patches/cum_m26_ekim.patch` + adım `patches/ekim_maint.patch` ✓
 
 ---
 
